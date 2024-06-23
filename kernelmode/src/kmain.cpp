@@ -1,6 +1,9 @@
+#define KERNELMODE
+
 #include <ntifs.h>
 
 #include "kutils.h"
+#include "classes/Logger.h"
 
 extern "C"
 {
@@ -11,14 +14,6 @@ extern "C"
 		PEPROCESS TargetProcess, PVOID TargetAddress,
 		SIZE_T BufferSize, KPROCESSOR_MODE PreviousMode, PSIZE_T ReturnSize
 	);
-}
-
-void debugPrint(PCSTR str)
-{
-#ifndef DEBUG
-	UNREFERENCED_PARAMETER(str);
-#endif
-	KdPrintEx((DPFLTR_IHVDRIVER_ID, DPFLTR_INFO_LEVEL, str));
 }
 
 namespace driver
@@ -40,7 +35,7 @@ namespace driver
 	{
 		UNREFERENCED_PARAMETER(pDevice);
 
-		debugPrint("Device control call \n");
+		LOG("Device control call");
 
 		NTSTATUS status = STATUS_UNSUCCESSFUL;
 		PIO_STACK_LOCATION pStackLocation = IoGetCurrentIrpStackLocation(pIrp);
@@ -96,6 +91,8 @@ NTSTATUS DriverMain(PDRIVER_OBJECT pDriverObject, PUNICODE_STRING sRegistryPath)
 {
 	UNREFERENCED_PARAMETER(sRegistryPath);
 
+	log_utils::Logger();
+
 	UNICODE_STRING sDeviceName = {};
 	RtlInitUnicodeString(&sDeviceName, L"\\Device\\KM_KBRDCS2RWAPP");
 
@@ -107,26 +104,26 @@ NTSTATUS DriverMain(PDRIVER_OBJECT pDriverObject, PUNICODE_STRING sRegistryPath)
 
 	if (status != STATUS_SUCCESS)
 	{
-		debugPrint("Device creation failure \n");
+		ERR("Device creation failure");
 		
 		return status;
 	}
 
-	debugPrint("Device created \n");
+	LOG("Device created");
 
 	UNICODE_STRING sSymbolicLink = {};
-	RtlInitUnicodeString(&sSymbolicLink, L"\\DosDevice\\KM_KBRDCS2RWAPP");
+	RtlInitUnicodeString(&sSymbolicLink, L"\\DosDevices\\KM_KBRDCS2RWAPP");
 
 	status = IoCreateSymbolicLink(&sSymbolicLink, &sDeviceName);
 
 	if (status != STATUS_SUCCESS)
 	{
-		debugPrint("Symbolic link creation failure \n");
+		ERR("Symbolic link creation failure");
 
 		return status;
 	}
 
-	debugPrint("Symbolic link established");
+	LOG("Symbolic link established");
 
 	SetFlag(pDeviceObject->Flags, DO_BUFFERED_IO);
 
@@ -141,11 +138,14 @@ NTSTATUS DriverMain(PDRIVER_OBJECT pDriverObject, PUNICODE_STRING sRegistryPath)
 
 NTSTATUS DriverEntry() 
 {
-	debugPrint("Hello World from kernelmode! \n");
+	WARN("DriverEntry call");
+	WARN("Assuming mapping process initiated");
 
 	// Initialization
 	UNICODE_STRING sDriverName = {};
 	RtlInitUnicodeString(&sDriverName, L"\\Driver\\KM_KBRDCS2RWAPP");
+
+	LOG("Driver mapping process completed");
 
 	return IoCreateDriver(&sDriverName, &DriverMain);
 }

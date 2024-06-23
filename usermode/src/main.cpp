@@ -7,12 +7,13 @@
 int main()
 {
 	std::cout << "Starting mapper" << std::endl;
-
+	std::cout << "BASIC SINGATURE INFORMATION" << std::endl;
+	std::cout << "DATE: " << __TIMESTAMP__ << std::endl;
 	const DWORD dPid = uapp::getPID(TARGET_PNAME);
 
 	if (dPid == 0)
 	{
-		std::cout << "Please, run target app first" << std::endl;
+		std::cout << "Please, run target app first [notepad.exe]" << std::endl;
 		system("pause");
 		return EXIT_FAILURE;
 	}
