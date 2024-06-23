@@ -11,11 +11,13 @@ private:
 	float f = 0.f;
 	unsigned int counter = 0;
 protected:
-	void Initialize();
+	virtual void Initialize();
 public:
 	GUIController();
 	GUIController(ImGuiIO&);
 
 	void Render();
+	virtual void Update();
+	
 	ImVec4 getClearColor() { return clear_color; }
 };
