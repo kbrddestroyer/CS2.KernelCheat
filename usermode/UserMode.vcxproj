@@ -163,6 +163,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\kernelmode\src\kutils.h" />
+    <ClInclude Include="src\buttons.hpp" />
+    <ClInclude Include="src\client.dll.hpp" />
     <ClInclude Include="src\core\km_mailbox.h" />
     <ClInclude Include="src\gui\GUIController.h" />
     <ClInclude Include="src\core\constants.h" />
@@ -176,6 +178,7 @@
     <ClInclude Include="src\imgui\imstb_truetype.h" />
     <ClInclude Include="src\core\utils.h" />
     <ClInclude Include="src\logger\UMLogger.h" />
+    <ClInclude Include="src\offsets.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
