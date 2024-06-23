@@ -2,6 +2,7 @@
 #include <Windows.h>
 #include <TlHelp32.h>
 
+#include "imgui/imgui.h"
 #include "../../kernelmode/src/kutils.h"
 
 namespace driver
