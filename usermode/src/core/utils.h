@@ -2,11 +2,11 @@
 #include <Windows.h>
 #include <TlHelp32.h>
 
-#include "../../kernelmode/src/kutils.h"
+#include "../../../kernelmode/src/kutils.h"
 
 namespace driver
 {
-	bool attach(HANDLE hDriverHandle, const DWORD dPid)
+	inline bool attach(HANDLE hDriverHandle, const DWORD dPid)
 	{
 		USERMODE_REQUEST request;
 
@@ -16,7 +16,7 @@ namespace driver
 	}
 
 	template<class T>
-	T read(HANDLE hDriverHandle, const uintptr_t uAddress)
+	inline T read(HANDLE hDriverHandle, const uintptr_t uAddress)
 	{
 		T temp = {};
 		USERMODE_REQUEST request;
@@ -29,7 +29,7 @@ namespace driver
 	}
 
 	template<class T>
-	void write(HANDLE hDriverHandle, const uintptr_t uAddress, const T& value)
+	inline void write(HANDLE hDriverHandle, const uintptr_t uAddress, const T& value)
 	{
 		USERMODE_REQUEST request;
 		request.pTarget = reinterpret_cast<PVOID> (uAddress);
@@ -43,7 +43,7 @@ namespace driver
 
 namespace uapp
 {
-	static DWORD getPID(const wchar_t* pName)
+	static inline DWORD getPID(const wchar_t* pName)
 	{
 		DWORD dPid = 0;
 		HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, NULL);
@@ -71,7 +71,7 @@ namespace uapp
 		return dPid;
 	}
 
-	static uintptr_t getModuleBase(const DWORD dPid, const wchar_t* pModuleName)
+	static inline uintptr_t getModuleBase(const DWORD dPid, const wchar_t* pModuleName)
 	{
 		uintptr_t uModuleBase = 0;
 
