@@ -6,7 +6,7 @@
 #include "utils.h"
 #include "constants.h"
 
-int __main()
+int kmControllerEntry()
 {
 	std::cout << "Starting mapper" << std::endl;
 	std::cout << "BASIC SINGATURE INFORMATION" << std::endl;
