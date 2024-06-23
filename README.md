@@ -6,6 +6,9 @@
 - Windows Driver Kit [*Install Guide*](https://learn.microsoft.com/en-us/windows-hardware/drivers/download-the-wdk)
 - Windows SDK
 
+### Project build
+> Project building from source code requires dearImGui library, that can be installed from [here](https://github.com/ocornut/imgui)
+
 # Install
 All up-to-date releases can be found [here](https://github.com/kbrddestroyer/CS2.KernelCheat/releases)
 
@@ -16,3 +19,4 @@ All up-to-date releases can be found [here](https://github.com/kbrddestroyer/CS2
 # Modding & Configuring
 
 **In progress**
+

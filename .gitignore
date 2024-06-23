@@ -4,6 +4,7 @@
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
 x64/
+kdmapper-master/
 
 # User-specific files
 *.rsuser
