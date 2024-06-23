@@ -2,7 +2,6 @@
 #include <Windows.h>
 #include <TlHelp32.h>
 
-#include "imgui/imgui.h"
 #include "../../kernelmode/src/kutils.h"
 
 namespace driver
@@ -17,7 +16,7 @@ namespace driver
 	}
 
 	template<class T>
-	T read(HANDLE hDriverHandle, const std::uintptr_t uAddress)
+	T read(HANDLE hDriverHandle, const uintptr_t uAddress)
 	{
 		T temp = {};
 		USERMODE_REQUEST request;
@@ -30,7 +29,7 @@ namespace driver
 	}
 
 	template<class T>
-	void write(HANDLE hDriverHandle, const std::uintptr_t uAddress, const T& value)
+	void write(HANDLE hDriverHandle, const uintptr_t uAddress, const T& value)
 	{
 		USERMODE_REQUEST request;
 		request.pTarget = reinterpret_cast<PVOID> (uAddress);

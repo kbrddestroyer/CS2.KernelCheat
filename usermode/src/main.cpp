@@ -1,10 +1,12 @@
+#define DIRECT3D_11
+
 #include <iostream>
 #include <Windows.h>
 
 #include "utils.h"
 #include "constants.h"
 
-int main()
+int __main()
 {
 	std::cout << "Starting mapper" << std::endl;
 	std::cout << "BASIC SINGATURE INFORMATION" << std::endl;
