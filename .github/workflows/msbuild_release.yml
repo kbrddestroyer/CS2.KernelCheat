@@ -54,8 +54,8 @@ jobs:
       with:
         draft: false
         prerelease: false
-        release_name: Release v.${{VERSION_MAJOR}}.${{VERSION_MINOR}}.${{ GITHUB_RUN_NUMBER }}
-        tag_name: v.${{VERSION_MAJOR}}.${{VERSION_MINOR}}.${{ GITHUB_RUN_NUMBER }}
+        release_name: Release v.${{vars.VERSION_MAJOR}}.${{ vars.VERSION_MINOR }}.${{ github.run_number }}
+        tag_name: v.${{vars.VERSION_MAJOR}}.${{ vars.VERSION_MINOR }}.${{ github.run_number }}
       env:
         GITHUB_TOKEN: ${{ github.token }}
     - name: Publish release
