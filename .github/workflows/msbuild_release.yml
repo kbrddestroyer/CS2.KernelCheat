@@ -47,3 +47,15 @@ jobs:
       with:
         name: Artifact
         path: "x64/build/"
+    - name: Create release tag
+      uses: actions/create-release@v1
+      id: create_release
+      with:
+        draft: false
+        prerelease: false
+        release_name: Release
+        tag_name: ${{ github.ref }}
+        body_path: "x64/build"
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+        
