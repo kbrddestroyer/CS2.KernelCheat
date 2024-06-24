@@ -39,7 +39,7 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       # Add additional options to the MSBuild command line here (like platform or verbosity level).
       # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
-      run: msbuild /m /p:Configuration=${{env.Configuration}} ${{env.SOLUTION_FILE_PATH}} && zip --junk-paths x64/ release-artifact
+      run: msbuild /m /p:Configuration=${{env.Configuration}} ${{env.SOLUTION_FILE_PATH}}
       env:
         Configuration: ${{ matrix.configuration }}
         Platform: ${{ matrix.platform }}
@@ -65,7 +65,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./release-artifact.zip
-        asset_name: release-artifact.zip
+        asset_path: ./x64/
+        asset_name: release
         asset_content_type: application/zip
         
