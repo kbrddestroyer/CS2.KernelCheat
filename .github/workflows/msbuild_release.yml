@@ -43,11 +43,15 @@ jobs:
       env:
         Configuration: ${{ matrix.configuration }}
         Platform: ${{ matrix.platform }}
+    - name: Compress arifacts
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      shell: pwsh
+      run: Compress-Archive -Path x64/* -Destination release.zip
     - name: Store artifact
       uses: actions/upload-artifact@v2
       with:
         name: Artifact
-        path: "x64/build/"
+        path: "release.zip"
     - name: Create release tag
       uses: actions/create-release@v1
       id: create_release
@@ -65,7 +69,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./x64/
+        asset_path: release.zip
         asset_name: release
         asset_content_type: application/zip
         
