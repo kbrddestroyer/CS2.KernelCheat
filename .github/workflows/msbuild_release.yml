@@ -42,3 +42,8 @@ jobs:
       env:
         Configuration: ${{ matrix.configuration }}
         Platform: ${{ matrix.platform }}
+    - name: Store artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: Artifact
+        path: "x64/build/"
