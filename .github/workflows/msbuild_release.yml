@@ -46,7 +46,7 @@ jobs:
     - name: Compress arifacts
       working-directory: ${{env.GITHUB_WORKSPACE}}
       shell: pwsh
-      run: Compress-Archive -Path x64/* -Destination release.zip
+      run: Compress-Archive -Path x64/* -DestinationPath release.zip
     - name: Store artifact
       uses: actions/upload-artifact@v2
       with:
