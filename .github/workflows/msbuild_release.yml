@@ -53,7 +53,7 @@ jobs:
       with:
         draft: false
         prerelease: false
-        release_name: Release
+        release_name: Release ${{ github.ref }}
         tag_name: ${{ github.ref }}
         body_path: "x64/build"
       env:
