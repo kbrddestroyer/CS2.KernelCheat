@@ -14,7 +14,7 @@ env:
   SOLUTION_FILE_PATH: ./CS2.KernelHack.sln
 
 permissions:
-  contents: read, write
+  contents: write
 
 jobs:
   build:
