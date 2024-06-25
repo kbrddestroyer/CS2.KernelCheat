@@ -16,10 +16,12 @@ private:
 	uint32_t uLastUpdateTimestamp;
 protected:
 	std::vector<std::shared_ptr<ThreadController>> vThreads;
+	
+	std::shared_ptr<ThreadController> createThread();
 public:
 	ThreadMgr();
 	~ThreadMgr();
 
-	void createThread(void* func(...));
+	ThreadController* getThread();
 };
 

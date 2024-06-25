@@ -2,6 +2,10 @@
 #include <Windows.h>
 #include <chrono>
 
+#include <vector>
+
+#define MAX_CALLSTACK_SIZE 3
+
 class ThreadElementController
 {
 private:
@@ -19,3 +23,16 @@ public:
 	virtual void Update() = 0;
 };
 
+class ThreadController
+{
+private:
+	std::vector<std::shared_ptr<ThreadElementController>> vCallStack;
+public:
+	ThreadController();
+	~ThreadController();
+
+	bool addThreadElement(ThreadElementController&);
+	void Update();
+
+	bool availible();
+};

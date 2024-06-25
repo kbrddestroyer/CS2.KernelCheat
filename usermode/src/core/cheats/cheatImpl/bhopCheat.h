@@ -2,12 +2,15 @@
 
 #include "../CheatBase.h"
 
-class bhopCheat : private CheatBase
+#include "../client.dll.hpp"
+#include "../buttons.hpp"
+#include "../offsets.hpp"
+
+#include "../core/constants.h"
+
+class bhopCheat : public CheatBase
 {
 protected:
-	void UpdateImpl() override
-	{
-
-	}
+	void UpdateImpl() override;
 };
 

@@ -6,6 +6,7 @@
 #include "../offsets.hpp"
 
 #include "../thread/ThreadController.h"
+#include "../km_mailbox.h"
 
 class CheatBase : public ThreadElementController
 {
