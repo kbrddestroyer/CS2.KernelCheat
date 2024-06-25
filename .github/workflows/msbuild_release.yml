@@ -8,19 +8,20 @@ name: MSBuild Release
 on:
   push:
     branches: [ "release" ]
-
+  workflow_dispatch:
+  
 env:
   # Path to the solution file relative to the root of the project.
   SOLUTION_FILE_PATH: ./CS2.KernelHack.sln
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
     strategy:
       matrix:
-        configuration: [Debug, Release]
+        configuration: [Release]
         platform: [x64]
     runs-on: windows-2022
 
@@ -42,8 +43,36 @@ jobs:
       env:
         Configuration: ${{ matrix.configuration }}
         Platform: ${{ matrix.platform }}
+    - name: Compress arifacts
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      shell: pwsh
+      run: Compress-Archive -Path x64/* -DestinationPath release.zip
     - name: Store artifact
       uses: actions/upload-artifact@v2
       with:
         name: Artifact
-        path: "x64/build/"
+        path: "release.zip"
+    - name: Create release tag
+      uses: actions/create-release@v1
+      id: create_release
+      with:
+        draft: false
+        prerelease: false
+        release_name: Release v${{vars.VERSION_MAJOR}}.${{ vars.VERSION_MINOR }}.${{ github.run_number }}
+        tag_name: v${{vars.VERSION_MAJOR}}.${{ vars.VERSION_MINOR }}.${{ github.run_number }}
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+    - name: Publish release
+      id: upload-release-asset 
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: release.zip
+        asset_name: release_${{vars.VERSION_MAJOR}}_${{ vars.VERSION_MINOR }}_${{ github.run_number }}.zip
+        asset_content_type: application/zip
+    - name: Post notification 
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: curl -H "Content-Type:application/json" -d '{"content":"","tts":false,"embeds":[{"id":652627557,"title":"Build Finished","description":"Build from MSBuild_release agent finished successfully!","color":16711680,"fields":[],"author":{"name":"KbrdDestroyer"},"url":"https://github.com/kbrddestroyer/CS2.KernelCheat/releases"}],"components":[],"actions":{},"username":"Build Agent ","avatar_url":"https://avatanplus.com/files/effects/original/5b016adc74aa01637d896d3e.jpg"}' ${{ secrets.WEBHOOK }}
+
