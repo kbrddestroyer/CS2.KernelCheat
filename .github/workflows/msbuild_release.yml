@@ -73,5 +73,6 @@ jobs:
         asset_name: release_${{vars.VERSION_MAJOR}}_${{ vars.VERSION_MINOR }}_${{ github.run_number }}.zip
         asset_content_type: application/zip
     - name: Post notification 
+      working-directory: ${{env.GITHUB_WORKSPACE}}
       shell: cmd
       run: post_message.bat
