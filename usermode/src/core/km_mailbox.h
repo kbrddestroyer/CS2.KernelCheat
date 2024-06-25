@@ -17,3 +17,4 @@ int kmControllerEntry();
 void initialize(HANDLE, DWORD);
 
 void threadedBhop(HANDLE&, const uintptr_t&);
+void radarHack(HANDLE&, const uintptr_t&);
