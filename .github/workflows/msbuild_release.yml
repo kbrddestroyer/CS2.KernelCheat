@@ -74,5 +74,5 @@ jobs:
         asset_content_type: application/zip
     - name: Post notification 
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: curl -H "Content-Type:application/json" -d '{"content":"","tts":false,"embeds":[{"id":652627557,"title":"Build Finished","description":"Build from MSBuild_release agent finished successfully!","color":16711680,"fields":[],"author":{"name":"KbrdDestroyer"},"url":"https://github.com/kbrddestroyer/CS2.KernelCheat/releases"}],"components":[],"actions":{},"username":"Build Agent ","avatar_url":"https://avatanplus.com/files/effects/original/5b016adc74aa01637d896d3e.jpg"}' ${{ vars.WEBHOOK }}
+      run: curl -H "Content-Type:application/json" -d '{"content":"","tts":false,"embeds":[{"id":652627557,"title":"Build Finished","description":"Build from MSBuild_release agent finished successfully!","color":16711680,"fields":[],"author":{"name":"KbrdDestroyer"},"url":"https://github.com/kbrddestroyer/CS2.KernelCheat/releases"}],"components":[],"actions":{},"username":"Build Agent ","avatar_url":"https://avatanplus.com/files/effects/original/5b016adc74aa01637d896d3e.jpg"}' ${{ secrets.WEBHOOK }}
 
