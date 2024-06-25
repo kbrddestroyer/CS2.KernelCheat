@@ -38,20 +38,7 @@ void initialize(HANDLE hDriver, DWORD uPid)
 #ifdef DEBUG
 		MessageBox(NULL, L"Mapped client.dll", L"Info", MB_ICONINFORMATION | MB_OK);
 #endif
-		std::thread tBhop = std::thread(threadedBhop, std::ref(hDriver), std::ref(uClient));
 
-		tBhop.join();
-	}
-}
-
-void threadedBhop(HANDLE& hDriver, const uintptr_t& uClient)
-{
-#ifdef DEBUG
-	MessageBox(NULL, L"Mapped client.dll", L"Info", MB_ICONINFORMATION | MB_OK);
-#endif
-
-	while (true)
-	{
-
+		std::shared_ptr<ThreadMgr> thread = std::make_shared<ThreadMgr>(hDriver, uClient);
 	}
 }

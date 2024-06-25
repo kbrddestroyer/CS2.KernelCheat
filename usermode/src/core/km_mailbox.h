@@ -10,6 +10,9 @@
 #include "../client.dll.hpp"
 #include "../buttons.hpp"
 
+#include "cheat/ThreadController.h"
+#include "cheat/Cheat.h"
+
 using namespace cs2_dumper;
 
 int kmControllerEntry();

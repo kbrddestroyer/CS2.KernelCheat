@@ -1,6 +1,6 @@
-#include "bhopCheat.h"
+#include "Cheat.h"
 
-void bhopCheat::UpdateImpl()
+void BhopCheat::Update(HANDLE hDriver, uintptr_t uClient)
 {
 #ifdef DEBUG
 	if (GetAsyncKeyState(VK_ESCAPE))
