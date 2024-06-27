@@ -2,7 +2,7 @@
 
 ThreadController::ThreadController() {}
 
-ThreadController::ThreadController(HANDLE& hDriver, const uintptr_t& uClient) {
+ThreadController::ThreadController(HANDLE hDriver, const uintptr_t uClient) {
 	this->hDriver = hDriver;
 	this->uClient = uClient;
 }
@@ -36,7 +36,8 @@ void ThreadController::addElement(ThreadedObject* ob)
 
 void ThreadMgr::Start()
 {
-	pController = new ThreadController(hDriver, uClient);
+	if (!pController)
+		pController = new ThreadController(hDriver, uClient);
 	pController->Start();
 }
 

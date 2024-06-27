@@ -35,12 +35,12 @@ void initialize(HANDLE hDriver, DWORD uPid)
 {
 	if (const uintptr_t uClient = uapp::getModuleBase(uPid, L"client.dll"); uClient != 0)
 	{
-#ifdef DEBUG
 		MessageBox(NULL, L"Mapped client.dll", L"Info", MB_ICONINFORMATION | MB_OK);
-#endif
-		ThreadMgr* thread = ThreadMgr::getInstance();
 
+		ThreadMgr* thread = ThreadMgr::getInstance();
+		thread->params(hDriver, uClient);
 		BhopCheat* cheat = new BhopCheat();
 		thread->getThread()->addElement(cheat);
+		thread->Start();
 	}
 }

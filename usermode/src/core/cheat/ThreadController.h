@@ -19,7 +19,7 @@ private:
 	std::vector<ThreadedObject*> vCallstack;
 public:
 	ThreadController();
-	ThreadController(HANDLE&, const uintptr_t&);
+	ThreadController(HANDLE, const uintptr_t);
 	~ThreadController();
 
 	void Start();
@@ -41,8 +41,16 @@ public:
 	ThreadMgr() { instance = this; }
 	ThreadMgr(HANDLE&, const uintptr_t&);
 	~ThreadMgr() { if (pController) delete pController; }
-	ThreadController* getThread() { return pController; }
-
+	ThreadController* getThread() { 
+		if (!pController)
+			pController = new ThreadController(hDriver, uClient);
+		return pController; 
+	}
+	void params(HANDLE hDriver, uintptr_t uClient)
+	{
+		this->hDriver = hDriver;
+		this->uClient = uClient;
+	}
 	void Start();
 
 	static ThreadMgr* getInstance() { return instance; }
