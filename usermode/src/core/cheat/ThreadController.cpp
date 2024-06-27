@@ -7,6 +7,12 @@ ThreadController::ThreadController(HANDLE& hDriver, const uintptr_t& uClient) {
 	this->uClient = uClient;
 }
 
+ThreadController::~ThreadController()
+{
+	for (ThreadedObject* ob : vCallstack)
+		delete ob;
+}
+
 void ThreadController::Start()
 {
 	while (true)
@@ -23,15 +29,21 @@ void ThreadController::Update()
 	}
 }
 
-ThreadMgr::ThreadMgr(HANDLE& hDriver, const uintptr_t& uClient)
+void ThreadController::addElement(ThreadedObject* ob)
 {
-	this->hDriver = hDriver;
-	this->uClient = uClient;
+	vCallstack.push_back(ob);
 }
 
 void ThreadMgr::Start()
 {
-	ThreadController controller(hDriver, uClient);
+	pController = new ThreadController(hDriver, uClient);
+	pController->Start();
+}
 
-	controller.Start();
+ThreadMgr::ThreadMgr(HANDLE& hDriver, const uintptr_t& uClient) : ThreadMgr()
+{
+	this->hDriver = hDriver;
+	this->uClient = uClient;
+
+	thread = std::thread(&ThreadMgr::Start, this);
 }

@@ -15,6 +15,7 @@
 
 #include <Windows.h>
 #include "gui/GUIController.h"
+#include "core/cheat/ThreadController.h"
 
 #pragma region IMGUI_DATA
 // Data
@@ -85,6 +86,9 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
 
     // Main loop
     bool done = false;
+
+    ThreadMgr thManager;
+
     while (!done)
     {
         // Poll and handle messages (inputs, window resize, etc.)

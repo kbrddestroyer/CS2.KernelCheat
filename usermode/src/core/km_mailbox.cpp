@@ -38,7 +38,9 @@ void initialize(HANDLE hDriver, DWORD uPid)
 #ifdef DEBUG
 		MessageBox(NULL, L"Mapped client.dll", L"Info", MB_ICONINFORMATION | MB_OK);
 #endif
+		ThreadMgr* thread = ThreadMgr::getInstance();
 
-		std::shared_ptr<ThreadMgr> thread = std::make_shared<ThreadMgr>(hDriver, uClient);
+		BhopCheat* cheat = new BhopCheat();
+		thread->getThread()->addElement(cheat);
 	}
 }

@@ -20,6 +20,7 @@ private:
 public:
 	ThreadController();
 	ThreadController(HANDLE&, const uintptr_t&);
+	~ThreadController();
 
 	void Start();
 	void Update();
@@ -31,12 +32,18 @@ class ThreadMgr
 {
 private:
 	std::thread thread;
+	inline static ThreadMgr* instance;
+	ThreadController* pController;
 
 	HANDLE		hDriver;
 	uintptr_t	uClient;
 public:
-	inline ThreadMgr() {}
+	ThreadMgr() { instance = this; }
 	ThreadMgr(HANDLE&, const uintptr_t&);
+	~ThreadMgr() { if (pController) delete pController; }
+	ThreadController* getThread() { return pController; }
 
 	void Start();
+
+	static ThreadMgr* getInstance() { return instance; }
 };
