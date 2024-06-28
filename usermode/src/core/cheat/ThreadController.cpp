@@ -45,6 +45,4 @@ ThreadMgr::ThreadMgr(HANDLE& hDriver, const uintptr_t& uClient) : ThreadMgr()
 {
 	this->hDriver = hDriver;
 	this->uClient = uClient;
-
-	thread = std::thread(&ThreadMgr::Start, this);
 }

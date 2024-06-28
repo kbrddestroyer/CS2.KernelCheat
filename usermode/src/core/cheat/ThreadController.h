@@ -31,7 +31,7 @@ public:
 class ThreadMgr
 {
 private:
-	std::thread thread;
+	std::vector<std::thread> threads;
 	inline static ThreadMgr* instance;
 	ThreadController* pController;
 
@@ -52,6 +52,11 @@ public:
 		this->uClient = uClient;
 	}
 	void Start();
+	void Join()
+	{
+		thread = std::thread(&ThreadMgr::Start, this);
+		thread.join();
+	}
 
 	static ThreadMgr* getInstance() { return instance; }
 };

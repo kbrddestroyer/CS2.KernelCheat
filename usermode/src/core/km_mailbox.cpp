@@ -41,6 +41,6 @@ void initialize(HANDLE hDriver, DWORD uPid)
 		thread->params(hDriver, uClient);
 		BhopCheat* cheat = new BhopCheat();
 		thread->getThread()->addElement(cheat);
-		thread->Start();
+		thread->Join();
 	}
 }
