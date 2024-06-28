@@ -20,7 +20,7 @@ void BhopCheat::Update(HANDLE hDriver, uintptr_t uClient)
 	if (bSpace && bInAir)
 	{
 		// Jump
-		Sleep(CFG_BHOP_DELAY);
+		std::this_thread::sleep_for(std::chrono::milliseconds(CFG_BHOP_DELAY));
 		driver::write(hDriver, uClient + buttons::jump, CFG_SPACE_ON);
 	}
 	else if (

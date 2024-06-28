@@ -15,18 +15,16 @@ ThreadController::~ThreadController()
 
 void ThreadController::Start()
 {
-	while (true)
-	{
-		Update();
-	}
+	Update();
 }
 
 void ThreadController::Update()
 {
-	for (ThreadedObject* ob : vCallstack)
-	{
-		ob->Update(hDriver, uClient);
-	}
+	if (hDriver && uClient)
+		for (ThreadedObject* ob : vCallstack)
+		{
+			ob->Update(hDriver, uClient);
+		}
 }
 
 void ThreadController::addElement(ThreadedObject* ob)
@@ -36,9 +34,23 @@ void ThreadController::addElement(ThreadedObject* ob)
 
 void ThreadMgr::Start()
 {
-	if (!pController)
-		pController = new ThreadController(hDriver, uClient);
-	pController->Start();
+	for (IThreadController* controller : vControllers)
+		controller->openThread();
+}
+
+void ThreadMgr::Update()
+{
+	for (IThreadController* controller : vControllers)
+	{
+		controller->openThread();
+		controller->getThreadRef()->join();
+	}
+}
+
+void ThreadMgr::add(IThreadController* controller)
+{
+	controller->openThread();
+	vControllers.push_back(controller);
 }
 
 ThreadMgr::ThreadMgr(HANDLE& hDriver, const uintptr_t& uClient) : ThreadMgr()

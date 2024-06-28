@@ -25,6 +25,9 @@ namespace driver
 		request.uSize = sizeof(temp);
 
 		DeviceIoControl(hDriverHandle, codes::read, &request, sizeof(request), &request, sizeof(request), nullptr, nullptr);
+		if (!temp)
+			DWORD err = GetLastError();
+
 		return temp;
 	}
 

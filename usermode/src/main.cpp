@@ -88,7 +88,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     bool done = false;
 
     ThreadMgr thManager;
-
+    thManager.Start();
     while (!done)
     {
         // Poll and handle messages (inputs, window resize, etc.)
@@ -153,6 +153,8 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
         HRESULT result = g_pd3dDevice->Present(nullptr, nullptr, nullptr, nullptr);
         if (result == D3DERR_DEVICELOST)
             g_DeviceLost = true;
+
+        thManager.Update();
     }
 
     // Cleanup
