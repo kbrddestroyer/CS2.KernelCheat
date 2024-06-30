@@ -26,8 +26,17 @@ namespace driver
 
 		DeviceIoControl(hDriverHandle, codes::read, &request, sizeof(request), &request, sizeof(request), nullptr, nullptr);
 		if (!temp)
-			DWORD err = GetLastError();
-
+		{
+			LPWSTR sMessage = NULL;
+			/*if (FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+				NULL,
+				GetLastError(),
+				MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // default language
+				(LPTSTR)&sMessage,
+				0,
+				NULL))
+				MessageBox(NULL, sMessage, L"Error in driver handler", MB_OK);*/
+		}
 		return temp;
 	}
 

@@ -15,16 +15,23 @@ class IThreadController
 {
 private:
 	std::unique_ptr<std::thread> thControl;
+	bool bRunning = true;
 public:
+	~IThreadController()
+	{
+		bRunning = false;
+	}
+
 	void openThread()
 	{
-		thControl = std::make_unique<std::thread>(&IThreadController::Start, this);
+		thControl = std::make_unique<std::thread>(&IThreadController::Start, this, std::ref(bRunning));
 	}
 
 	std::thread* getThreadRef() { return thControl.get(); }
 
-	virtual void Start() = 0;
+	virtual void Start(bool) = 0;
 	virtual void Update() = 0;
+	void Stop() { bRunning = false; }
 };
 
 class ThreadController : public IThreadController
@@ -35,14 +42,14 @@ class ThreadController : public IThreadController
 private:
 	HANDLE		hDriver;
 	uintptr_t	uClient;
-
 	std::vector<ThreadedObject*> vCallstack;
 public:
 	ThreadController();
-	ThreadController(HANDLE, const uintptr_t);
+	ThreadController(const uintptr_t);
 	~ThreadController();
 
-	void Start() override;
+	void setClient(uintptr_t uClient) { this->uClient = uClient; }
+	void Start(bool) override;
 	void Update() override;
 
 	void addElement(ThreadedObject* ob);
@@ -60,6 +67,7 @@ private:
 public:
 	ThreadMgr() { instance = this; }
 	ThreadMgr(HANDLE&, const uintptr_t&);
+
 	~ThreadMgr()
 	{
 		for (IThreadController* controller : vControllers)
@@ -76,7 +84,7 @@ public:
 				return reinterpret_cast<ThreadController*>(controller);
 			}
 		}
-		IThreadController* controller = new ThreadController(hDriver, uClient);
+		IThreadController* controller = new ThreadController(uClient);
 
 		controller->openThread();
 		vControllers.push_back(controller);
@@ -93,10 +101,7 @@ public:
 	uintptr_t CLIENT() { return uClient; }
 
 	void Start();
-	void Update();
 	
-
 	void add(IThreadController*);
-
 	static ThreadMgr* getInstance() { return instance; }
 };

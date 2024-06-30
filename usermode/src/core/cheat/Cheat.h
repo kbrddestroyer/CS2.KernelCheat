@@ -8,4 +8,3 @@ class BhopCheat : public ThreadedObject
 public:
 	void Update(HANDLE, uintptr_t) override;
 };
-

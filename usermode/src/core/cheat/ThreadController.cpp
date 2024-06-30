@@ -2,8 +2,8 @@
 
 ThreadController::ThreadController() {}
 
-ThreadController::ThreadController(HANDLE hDriver, const uintptr_t uClient) {
-	this->hDriver = hDriver;
+ThreadController::ThreadController(const uintptr_t uClient) {
+	this->hDriver = CreateFile(L"\\\\.\\KM_KBRDCS2RWAPP", GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED, nullptr);
 	this->uClient = uClient;
 }
 
@@ -11,11 +11,14 @@ ThreadController::~ThreadController()
 {
 	for (ThreadedObject* ob : vCallstack)
 		delete ob;
+
+	CloseHandle(hDriver);
 }
 
-void ThreadController::Start()
+void ThreadController::Start(bool bRunning)
 {
-	Update();
+	while (bRunning)
+		Update();
 }
 
 void ThreadController::Update()
@@ -25,6 +28,9 @@ void ThreadController::Update()
 		{
 			ob->Update(hDriver, uClient);
 		}
+
+	std::this_thread::yield();
+	std::this_thread::sleep_for(std::chrono::milliseconds(10));
 }
 
 void ThreadController::addElement(ThreadedObject* ob)
@@ -36,15 +42,6 @@ void ThreadMgr::Start()
 {
 	for (IThreadController* controller : vControllers)
 		controller->openThread();
-}
-
-void ThreadMgr::Update()
-{
-	for (IThreadController* controller : vControllers)
-	{
-		controller->openThread();
-		controller->getThreadRef()->join();
-	}
 }
 
 void ThreadMgr::add(IThreadController* controller)
