@@ -15,6 +15,7 @@
 
 #include <Windows.h>
 #include "gui/GUIController.h"
+#include "core/cheat/ThreadController.h"
 
 #pragma region IMGUI_DATA
 // Data
@@ -56,6 +57,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     GUIController controller = GUIController(io);
+
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
@@ -85,6 +87,9 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
 
     // Main loop
     bool done = false;
+
+    ThreadMgr thManager;
+    thManager.Start();
     while (!done)
     {
         // Poll and handle messages (inputs, window resize, etc.)
