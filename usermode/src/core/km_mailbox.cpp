@@ -39,8 +39,9 @@ void initialize(HANDLE hDriver, DWORD uPid)
 
 		ThreadMgr* thread = ThreadMgr::getInstance();
 		thread->params(hDriver, uClient);
-		BhopCheat* cheat = new BhopCheat();
+		RadarHack* cheat = new RadarHack();
+
 		thread->getThread()->addElement(cheat);
-		thread->getThread()->getThreadRef()->join();
+		thread->getThread()->getThreadRef()->detach();
 	}
 }

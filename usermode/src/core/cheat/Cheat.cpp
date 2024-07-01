@@ -31,3 +31,32 @@ void BhopCheat::Update(HANDLE hDriver, uintptr_t uClient)
 		driver::write(hDriver, uClient + buttons::jump, CFG_SPACE_OFF);
 	}
 }
+
+void BhopCheat::Render()
+{
+
+}
+
+void RadarHack::Update(HANDLE hDriver, uintptr_t uClient)
+{
+	// Update thread
+
+	uintptr_t uEntityList = driver::read<uintptr_t>(hDriver, uClient + offsets::client_dll::dwEntityList);
+	vEntities.clear();
+	for (uint32_t i = 0; i < 32; i++)
+	{
+		uintptr_t pEntity = driver::read<uintptr_t>(hDriver, uEntityList + i * 0x78);
+
+		if (!pEntity)
+			continue;
+		
+		vEntities.push_back(pEntity);
+	}
+	bInitialised = true;
+	std::this_thread::sleep_for(std::chrono::milliseconds(CFG_BHOP_DELAY));
+}
+
+void RadarHack::Render()
+{
+
+}

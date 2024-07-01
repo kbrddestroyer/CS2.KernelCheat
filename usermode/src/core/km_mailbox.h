@@ -12,6 +12,7 @@
 
 #include "cheat/ThreadController.h"
 #include "cheat/Cheat.h"
+#include "../gui/GUIController.h"
 
 using namespace cs2_dumper;
 
