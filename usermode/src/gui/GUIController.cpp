@@ -22,11 +22,6 @@ void GUIController::Initialize()
 void GUIController::Update()
 {
     // Nothing to handle here yet
-
-    for (std::shared_ptr pChild : vChildGUIs)
-    {
-        pChild->Render();
-    }
 }
 
 void GUIController::Render()

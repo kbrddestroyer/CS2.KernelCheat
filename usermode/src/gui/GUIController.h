@@ -19,11 +19,10 @@ private:
 	inline static GUIController* instance;
 
 	ImGuiIO io;
-	ImVec4 clear_color = ImVec4(0.15f, 0.15f, 0.15f, 0.00f);
+	ImVec4 clear_color = ImVec4(0.15f, 0.15f, 0.15f, 1.00f);
 
 	bool bAttached = false;
 	bool bEnableChildren = false;
-	std::vector<std::shared_ptr<GUIController>> vChildGUIs;
 protected:
 	virtual void Initialize();
 public:
@@ -33,7 +32,6 @@ public:
 
 	virtual void Render();
 	virtual void Update();
-	void add(std::shared_ptr<GUIController> overlay) { vChildGUIs.push_back(overlay); }
 	ImVec4 getClearColor() { return clear_color; }
 
 	static GUIController* Instance() { return instance; }
