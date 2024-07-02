@@ -1,5 +1,5 @@
 // Generated using https://github.com/a2x/cs2-dumper
-// 2024-06-28 07:21:42.961799400 UTC
+// 2024-07-02 23:05:48.145541400 UTC
 
 #pragma once
 
@@ -684,9 +684,9 @@ namespace cs2_dumper {
                 constexpr std::ptrdiff_t m_nSceneStringIndex = 0x558; // uint16
                 constexpr std::ptrdiff_t m_bClientOnly = 0x55A; // bool
                 constexpr std::ptrdiff_t m_hOwner = 0x55C; // CHandle<C_BaseFlex>
-                constexpr std::ptrdiff_t m_hActorList = 0x560; // C_NetworkUtlVectorBase<CHandle<C_BaseFlex>>
+                constexpr std::ptrdiff_t m_hActorList = 0x560; // C_NetworkUtlVectorBase<CHandle<
                 constexpr std::ptrdiff_t m_bWasPlaying = 0x578; // bool
-                constexpr std::ptrdiff_t m_QueuedEvents = 0x588; // CUtlVector<C_SceneEntity::Queue
+                constexpr std::ptrdiff_t m_QueuedEvents = 0x588; // CUtlVector<C_SceneEntity::QueuedEvents_t>
                 constexpr std::ptrdiff_t m_flCurrentTime = 0x5A0; // float32
             }
             // Parent: CPlayerPawnComponent

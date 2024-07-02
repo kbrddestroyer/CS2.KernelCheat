@@ -50,9 +50,39 @@ void GUIController::Render()
         {
         }
 
+        CheatRenderer controller;
+        controller.InternalUpdate();
+
         ImGui::End();
     }
 #pragma endregion
     Update();
     ImGui::End();
+}
+
+void ChildGUIController::InternalUpdate()
+{
+    ImGui::Begin("ChildWindow");
+    imDrawList = ImGui::GetWindowDrawList();
+    vWndPos = ImGui::GetWindowPos();
+    Render();
+    Update();
+
+    ImGui::End();
+}
+
+void CheatRenderer::Render()
+{
+    for (Cheat* instance : Cheat::Instances())
+    {
+        if (instance)
+        {
+            instance->Render(imDrawList);
+        }
+    }
+}
+
+void CheatRenderer::Update()
+{
+
 }

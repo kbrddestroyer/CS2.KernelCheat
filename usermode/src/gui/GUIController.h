@@ -1,8 +1,5 @@
 #pragma once
 #include <imgui.h>
-#include <imgui_impl_dx9.h>
-#include <imgui_impl_win32.h>
-#include <d3d9.h>
 #include <vector>
 
 #include <Windows.h>
@@ -10,8 +7,7 @@
 #include "../core/km_mailbox.h"
 #include "../core/cheat/Cheat.h"
 
-#pragma comment(lib,"d3d9.lib")
-
+class ChildGUIController;
 
 class GUIController
 {
@@ -23,6 +19,8 @@ private:
 
 	bool bAttached = false;
 	bool bEnableChildren = false;
+
+	std::vector<std::shared_ptr<ChildGUIController>> vChildren;
 protected:
 	virtual void Initialize();
 public:
@@ -35,4 +33,24 @@ public:
 	ImVec4 getClearColor() { return clear_color; }
 
 	static GUIController* Instance() { return instance; }
+};
+
+class ChildGUIController
+{
+protected:
+	bool		bEnabled = false;
+	ImVec2		vWndPos;
+	ImDrawList*	imDrawList;
+public:
+	void InternalUpdate();
+
+	virtual void Render() = 0;
+	virtual void Update() = 0;
+};
+
+class CheatRenderer : public ChildGUIController
+{
+public:
+	void Render() override;
+	void Update() override;
 };

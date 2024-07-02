@@ -122,5 +122,8 @@
     <ClInclude Include="src\core\cheat\Cheat.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="src\core\utility\custom_types.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

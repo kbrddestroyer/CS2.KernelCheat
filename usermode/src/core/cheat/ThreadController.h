@@ -1,6 +1,7 @@
 #pragma once
 #include <thread>
 #include <future>
+#include <mutex>
 #include <vector>
 
 #include <Windows.h>
@@ -64,6 +65,8 @@ private:
 
 	HANDLE		hDriver;
 	uintptr_t	uClient;
+
+	std::mutex mtx;
 public:
 	ThreadMgr() { instance = this; }
 	ThreadMgr(HANDLE&, const uintptr_t&);
@@ -75,6 +78,8 @@ public:
 				delete controller;
 		vControllers.clear();
 	}
+
+	std::mutex& getMutex() { return mtx; }
 
 	ThreadController* getThread() {
 		for (IThreadController* controller : vControllers)

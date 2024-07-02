@@ -23,6 +23,8 @@ void ThreadController::Start(bool bRunning)
 
 void ThreadController::Update()
 {
+	ThreadMgr::getInstance()->getMutex().lock();
+
 	if (hDriver && uClient)
 		for (ThreadedObject* ob : vCallstack)
 		{
@@ -30,6 +32,7 @@ void ThreadController::Update()
 		}
 
 	std::this_thread::yield();
+	ThreadMgr::getInstance()->getMutex().unlock();
 	std::this_thread::sleep_for(std::chrono::milliseconds(10));
 }
 
