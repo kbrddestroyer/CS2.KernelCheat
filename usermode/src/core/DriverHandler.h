@@ -5,6 +5,5 @@ class DriverHandler
 {
 private:
 	HANDLE hDriver = nullptr;
-
 };
 

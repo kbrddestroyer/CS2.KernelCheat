@@ -148,6 +148,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\core\cheat\Cheat.cpp" />
+    <ClCompile Include="src\core\DriverHandler.cpp" />
     <ClCompile Include="src\core\km_mailbox.cpp" />
     <ClCompile Include="src\gui\GUIController.cpp" />
     <ClCompile Include="src\autoupdate_tool.cpp" />
@@ -160,12 +162,16 @@
     <ClCompile Include="src\imgui\imgui_tables.cpp" />
     <ClCompile Include="src\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\logger\UMLogger.cpp" />
+    <ClCompile Include="src\core\cheat\ThreadController.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\kernelmode\src\kutils.h" />
+    <ClInclude Include="src\core\cheat\Cheat.h" />
+    <ClInclude Include="src\core\DriverHandler.h" />
     <ClInclude Include="src\buttons.hpp" />
     <ClInclude Include="src\client.dll.hpp" />
     <ClInclude Include="src\core\km_mailbox.h" />
+    <ClInclude Include="src\core\utility\custom_types.h" />
     <ClInclude Include="src\gui\GUIController.h" />
     <ClInclude Include="src\core\constants.h" />
     <ClInclude Include="src\imgui\imconfig.h" />
@@ -179,6 +185,7 @@
     <ClInclude Include="src\core\utils.h" />
     <ClInclude Include="src\logger\UMLogger.h" />
     <ClInclude Include="src\offsets.hpp" />
+    <ClInclude Include="src\core\cheat\ThreadController.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
