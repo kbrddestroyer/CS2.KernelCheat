@@ -7,6 +7,7 @@
 #include "../km_mailbox.h"
 
 #define MAX_MAX_COORD 3000
+#define MARGIN 50
 
 struct Vector3
 {

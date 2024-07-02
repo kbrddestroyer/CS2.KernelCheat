@@ -171,6 +171,7 @@
     <ClInclude Include="src\buttons.hpp" />
     <ClInclude Include="src\client.dll.hpp" />
     <ClInclude Include="src\core\km_mailbox.h" />
+    <ClInclude Include="src\core\utility\custom_types.h" />
     <ClInclude Include="src\gui\GUIController.h" />
     <ClInclude Include="src\core\constants.h" />
     <ClInclude Include="src\imgui\imconfig.h" />

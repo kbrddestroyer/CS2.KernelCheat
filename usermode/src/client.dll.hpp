@@ -1,5 +1,5 @@
 // Generated using https://github.com/a2x/cs2-dumper
-// 2024-07-02 21:04:31.542582200 UTC
+// 2024-07-02 23:05:48.145541400 UTC
 
 #pragma once
 
@@ -684,7 +684,7 @@ namespace cs2_dumper {
                 constexpr std::ptrdiff_t m_nSceneStringIndex = 0x558; // uint16
                 constexpr std::ptrdiff_t m_bClientOnly = 0x55A; // bool
                 constexpr std::ptrdiff_t m_hOwner = 0x55C; // CHandle<C_BaseFlex>
-                constexpr std::ptrdiff_t m_hActorList = 0x560; // C_NetworkUtlVectorBase<CHandle<C_BaseFlex>>
+                constexpr std::ptrdiff_t m_hActorList = 0x560; // C_NetworkUtlVectorBase<CHandle<
                 constexpr std::ptrdiff_t m_bWasPlaying = 0x578; // bool
                 constexpr std::ptrdiff_t m_QueuedEvents = 0x588; // CUtlVector<C_SceneEntity::QueuedEvents_t>
                 constexpr std::ptrdiff_t m_flCurrentTime = 0x5A0; // float32
@@ -715,7 +715,7 @@ namespace cs2_dumper {
                 constexpr std::ptrdiff_t m_flOldPlayerZ = 0x138; // float32
                 constexpr std::ptrdiff_t m_flOldPlayerViewOffsetZ = 0x13C; // float32
                 constexpr std::ptrdiff_t m_CurrentFog = 0x140; // fogparams_t
-                constexpr std::ptrdiff_t m_hOldFogController = 0x1A8; // 
+                constexpr std::ptrdiff_t m_hOldFogController = 0x1A8; // CHandle<C_FogController>
                 constexpr std::ptrdiff_t m_bOverrideFogColor = 0x1AC; // bool[5]
                 constexpr std::ptrdiff_t m_OverrideFogColor = 0x1B1; // Color[5]
                 constexpr std::ptrdiff_t m_bOverrideFogStartEnd = 0x1C5; // bool[5]
@@ -2030,7 +2030,7 @@ namespace cs2_dumper {
             // Metadata:
             // NetworkVarNames: m_hCtrl (CHandle<CFogController>)
             namespace C_fogplayerparams_t {
-                constexpr std::ptrdiff_t m_hCtrl = 0x8; // 
+                constexpr std::ptrdiff_t m_hCtrl = 0x8; // CHandle<C_FogController>
                 constexpr std::ptrdiff_t m_flTransitionTime = 0xC; // float32
                 constexpr std::ptrdiff_t m_OldColor = 0x10; // Color
                 constexpr std::ptrdiff_t m_flOldStart = 0x14; // float32

@@ -88,15 +88,16 @@ void RadarHack::Update(HANDLE hDriver, uintptr_t uClient)
 
 ImVec2 RadarHack::gameToGUIPoint(Vector3 point, ImVec2 min, ImVec2 max)
 {
+	ImVec2 vMargin = { MARGIN, MARGIN };
 	ImVec2 vSize = ImGui::GetWindowSize();
 	ImVec2 vPos = ImGui::GetWindowPos();
 
 	ImVec2 vGameScale = { min.x - max.x, min.y - max.y };
 	ImVec2 vGamePos = { min.x - point.x, min.y - point.y };
 
-	ImVec2 vScale = { vSize.x / vGameScale.x, vSize.y / vGameScale.y };
+	ImVec2 vScale = { (vSize.x - 2 * vMargin.x) / vGameScale.x, (vSize.y - 2 * vMargin.y) / vGameScale.y };
 
-	return { vPos.x + vGamePos.x * vScale.x, vPos.y + vGamePos.y * vScale.y };
+	return { vPos.x + vGamePos.x * vScale.x + vMargin.x, vPos.y + vGamePos.y * vScale.y + vMargin.y };
 }
 
 void RadarHack::Render(ImDrawList* imDrawList)
@@ -107,11 +108,17 @@ void RadarHack::Render(ImDrawList* imDrawList)
 	{
 		if (bShowDebugInfo)
 			ImGui::Text("%f %f %f", entity.pos.x, entity.pos.y, entity.pos.z);
-		ImVec2 mapped = gameToGUIPoint(entity.pos, { -2500, -2500 }, { 2500, 2500 });
+		ImVec2 mapped = gameToGUIPoint(entity.pos, { -MAX_MAX_COORD, -MAX_MAX_COORD }, { MAX_MAX_COORD, MAX_MAX_COORD });
 		ImVec2 mappedDir = { mapped.x + cos(entity.rotation * (3.14f / 180)) * 7, mapped.y + sin(entity.rotation * (3.14f / 180)) * 7 };
 		ImColor imEntColor = (entity.uTeam == 2) ? ImColor(255, 0, 0) : ImColor(0, 0, 255);
 
-		imDrawList->AddCircleFilled(gameToGUIPoint(entity.pos, { -MAX_MAX_COORD, -MAX_MAX_COORD }, { MAX_MAX_COORD, MAX_MAX_COORD }), 5, imEntColor);
+		imDrawList->AddRect(
+			gameToGUIPoint({ -MAX_MAX_COORD, -MAX_MAX_COORD, 0 }, { -MAX_MAX_COORD, -MAX_MAX_COORD }, { MAX_MAX_COORD, MAX_MAX_COORD }),
+			gameToGUIPoint({ MAX_MAX_COORD, MAX_MAX_COORD, 0 }, { -MAX_MAX_COORD, -MAX_MAX_COORD }, { MAX_MAX_COORD, MAX_MAX_COORD }),
+				ImColor(255, 255, 255),
+				1
+		);
+		imDrawList->AddCircleFilled(mapped, 5, imEntColor);
 		imDrawList->AddLine(mapped, mappedDir, imEntColor, 3);
 	}
 }
