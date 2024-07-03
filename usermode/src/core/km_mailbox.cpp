@@ -35,13 +35,12 @@ void initialize(HANDLE hDriver, DWORD uPid)
 {
 	if (const uintptr_t uClient = uapp::getModuleBase(uPid, L"client.dll"); uClient != 0)
 	{
-		MessageBox(NULL, L"Mapped client.dll", L"Info", MB_ICONINFORMATION | MB_OK);
-
 		ThreadMgr* thread = ThreadMgr::getInstance();
-		thread->params(hDriver, uClient);
-		RadarHack* cheat = new RadarHack();
-
-		thread->getThread()->addElement(cheat);
-		thread->getThread()->getThreadRef()->detach();
+		thread->setKMParams(hDriver, uClient);
+		
+		if (ThreadedObject::createObject(std::make_shared<RadarHack>()))
+		{
+			MessageBox(NULL, L"Created RadarHack thread", L"Info", MB_ICONINFORMATION | MB_OK);
+		}
 	}
 }

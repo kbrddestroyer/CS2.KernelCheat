@@ -104,7 +104,7 @@ void RadarHack::Render(ImDrawList* imDrawList)
 {
 	ImGui::Checkbox("Enable debug", &this->bShowDebugInfo);
 
-	for (CSEntity entity : vEntities)
+	for (const CSEntity& entity : vEntities)
 	{
 		if (bShowDebugInfo)
 			ImGui::Text("%f %f %f", entity.pos.x, entity.pos.y, entity.pos.z);
