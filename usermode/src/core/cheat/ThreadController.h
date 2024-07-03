@@ -83,7 +83,7 @@ public:
 
 #pragma region ThreadMgr loop controller
 	void Start();
-	void add(PThreadController);
+	void AddThreadController(PThreadController);
 #pragma endregion
 
 	static ThreadMgr* getInstance() { return instance; }

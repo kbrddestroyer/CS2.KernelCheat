@@ -5,18 +5,15 @@
 
 #include "ThreadController.h"
 #include "../km_mailbox.h"
+#include "../utility/custom_types.h"
+
 
 #define MAX_MAX_COORD 3000
 #define MARGIN 50
 
-struct Vector3
-{
-	float x, y, z;
-};
-
 struct CSEntity
 {
-	Vector3		pos;
+	Vector3f	pos;
 	uint8_t		uTeam = 0;
 	float		rotation;
 };
@@ -53,7 +50,7 @@ private:
 	bool bShowDebugInfo = false;
 	bool bInitialised = false;
 public:
-	ImVec2 gameToGUIPoint(Vector3, ImVec2, ImVec2);
+	ImVec2 gameToGUIPoint(Vector3f, ImVec2, ImVec2);
 
 	bool Initialized() { return bInitialised; }
 	void Update(HANDLE, uintptr_t) override;

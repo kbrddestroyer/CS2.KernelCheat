@@ -69,8 +69,8 @@ void RadarHack::Update(HANDLE hDriver, uintptr_t uClient)
 		if (!uGameSceneNode)
 			continue;
 
-		Vector3 uSpot = driver::read<Vector3>(hDriver, uGameSceneNode + schemas::client_dll::CGameSceneNode::m_vecAbsOrigin);
-		Vector3 uRot = driver::read<Vector3>(hDriver, uGameSceneNode + schemas::client_dll::CGameSceneNode::m_angRotation);
+		Vector3f uSpot = driver::read<Vector3f>(hDriver, uGameSceneNode + schemas::client_dll::CGameSceneNode::m_vecAbsOrigin);
+		QAngle uRot = driver::read<QAngle>(hDriver, uGameSceneNode + schemas::client_dll::CGameSceneNode::m_angRotation);
 
 		uint8_t uTeam = driver::read<uint8_t>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseEntity::m_iTeamNum);
 
@@ -86,7 +86,7 @@ void RadarHack::Update(HANDLE hDriver, uintptr_t uClient)
 	std::this_thread::sleep_for(std::chrono::milliseconds(CFG_BHOP_DELAY));
 }
 
-ImVec2 RadarHack::gameToGUIPoint(Vector3 point, ImVec2 min, ImVec2 max)
+ImVec2 RadarHack::gameToGUIPoint(Vector3f point, ImVec2 min, ImVec2 max)
 {
 	ImVec2 vMargin = { MARGIN, MARGIN };
 	ImVec2 vSize = ImGui::GetWindowSize();

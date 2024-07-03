@@ -152,6 +152,7 @@
     <ClCompile Include="src\core\cheat\Cheat.cpp" />
     <ClCompile Include="src\core\DriverHandler.cpp" />
     <ClCompile Include="src\core\km_mailbox.cpp" />
+    <ClCompile Include="src\core\utility\custom_types.cpp" />
     <ClCompile Include="src\gui\GUIController.cpp" />
     <ClCompile Include="src\autoupdate_tool.cpp" />
     <ClCompile Include="src\main.cpp" />

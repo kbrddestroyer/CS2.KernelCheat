@@ -63,6 +63,9 @@
     <ClCompile Include="src\core\utility\CheatUtilities.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="src\core\utility\custom_types.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\utils.h">
