@@ -6,9 +6,15 @@
 
 #include <Windows.h>
 
+class IThreadController;
+class ThreadedObject;
+typedef std::shared_ptr<IThreadController> PThreadController;
+typedef std::shared_ptr<ThreadedObject> PThreadedObject;
+
 class ThreadedObject
 {
 public:
+	static bool createObject(PThreadedObject);
 	virtual void Update(HANDLE hDriver, uintptr_t uClient) = 0;
 };
 
@@ -16,44 +22,42 @@ class IThreadController
 {
 private:
 	std::unique_ptr<std::thread> thControl;
+protected:
 	bool bRunning = true;
 public:
-	~IThreadController()
-	{
-		bRunning = false;
-	}
+	~IThreadController();
 
-	void openThread()
-	{
-		thControl = std::make_unique<std::thread>(&IThreadController::Start, this, std::ref(bRunning));
-	}
+	void openThread();
 
 	std::thread* getThreadRef() { return thControl.get(); }
 
 	virtual void Start(bool) = 0;
 	virtual void Update() = 0;
-	void Stop() { bRunning = false; }
 };
 
 class ThreadController : public IThreadController
 {
-/*
-*	class is used for cheat controls
-*/
 private:
 	HANDLE		hDriver;
 	uintptr_t	uClient;
-	std::vector<ThreadedObject*> vCallstack;
-public:
+	const uint32_t	uMaximum = 3;
+	uint32_t	id = 0;
+	std::vector<PThreadedObject> vCallstack;
+private:
 	ThreadController();
-	ThreadController(const uintptr_t);
+public:
+	ThreadController(const uintptr_t, uint32_t);
 	~ThreadController();
 
 	void setClient(uintptr_t uClient) { this->uClient = uClient; }
+
 	void Start(bool) override;
 	void Update() override;
+	
+	void resize();
+	void addElement(PThreadedObject ob);
 
-	void addElement(ThreadedObject* ob);
+	bool isAvailible() { return vCallstack.size() < uMaximum; }
 };
 
 class ThreadMgr
@@ -61,52 +65,26 @@ class ThreadMgr
 private:
 	inline static ThreadMgr* instance;
 
-	std::vector<IThreadController*> vControllers;
+	std::vector<PThreadController> vControllers;
 
 	HANDLE		hDriver;
 	uintptr_t	uClient;
 
 	std::mutex mtx;
 public:
-	ThreadMgr() { instance = this; }
-	ThreadMgr(HANDLE&, const uintptr_t&);
+	ThreadMgr();
+	~ThreadMgr();
 
-	~ThreadMgr()
-	{
-		for (IThreadController* controller : vControllers)
-			if (controller)
-				delete controller;
-		vControllers.clear();
-	}
+	std::mutex&			getMutex()	{ return mtx; }
+	HANDLE				DRIVER()	{ return hDriver; }
+	uintptr_t			CLIENT()	{ return uClient; }
+	ThreadController*	getThread();
+	void				setKMParams(HANDLE, uintptr_t);
 
-	std::mutex& getMutex() { return mtx; }
-
-	ThreadController* getThread() {
-		for (IThreadController* controller : vControllers)
-		{
-			if (dynamic_cast<ThreadController*>(controller))
-			{
-				return reinterpret_cast<ThreadController*>(controller);
-			}
-		}
-		IThreadController* controller = new ThreadController(uClient);
-
-		controller->openThread();
-		vControllers.push_back(controller);
-		return reinterpret_cast<ThreadController*>(controller);
-	}
-
-	void params(HANDLE hDriver, uintptr_t uClient)
-	{
-		this->hDriver = hDriver;
-		this->uClient = uClient;
-	}
-
-	HANDLE DRIVER() { return hDriver; }
-	uintptr_t CLIENT() { return uClient; }
-
+#pragma region ThreadMgr loop controller
 	void Start();
-	
-	void add(IThreadController*);
+	void AddThreadController(PThreadController);
+#pragma endregion
+
 	static ThreadMgr* getInstance() { return instance; }
 };

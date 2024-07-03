@@ -148,9 +148,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\core\utility\CheatUtilities.cpp" />
     <ClCompile Include="src\core\cheat\Cheat.cpp" />
     <ClCompile Include="src\core\DriverHandler.cpp" />
     <ClCompile Include="src\core\km_mailbox.cpp" />
+    <ClCompile Include="src\core\utility\custom_types.cpp" />
     <ClCompile Include="src\gui\GUIController.cpp" />
     <ClCompile Include="src\autoupdate_tool.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -166,6 +168,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\kernelmode\src\kutils.h" />
+    <ClInclude Include="src\core\utility\CheatUtilities.h" />
     <ClInclude Include="src\core\cheat\Cheat.h" />
     <ClInclude Include="src\core\DriverHandler.h" />
     <ClInclude Include="src\buttons.hpp" />
