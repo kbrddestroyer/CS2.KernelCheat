@@ -9,6 +9,13 @@ I am **NOT** responsible for your system crashes, VAC blocks, etc. This software
 
 #fixcs2 #fixcsgo
 
+# Credits
+- dear ImGui 
+- kdmapper project
+- patched kdmapper that I used in development 
+- a2x and cs2 offsets dumper
+- cazzwastaken and YouTube tutorial for basic KernelMode application 
+
 # Requirements
 - [KDMapper](https://github.com/TheCruZ/kdmapper)
 - Windows Driver Kit [*Install Guide*](https://learn.microsoft.com/en-us/windows-hardware/drivers/download-the-wdk)
