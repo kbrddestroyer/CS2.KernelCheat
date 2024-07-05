@@ -16,12 +16,14 @@ GUIController::GUIController(ImGuiIO& io)
 
 void GUIController::Initialize()
 {
-    // Nothing to handle here yet
+    controller.name = "Radar";
+    settings.name = "Settings";
 }
 
 void GUIController::Update()
 {
-    // Nothing to handle here yet
+    for (std::shared_ptr<ChildGUIController> controller : vChildren)
+        controller->Render();
 }
 
 void GUIController::Render()
@@ -46,14 +48,11 @@ void GUIController::Render()
                 bAttached = true;
             }
         }
-        if (ImGui::Checkbox("Enable overlay", &this->bEnableChildren))
-        {
-        }
-
-        CheatRenderer controller;
-        controller.InternalUpdate();
 
         ImGui::End();
+
+        controller.InternalUpdate();
+        settings.InternalUpdate();
     }
 #pragma endregion
     Update();
@@ -62,7 +61,7 @@ void GUIController::Render()
 
 void ChildGUIController::InternalUpdate()
 {
-    ImGui::Begin("ChildWindow");
+    ImGui::Begin(name.c_str());
     imDrawList = ImGui::GetWindowDrawList();
     vWndPos = ImGui::GetWindowPos();
     Render();
@@ -83,6 +82,23 @@ void CheatRenderer::Render()
 }
 
 void CheatRenderer::Update()
+{
+}
+
+void SettingsTab::Render()
+{
+    ThreadMgr::getInstance()->getMutex().lock();
+    ImGui::Text("Radarhack section");
+    ImGui::Separator();
+
+    ImGui::Checkbox("Enabled", &this->radarhackEnabled);
+    ImGui::ColorEdit4("CT Color", ctColor);
+    ImGui::ColorEdit4("T Color", tColor);
+
+    ThreadMgr::getInstance()->getMutex().unlock();
+}
+
+void SettingsTab::Update()
 {
 
 }

@@ -1,4 +1,5 @@
 #include "Cheat.h"
+#include "../gui/GUIController.h"
 
 void BhopCheat::Update(HANDLE hDriver, uintptr_t uClient)
 {
@@ -40,6 +41,8 @@ void BhopCheat::Render(ImDrawList*)
 void RadarHack::Update(HANDLE hDriver, uintptr_t uClient)
 {
 	// Update thread
+	if (!SettingsTab::getInstance()->radarhackEnabled)
+		return;
 
 	uintptr_t uEntityList = driver::read<uintptr_t>(hDriver, uClient + offsets::client_dll::dwEntityList);
 
@@ -66,7 +69,7 @@ void RadarHack::Update(HANDLE hDriver, uintptr_t uClient)
 
 	localEntity = RadarEntity("Local Player", uLocalTeam, uLocalHealth, uLocalArmor, uLocalSpot, uLocalRot);
 
-	for (uint32_t i = 0; i < 64; i++)
+	for (uint32_t i = 0; i < 128; i++)
 	{
 		uintptr_t pEntityListEntry = driver::read<uintptr_t>(hDriver, uEntityList + (8 * (i & 0x7FF) >> 9) + 16);
 		if (!pEntityListEntry)
@@ -105,6 +108,8 @@ void RadarHack::Update(HANDLE hDriver, uintptr_t uClient)
 
 void RadarHack::Render(ImDrawList* imDrawList)
 {
+	if (!SettingsTab::getInstance()->radarhackEnabled)
+		return;
 	ThreadMgr::getInstance()->getMutex().lock();
 	ImGui::Checkbox("Enable debug", &this->bShowDebugInfo);
 
@@ -118,6 +123,8 @@ void RadarHack::Render(ImDrawList* imDrawList)
 	if (bShowDebugInfo)
 	{
 		ImGui::Text("%f", localEntity.qAngle.y);
+
+
 	}
 
 	imDrawList->AddLine({ vPosition.x, vPosition.y + vSize.y / 2 }, { vPosition.x + vSize.x, vPosition.y + vSize.y / 2 }, ImColor(255, 255, 255, 100));
@@ -125,6 +132,11 @@ void RadarHack::Render(ImDrawList* imDrawList)
 
 	for (RadarEntity& entity : vEntities)
 	{
+
+		if (bShowDebugInfo)
+		{
+			ImGui::Text("%f %f %f", entity.vPosition.x, entity.vPosition.y, entity.vPosition.z);
+		}
 		// 1. Count in-game distance
 		Vector3f vDistance = entity.vPosition - localEntity.vPosition;
 		vDistance.x *= -1;

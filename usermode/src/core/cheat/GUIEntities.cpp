@@ -1,4 +1,5 @@
 #include "GUIEntities.h"
+#include "../gui/GUIController.h"
 
 RadarEntity::RadarEntity(std::string sName, std::uint8_t uTeam, std::uint32_t uHealth, std::uint32_t uArmor, Vector3f vPos, QAngle qRot, bool isLocal, bool hasHelmet, bool isBombCarrier)
 {
@@ -17,7 +18,10 @@ void RadarEntity::Render(ImDrawList* imDrawList, ImVec2 entityPosition, float en
 {
 	ImVec2 mapped = entityPosition;
 	ImVec2 mappedDir = { mapped.x + cos(entityRotation * (3.14f / 180)) * 50, mapped.y + sin(entityRotation * (3.14f / 180)) * 50 };
-	ImColor imEntColor = (uTeam == 2) ? ImColor(255, 0, 0) : ImColor(0, 0, 255);
+
+	float* fEntColor = (uTeam == 2) ? SettingsTab::getInstance()->tColor : SettingsTab::getInstance()->ctColor;
+
+	ImColor imEntColor = ImColor(fEntColor[0], fEntColor[1], fEntColor[2], fEntColor[3]);
 
 	imDrawList->AddRect(
 		gameToGUIPoint({ -MAX_MAX_COORD, -MAX_MAX_COORD, 0 }),
