@@ -4,12 +4,10 @@
 #include "../../imgui/imgui.h"
 
 #include "ThreadController.h"
+#include "GUIEntities.h"
 #include "../km_mailbox.h"
 #include "../utility/custom_types.h"
-
-
-#define MAX_MAX_COORD 3000
-#define MARGIN 50
+#include "../utility/CheatUtilities.h"
 
 struct CSEntity
 {
@@ -46,12 +44,13 @@ public:
 class RadarHack : public Cheat
 {
 private:
-	std::vector<CSEntity> vEntities;
+	std::vector<RadarEntity> vEntities;
+	
+	RadarEntity localEntity;
+	
 	bool bShowDebugInfo = false;
 	bool bInitialised = false;
 public:
-	ImVec2 gameToGUIPoint(Vector3f, ImVec2, ImVec2);
-
 	bool Initialized() { return bInitialised; }
 	void Update(HANDLE, uintptr_t) override;
 
