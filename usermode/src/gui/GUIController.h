@@ -7,40 +7,14 @@
 #include "../core/km_mailbox.h"
 #include "../core/cheat/Cheat.h"
 
-class ChildGUIController;
-
-class GUIController
-{
-private:
-	inline static GUIController* instance;
-
-	ImGuiIO io;
-	ImVec4 clear_color = ImVec4(0.15f, 0.15f, 0.15f, 1.00f);
-
-	bool bAttached = false;
-	bool bEnableChildren = false;
-
-	std::vector<std::shared_ptr<ChildGUIController>> vChildren;
-protected:
-	virtual void Initialize();
-public:
-	GUIController();
-	GUIController(ImGuiIO&);
-	~GUIController() { instance = nullptr; }
-
-	virtual void Render();
-	virtual void Update();
-	ImVec4 getClearColor() { return clear_color; }
-
-	static GUIController* Instance() { return instance; }
-};
-
 class ChildGUIController
 {
 protected:
 	bool		bEnabled = false;
 	ImVec2		vWndPos;
-	ImDrawList*	imDrawList;
+	ImDrawList* imDrawList;
+public:
+	std::string name;
 public:
 	void InternalUpdate();
 
@@ -53,4 +27,53 @@ class CheatRenderer : public ChildGUIController
 public:
 	void Render() override;
 	void Update() override;
+};
+
+class SettingsTab : public ChildGUIController
+{
+private:
+	inline static SettingsTab* instance;
+public:
+
+	// Radarhack
+	bool	radarhackEnabled;
+
+	float ctColor[4] = { 0, 0, 255, 255 };
+	float tColor[4] = { 255, 0, 0, 255 };
+public:
+	static SettingsTab* getInstance() { return instance; }
+	SettingsTab() { instance = this; }
+	~SettingsTab() { instance = nullptr; }
+
+	void Render() override;
+	void Update() override;
+};
+
+class GUIController
+{
+private:
+	inline static GUIController* instance;
+
+	ImGuiIO io;
+	ImVec4 clear_color = ImVec4(0.15f, 0.15f, 0.15f, 1.00f);
+
+	bool bAttached = false;
+	bool bEnableChildren = false;
+	SettingsTab settings;	
+	CheatRenderer controller;
+	std::vector<std::shared_ptr<ChildGUIController>> vChildren;
+protected:
+	virtual void Initialize();
+public:
+	GUIController();
+	GUIController(ImGuiIO&);
+	~GUIController() { instance = nullptr; }
+
+	virtual void Render();
+	virtual void Update();
+	void Add(std::shared_ptr<ChildGUIController> child) { vChildren.push_back(child); }
+
+	ImVec4 getClearColor() { return clear_color; }
+
+	static GUIController* Instance() { return instance; }
 };

@@ -1,4 +1,5 @@
 #include "Cheat.h"
+#include "../gui/GUIController.h"
 
 void BhopCheat::Update(HANDLE hDriver, uintptr_t uClient)
 {
@@ -40,6 +41,8 @@ void BhopCheat::Render(ImDrawList*)
 void RadarHack::Update(HANDLE hDriver, uintptr_t uClient)
 {
 	// Update thread
+	if (!SettingsTab::getInstance()->radarhackEnabled)
+		return;
 
 	uintptr_t uEntityList = driver::read<uintptr_t>(hDriver, uClient + offsets::client_dll::dwEntityList);
 
@@ -47,7 +50,26 @@ void RadarHack::Update(HANDLE hDriver, uintptr_t uClient)
 		return;
 	vEntities.clear();
 
-	for (uint32_t i = 0; i < 64; i++)
+	uintptr_t pLocalPlayer = driver::read<uintptr_t>(hDriver, uClient + offsets::client_dll::dwLocalPlayerPawn);
+
+	if (!pLocalPlayer)
+		return;
+
+	uintptr_t uLocalGameSceneNode = driver::read<uintptr_t>(hDriver, pLocalPlayer + schemas::client_dll::C_BaseEntity::m_pGameSceneNode);
+
+	if (!uLocalGameSceneNode)
+		return;
+
+	Vector3f uLocalSpot = driver::read<Vector3f>(hDriver, uLocalGameSceneNode + schemas::client_dll::CGameSceneNode::m_vecAbsOrigin);
+	QAngle uLocalRot = driver::read<QAngle>(hDriver, uLocalGameSceneNode + schemas::client_dll::CGameSceneNode::m_angRotation);
+
+	uint8_t uLocalTeam = driver::read<uint8_t>(hDriver, pLocalPlayer + schemas::client_dll::C_BaseEntity::m_iTeamNum);
+	uint32_t uLocalHealth = driver::read<uint32_t>(hDriver, pLocalPlayer + schemas::client_dll::C_BaseEntity::m_iHealth);
+	uint32_t uLocalArmor = driver::read<uint32_t>(hDriver, pLocalPlayer + schemas::client_dll::C_CSPlayerPawn::m_ArmorValue);
+
+	localEntity = RadarEntity("Local Player", uLocalTeam, uLocalHealth, uLocalArmor, uLocalSpot, uLocalRot);
+
+	for (uint32_t i = 0; i < 128; i++)
 	{
 		uintptr_t pEntityListEntry = driver::read<uintptr_t>(hDriver, uEntityList + (8 * (i & 0x7FF) >> 9) + 16);
 		if (!pEntityListEntry)
@@ -61,7 +83,7 @@ void RadarHack::Update(HANDLE hDriver, uintptr_t uClient)
 			continue;
 		uintptr_t uPlayerPawn = driver::read<uintptr_t>(hDriver, pEntityListEntry + 120 * (uPlayerPawnIndex & 0x1FF));
 
-		if (!uPlayerPawn)
+		if (!uPlayerPawn || uPlayerPawn == pLocalPlayer)
 			continue;
 
 		uintptr_t uGameSceneNode = driver::read<uintptr_t>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseEntity::m_pGameSceneNode);
@@ -73,12 +95,10 @@ void RadarHack::Update(HANDLE hDriver, uintptr_t uClient)
 		QAngle uRot = driver::read<QAngle>(hDriver, uGameSceneNode + schemas::client_dll::CGameSceneNode::m_angRotation);
 
 		uint8_t uTeam = driver::read<uint8_t>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseEntity::m_iTeamNum);
-
-		CSEntity csEntity;
-		csEntity.pos = uSpot;
-		csEntity.uTeam = uTeam;
-		csEntity.rotation = uRot.y;
-
+		uint32_t uHealth = driver::read<uint32_t>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseEntity::m_iHealth);
+		uint32_t uArmor = driver::read<uint32_t>(hDriver, uPlayerPawn + schemas::client_dll::C_CSPlayerPawn::m_ArmorValue);
+		
+		RadarEntity csEntity("Player", uTeam, uHealth, uArmor, uSpot, uRot);
 		vEntities.push_back(csEntity);
 	}
 
@@ -86,39 +106,50 @@ void RadarHack::Update(HANDLE hDriver, uintptr_t uClient)
 	std::this_thread::sleep_for(std::chrono::milliseconds(CFG_BHOP_DELAY));
 }
 
-ImVec2 RadarHack::gameToGUIPoint(Vector3f point, ImVec2 min, ImVec2 max)
-{
-	ImVec2 vMargin = { MARGIN, MARGIN };
-	ImVec2 vSize = ImGui::GetWindowSize();
-	ImVec2 vPos = ImGui::GetWindowPos();
-
-	ImVec2 vGameScale = { min.x - max.x, min.y - max.y };
-	ImVec2 vGamePos = { min.x - point.x, min.y - point.y };
-
-	ImVec2 vScale = { (vSize.x - 2 * vMargin.x) / vGameScale.x, (vSize.y - 2 * vMargin.y) / vGameScale.y };
-
-	return { vPos.x + vGamePos.x * vScale.x + vMargin.x, vPos.y + vGamePos.y * vScale.y + vMargin.y };
-}
-
 void RadarHack::Render(ImDrawList* imDrawList)
 {
+	if (!SettingsTab::getInstance()->radarhackEnabled)
+		return;
+	ThreadMgr::getInstance()->getMutex().lock();
 	ImGui::Checkbox("Enable debug", &this->bShowDebugInfo);
 
-	for (const CSEntity& entity : vEntities)
-	{
-		if (bShowDebugInfo)
-			ImGui::Text("%f %f %f", entity.pos.x, entity.pos.y, entity.pos.z);
-		ImVec2 mapped = gameToGUIPoint(entity.pos, { -MAX_MAX_COORD, -MAX_MAX_COORD }, { MAX_MAX_COORD, MAX_MAX_COORD });
-		ImVec2 mappedDir = { mapped.x + cos(entity.rotation * (3.14f / 180)) * 7, mapped.y + sin(entity.rotation * (3.14f / 180)) * 7 };
-		ImColor imEntColor = (entity.uTeam == 2) ? ImColor(255, 0, 0) : ImColor(0, 0, 255);
+	ImVec2 vSize = ImGui::GetWindowSize();
+	ImVec2 vPosition = ImGui::GetWindowPos();
 
-		imDrawList->AddRect(
-			gameToGUIPoint({ -MAX_MAX_COORD, -MAX_MAX_COORD, 0 }, { -MAX_MAX_COORD, -MAX_MAX_COORD }, { MAX_MAX_COORD, MAX_MAX_COORD }),
-			gameToGUIPoint({ MAX_MAX_COORD, MAX_MAX_COORD, 0 }, { -MAX_MAX_COORD, -MAX_MAX_COORD }, { MAX_MAX_COORD, MAX_MAX_COORD }),
-				ImColor(255, 255, 255),
-				1
-		);
-		imDrawList->AddCircleFilled(mapped, 5, imEntColor);
-		imDrawList->AddLine(mapped, mappedDir, imEntColor, 3);
+	ImVec2 position = { vPosition.x + vSize.x / 2, vPosition.y + vSize.y / 2 };
+
+	localEntity.Render(imDrawList, position, -90);
+
+	if (bShowDebugInfo)
+	{
+		ImGui::Text("%f", localEntity.qAngle.y);
+
+
 	}
+
+	imDrawList->AddLine({ vPosition.x, vPosition.y + vSize.y / 2 }, { vPosition.x + vSize.x, vPosition.y + vSize.y / 2 }, ImColor(255, 255, 255, 100));
+	imDrawList->AddLine({ vPosition.x + vSize.x / 2, vPosition.y }, { vPosition.x + vSize.x / 2, vPosition.y + vSize.y }, ImColor(255, 255, 255, 100));
+
+	for (RadarEntity& entity : vEntities)
+	{
+
+		if (bShowDebugInfo)
+		{
+			ImGui::Text("%f %f %f", entity.vPosition.x, entity.vPosition.y, entity.vPosition.z);
+		}
+		// 1. Count in-game distance
+		Vector3f vDistance = entity.vPosition - localEntity.vPosition;
+		vDistance.x *= -1;
+		int multiplier = vDistance.x * vDistance.y;
+		multiplier /= fabs(multiplier);
+		// 2. Count angles
+		float fAngleBetween = acos((entity.vPosition.x * localEntity.vPosition.x + entity.vPosition.y * localEntity.vPosition.y) / (magnitude(entity.vPosition) * magnitude(localEntity.vPosition)));
+		float fGUIAngle = (((localEntity.qAngle.y - fAngleBetween)) + 90) * 3.14 / 180;
+
+		Vector3f vRotated = rotate(vDistance, fGUIAngle);
+		ImVec2 vGUIRotated = gameToGUIPoint(vRotated);
+		entity.Render(imDrawList, vGUIRotated, localEntity.qAngle.y + entity.qAngle.y - fAngleBetween + 90);
+	}
+
+	ThreadMgr::getInstance()->getMutex().unlock();
 }
