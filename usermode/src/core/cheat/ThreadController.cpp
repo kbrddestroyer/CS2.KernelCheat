@@ -18,7 +18,11 @@ bool ThreadedObject::createObject(PThreadedObject pInstance)
 
 IThreadController::~IThreadController()
 {
+	ThreadMgr::getInstance()->getMutex().lock();
 	bRunning = false;
+	thControl->join();
+	thControl->~thread();
+	ThreadMgr::getInstance()->getMutex().unlock();
 }
 
 void IThreadController::openThread()

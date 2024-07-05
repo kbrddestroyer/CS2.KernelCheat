@@ -148,6 +148,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\core\cheat\GUIEntities.cpp" />
     <ClCompile Include="src\core\utility\CheatUtilities.cpp" />
     <ClCompile Include="src\core\cheat\Cheat.cpp" />
     <ClCompile Include="src\core\DriverHandler.cpp" />
@@ -168,6 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\kernelmode\src\kutils.h" />
+    <ClInclude Include="src\core\cheat\GUIEntities.h" />
     <ClInclude Include="src\core\utility\CheatUtilities.h" />
     <ClInclude Include="src\core\cheat\Cheat.h" />
     <ClInclude Include="src\core\DriverHandler.h" />
