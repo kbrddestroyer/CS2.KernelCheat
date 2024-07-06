@@ -14,6 +14,7 @@ enum CheatEntities
 {
 	NONE,
 	BHOP,
+	ENTITY_SCAN,
 	RADAR
 };
 
@@ -50,17 +51,41 @@ public:
 	void Render(ImDrawList*) override;
 };
 
-class RadarHack : public Cheat
+class EntityScanner : public Cheat
 {
 private:
-	std::vector<RadarEntity> vEntities;
-	
-	RadarEntity localEntity;
-	
+	inline static EntityScanner* instance;
+	uint8_t callCount = 0;
+	std::vector<CSPlayerEntity> vEntities;
+	CSPlayerEntity localEntity;
+public:
+	EntityScanner() : Cheat(ENTITY_SCAN) { instance = this; }
+	static EntityScanner* getInstance() { return instance; }
+
+	void add() { callCount++; }
+	void remove() { if (callCount > 0) callCount--; }
+
+	std::vector<CSPlayerEntity> getEntities() { return vEntities; }
+	CSPlayerEntity getLocalEntity() { return localEntity; }
+
+	void Update(HANDLE, uintptr_t) override;
+	void Render(ImDrawList*) override;
+};
+
+class EntityScannerDependency : public Cheat
+{
+public:
+	EntityScannerDependency(CheatEntities entity = NONE);
+	~EntityScannerDependency();
+};
+
+class RadarHack : public EntityScannerDependency
+{
+private:
 	bool bShowDebugInfo = false;
 	bool bInitialised = false;
 public:
-	RadarHack() : Cheat(RADAR) {}
+	RadarHack() : EntityScannerDependency(RADAR) {}
 
 	bool Initialized() { return bInitialised; }
 	void Update(HANDLE, uintptr_t) override;

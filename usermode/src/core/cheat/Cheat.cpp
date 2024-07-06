@@ -39,10 +39,9 @@ void BhopCheat::Render(ImDrawList*)
 
 }
 
-void RadarHack::Update(HANDLE hDriver, uintptr_t uClient)
-{
-	// Update thread
-	if (!SettingsTab::getInstance()->radarhackEnabled)
+void EntityScanner::Update(HANDLE hDriver, uintptr_t uClient)
+{	
+	if (callCount == 0)
 		return;
 
 	uintptr_t uEntityList = driver::read<uintptr_t>(hDriver, uClient + offsets::client_dll::dwEntityList);
@@ -68,7 +67,7 @@ void RadarHack::Update(HANDLE hDriver, uintptr_t uClient)
 	uint32_t uLocalHealth = driver::read<uint32_t>(hDriver, pLocalPlayer + schemas::client_dll::C_BaseEntity::m_iHealth);
 	uint32_t uLocalArmor = driver::read<uint32_t>(hDriver, pLocalPlayer + schemas::client_dll::C_CSPlayerPawn::m_ArmorValue);
 
-	localEntity = RadarEntity("Local Player", uLocalTeam, uLocalHealth, uLocalArmor, uLocalSpot, uLocalRot);
+	localEntity = CSPlayerEntity("Local Player", uLocalTeam, uLocalHealth, uLocalArmor, uLocalSpot, uLocalRot);
 
 	for (uint32_t i = 0; i < 256; i++)
 	{
@@ -101,13 +100,37 @@ void RadarHack::Update(HANDLE hDriver, uintptr_t uClient)
 
 		uint8_t uTeam = driver::read<uint8_t>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseEntity::m_iTeamNum);
 		uint32_t uArmor = driver::read<uint32_t>(hDriver, uPlayerPawn + schemas::client_dll::C_CSPlayerPawn::m_ArmorValue);
-		
-		RadarEntity csEntity("Player", uTeam, uHealth, uArmor, uSpot, uRot);
+
+		CSPlayerEntity csEntity("Player", uTeam, uHealth, uArmor, uSpot, uRot);
 		vEntities.push_back(csEntity);
 	}
 
-	bInitialised = true;
 	std::this_thread::sleep_for(std::chrono::milliseconds(CFG_BHOP_DELAY));
+}
+
+void EntityScanner::Render(ImDrawList* imDrawList)
+{
+	// Nothing to handle here yet
+}
+
+EntityScannerDependency::EntityScannerDependency(CheatEntities entity) : Cheat(entity)
+{
+	if (!Cheat::Instances(CheatEntities::ENTITY_SCAN))
+		ThreadedObject::createObject(std::make_shared<EntityScanner>());
+
+	if (EntityScanner::getInstance())
+		EntityScanner::getInstance()->add();
+}
+
+EntityScannerDependency::~EntityScannerDependency()
+{
+	if (EntityScanner::getInstance())
+		EntityScanner::getInstance()->remove();
+}
+
+void RadarHack::Update(HANDLE hDriver, uintptr_t uClient)
+{
+	// Nothing to handle here
 }
 
 void RadarHack::Render(ImDrawList* imDrawList)
@@ -125,6 +148,9 @@ void RadarHack::Render(ImDrawList* imDrawList)
 
 	ImVec2 position = { vPosition.x + vSize.x / 2, vPosition.y + vSize.y / 2 };
 
+	std::vector<CSPlayerEntity> vEntities = EntityScanner::getInstance()->getEntities();
+	CSPlayerEntity localEntity = EntityScanner::getInstance()->getLocalEntity();
+
 	localEntity.Render(imDrawList, position, -90);
 
 	if (bShowDebugInfo)
@@ -135,7 +161,7 @@ void RadarHack::Render(ImDrawList* imDrawList)
 	imDrawList->AddLine({ vPosition.x, vPosition.y + vSize.y / 2 }, { vPosition.x + vSize.x, vPosition.y + vSize.y / 2 }, ImColor(255, 255, 255, 100));
 	imDrawList->AddLine({ vPosition.x + vSize.x / 2, vPosition.y }, { vPosition.x + vSize.x / 2, vPosition.y + vSize.y }, ImColor(255, 255, 255, 100));
 
-	for (RadarEntity& entity : vEntities)
+	for (CSPlayerEntity& entity : vEntities)
 	{
 
 		if (bShowDebugInfo)

@@ -67,7 +67,7 @@ void ThreadController::Update()
 {
 	ThreadMgr::getInstance()->getMutex().lock();
 
-	if (hDriver && uClient)
+	if (hDriver && uClient && ThreadMgr::getInstance())
 		for (PThreadedObject ob : vCallstack)
 		{
 			ob->Update(hDriver, uClient);
