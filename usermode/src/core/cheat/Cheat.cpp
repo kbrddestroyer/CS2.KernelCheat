@@ -3,10 +3,9 @@
 
 void BhopCheat::Update(HANDLE hDriver, uintptr_t uClient)
 {
-#ifdef DEBUG
-	if (GetAsyncKeyState(VK_ESCAPE))
-		break;
-#endif
+	if (!SettingsTab::getInstance()->bhopEnabled)
+		return;
+
 	const uintptr_t playerPawn = driver::read<uintptr_t>(hDriver, uClient + offsets::client_dll::dwLocalPlayerPawn);
 
 	if (playerPawn == 0)
@@ -23,6 +22,7 @@ void BhopCheat::Update(HANDLE hDriver, uintptr_t uClient)
 		// Jump
 		std::this_thread::sleep_for(std::chrono::milliseconds(CFG_BHOP_DELAY));
 		driver::write(hDriver, uClient + buttons::jump, CFG_SPACE_ON);
+		driver::write(hDriver, uClient + buttons::duck, CFG_SPACE_ON);
 	}
 	else if (
 		(bSpace && !bInAir) ||
@@ -30,6 +30,7 @@ void BhopCheat::Update(HANDLE hDriver, uintptr_t uClient)
 		)
 	{
 		driver::write(hDriver, uClient + buttons::jump, CFG_SPACE_OFF);
+		driver::write(hDriver, uClient + buttons::duck, CFG_SPACE_OFF);
 	}
 }
 
@@ -69,7 +70,7 @@ void RadarHack::Update(HANDLE hDriver, uintptr_t uClient)
 
 	localEntity = RadarEntity("Local Player", uLocalTeam, uLocalHealth, uLocalArmor, uLocalSpot, uLocalRot);
 
-	for (uint32_t i = 0; i < 128; i++)
+	for (uint32_t i = 0; i < 256; i++)
 	{
 		uintptr_t pEntityListEntry = driver::read<uintptr_t>(hDriver, uEntityList + (8 * (i & 0x7FF) >> 9) + 16);
 		if (!pEntityListEntry)
@@ -91,11 +92,14 @@ void RadarHack::Update(HANDLE hDriver, uintptr_t uClient)
 		if (!uGameSceneNode)
 			continue;
 
+		int32_t uHealth = driver::read<int32_t>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseEntity::m_iHealth);
+		if (uHealth <= 0 || uHealth > 100)
+			continue;
+
 		Vector3f uSpot = driver::read<Vector3f>(hDriver, uGameSceneNode + schemas::client_dll::CGameSceneNode::m_vecAbsOrigin);
 		QAngle uRot = driver::read<QAngle>(hDriver, uGameSceneNode + schemas::client_dll::CGameSceneNode::m_angRotation);
 
 		uint8_t uTeam = driver::read<uint8_t>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseEntity::m_iTeamNum);
-		uint32_t uHealth = driver::read<uint32_t>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseEntity::m_iHealth);
 		uint32_t uArmor = driver::read<uint32_t>(hDriver, uPlayerPawn + schemas::client_dll::C_CSPlayerPawn::m_ArmorValue);
 		
 		RadarEntity csEntity("Player", uTeam, uHealth, uArmor, uSpot, uRot);
@@ -113,6 +117,9 @@ void RadarHack::Render(ImDrawList* imDrawList)
 	ThreadMgr::getInstance()->getMutex().lock();
 	ImGui::Checkbox("Enable debug", &this->bShowDebugInfo);
 
+	if (GetAsyncKeyState(VK_F1))
+		bShowDebugInfo = !bShowDebugInfo;
+
 	ImVec2 vSize = ImGui::GetWindowSize();
 	ImVec2 vPosition = ImGui::GetWindowPos();
 
@@ -123,8 +130,6 @@ void RadarHack::Render(ImDrawList* imDrawList)
 	if (bShowDebugInfo)
 	{
 		ImGui::Text("%f", localEntity.qAngle.y);
-
-
 	}
 
 	imDrawList->AddLine({ vPosition.x, vPosition.y + vSize.y / 2 }, { vPosition.x + vSize.x, vPosition.y + vSize.y / 2 }, ImColor(255, 255, 255, 100));

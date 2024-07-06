@@ -18,18 +18,22 @@ bool ThreadedObject::createObject(PThreadedObject pInstance)
 
 IThreadController::~IThreadController()
 {
-	ThreadMgr::getInstance()->getMutex().lock();
-	bRunning = false;
-	thControl->join();
-	thControl->~thread();
-	ThreadMgr::getInstance()->getMutex().unlock();
+	Stop();
 }
 
 void IThreadController::openThread()
 {
-	thControl = std::make_unique<std::thread>(&IThreadController::Start, this, std::ref(bRunning));
+	thControl = std::make_unique<std::thread>(&IThreadController::Start, this);
 }
 
+void IThreadController::Stop()
+{
+	if (!bRunning)
+		return;
+	bRunning = false;
+	thControl->join();
+	thControl->~thread();
+}
 #pragma endregion
 
 #pragma region ThreadController
@@ -50,10 +54,10 @@ ThreadController::ThreadController(const uintptr_t uClient, uint32_t id=0) {
 
 ThreadController::~ThreadController()
 {
-	CloseHandle(hDriver);
+	Stop();
 }
 
-void ThreadController::Start(bool bRunning)
+void ThreadController::Start()
 {
 	while (bRunning)
 		Update();
@@ -72,6 +76,17 @@ void ThreadController::Update()
 	std::this_thread::yield();
 	ThreadMgr::getInstance()->getMutex().unlock();
 	std::this_thread::sleep_for(std::chrono::milliseconds(10));
+}
+
+void ThreadController::Stop()
+{
+	if (!hDriver)
+		return;
+	vCallstack.clear();
+	IThreadController::Stop();
+	CloseHandle(hDriver);
+
+	hDriver = nullptr;
 }
 
 void ThreadController::resize()
@@ -101,7 +116,13 @@ ThreadMgr::ThreadMgr()
 
 ThreadMgr::~ThreadMgr() 
 {
+	for (PThreadController pThreadController : vControllers)
+	{
+		pThreadController->Stop();
+	}
+
 	vControllers.clear();
+	exit(0);
 }
 
 /*

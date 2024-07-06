@@ -37,10 +37,5 @@ void initialize(HANDLE hDriver, DWORD uPid)
 	{
 		ThreadMgr* thread = ThreadMgr::getInstance();
 		thread->setKMParams(hDriver, uClient);
-		
-		if (ThreadedObject::createObject(std::make_shared<RadarHack>()))
-		{
-			MessageBox(NULL, L"Created RadarHack thread", L"Info", MB_ICONINFORMATION | MB_OK);
-		}
 	}
 }

@@ -36,12 +36,16 @@ private:
 public:
 
 	// Radarhack
-	bool	radarhackEnabled;
+	bool	radarhackEnabled = false;
 
 	float ctColor[4] = { 0, 0, 255, 255 };
 	float tColor[4] = { 255, 0, 0, 255 };
+
+	// Bhop
+	bool	bhopEnabled = false;
 public:
 	static SettingsTab* getInstance() { return instance; }
+
 	SettingsTab() { instance = this; }
 	~SettingsTab() { instance = nullptr; }
 

@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <map>
 #include <cmath>
 #include "../../imgui/imgui.h"
 
@@ -9,33 +10,41 @@
 #include "../utility/custom_types.h"
 #include "../utility/CheatUtilities.h"
 
-struct CSEntity
+enum CheatEntities
 {
-	Vector3f	pos;
-	uint8_t		uTeam = 0;
-	float		rotation;
+	NONE,
+	BHOP,
+	RADAR
 };
 
 class Cheat : public ThreadedObject
 {
 private:
-	inline static std::vector<Cheat*> instances;
-	uint32_t uPlace;
+	inline static std::map<CheatEntities, Cheat*> instances;
+	CheatEntities desc;
 public:
-	static std::vector<Cheat*> Instances() { return instances; }
-
-	Cheat() { 
-		this->uPlace = instances.size();
-		instances.push_back(this);
+	static std::map<CheatEntities, Cheat*>& getMap() { return instances; }
+	static Cheat* Instances(CheatEntities entity) {
+		return instances[entity]; 
 	}
 
-	~Cheat() { instances.erase(instances.begin() + uPlace); }
+	Cheat(CheatEntities entity = CheatEntities::NONE) {
+		if (entity == NONE)
+			throw "Entity type cannot be none";
+
+		instances[entity] = this;
+		desc = entity;
+	}
+
+	~Cheat() { instances.erase(desc); }
 	virtual void Render(ImDrawList*) = 0;
 };
 
 class BhopCheat : public Cheat
 {
 public:
+	BhopCheat() : Cheat(BHOP) {}
+
 	void Update(HANDLE, uintptr_t) override;
 
 	void Render(ImDrawList*) override;
@@ -51,6 +60,8 @@ private:
 	bool bShowDebugInfo = false;
 	bool bInitialised = false;
 public:
+	RadarHack() : Cheat(RADAR) {}
+
 	bool Initialized() { return bInitialised; }
 	void Update(HANDLE, uintptr_t) override;
 
