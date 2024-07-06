@@ -72,11 +72,11 @@ void ChildGUIController::InternalUpdate()
 
 void CheatRenderer::Render()
 {
-    for (Cheat* instance : Cheat::Instances())
+    for (std::pair<CheatEntities, Cheat*> instance : Cheat::getMap())
     {
-        if (instance)
+        if (instance.second)
         {
-            instance->Render(imDrawList);
+            instance.second->Render(imDrawList);
         }
     }
 }
@@ -91,9 +91,23 @@ void SettingsTab::Render()
     ImGui::Text("Radarhack section");
     ImGui::Separator();
 
-    ImGui::Checkbox("Enabled", &this->radarhackEnabled);
+    if (ImGui::Checkbox("Radar Enabled", &this->radarhackEnabled))
+    {
+        if (!Cheat::Instances(CheatEntities::RADAR))
+            ThreadedObject::createObject(std::make_shared<RadarHack>());
+    }
     ImGui::ColorEdit4("CT Color", ctColor);
     ImGui::ColorEdit4("T Color", tColor);
+
+    ImGui::Separator();
+    ImGui::Text("Bunnyhop section");
+    ImGui::Separator();
+
+    if (ImGui::Checkbox("Bhop Enabled", &this->bhopEnabled))
+    {
+        if (!Cheat::Instances(CheatEntities::BHOP))
+            ThreadedObject::createObject(std::make_shared<BhopCheat>());
+    }
 
     ThreadMgr::getInstance()->getMutex().unlock();
 }

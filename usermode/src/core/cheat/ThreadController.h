@@ -31,8 +31,9 @@ public:
 
 	std::thread* getThreadRef() { return thControl.get(); }
 
-	virtual void Start(bool) = 0;
+	virtual void Start() = 0;
 	virtual void Update() = 0;
+	virtual void Stop();
 };
 
 class ThreadController : public IThreadController
@@ -51,9 +52,9 @@ public:
 
 	void setClient(uintptr_t uClient) { this->uClient = uClient; }
 
-	void Start(bool) override;
-	void Update() override;
-	
+	void Start()	override;
+	void Update()	override;
+	void Stop()		override;
 	void resize();
 	void addElement(PThreadedObject ob);
 
