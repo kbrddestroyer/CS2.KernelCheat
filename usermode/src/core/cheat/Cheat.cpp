@@ -3,11 +3,14 @@
 
 using namespace cheatscore::core;
 
-void BhopCheat::Update(HANDLE hDriver, uintptr_t uClient)
+void Cheat::Update(HANDLE hDriver, uintptr_t uClient)
 {
-	if (!SettingsTab::getInstance()->bhopEnabled)
-		return;
+	if (bState)
+		CheatUpdate(hDriver, uClient);
+}
 
+void BhopCheat::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
+{
 	const uintptr_t playerPawn = driver::read<uintptr_t>(hDriver, uClient + offsets::client_dll::dwLocalPlayerPawn);
 
 	if (playerPawn == 0)
@@ -41,7 +44,7 @@ void BhopCheat::Render(ImDrawList*)
 
 }
 
-void EntityScanner::Update(HANDLE hDriver, uintptr_t uClient)
+void EntityScanner::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 {	
 	if (callCount == 0)
 		return;
@@ -122,6 +125,8 @@ EntityScannerDependency::EntityScannerDependency(CheatEntities entity) : Cheat(e
 
 	if (EntityScanner::getInstance())
 		EntityScanner::getInstance()->add();
+
+	this->bState = true;
 }
 
 EntityScannerDependency::~EntityScannerDependency()
@@ -130,14 +135,24 @@ EntityScannerDependency::~EntityScannerDependency()
 		EntityScanner::getInstance()->remove();
 }
 
-void RadarHack::Update(HANDLE hDriver, uintptr_t uClient)
+void EntityScannerDependency::toggle(bool bState)
+{
+	Cheat::toggle(bState);
+	if (bState)
+	{
+		EntityScanner::getInstance()->add();
+	}
+	else EntityScanner::getInstance()->remove();
+}
+
+void RadarHack::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 {
 	// Nothing to handle here
 }
 
 void RadarHack::Render(ImDrawList* imDrawList)
 {
-	if (!SettingsTab::getInstance()->radarhackEnabled)
+	if (!bState)
 		return;
 	ThreadMgr::getInstance()->getMutex().lock();
 	ImGui::Checkbox("Enable debug", &this->bShowDebugInfo);
@@ -178,16 +193,14 @@ void RadarHack::Render(ImDrawList* imDrawList)
 
 		Vector3f vRotated = rotate(vDistance, fGUIAngle);
 		ImVec2 vGUIRotated = gameToGUIPoint(vRotated);
-		entity.Render(imDrawList, vGUIRotated, localEntity.qAngle.y + entity.qAngle.y - fAngleBetween + 90);
+		entity.Render(imDrawList, vGUIRotated, localEntity.qAngle.y + entity.qAngle.y - 90);
 	}
 
 	ThreadMgr::getInstance()->getMutex().unlock();
 }
 
-void TriggerBot::Update(HANDLE hDriver, uintptr_t uClient)
+void TriggerBot::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 {
-	if (!SettingsTab::getInstance()->triggerEnabled)
-		return;
 	uintptr_t uLocalPlayer = driver::read<uintptr_t>(hDriver, uClient + offsets::client_dll::dwLocalPlayerPawn);
 	uint8_t uLocalTeam = driver::read<uint8_t>(hDriver, uLocalPlayer + schemas::client_dll::C_BaseEntity::m_iTeamNum);
 

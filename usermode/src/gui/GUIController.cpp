@@ -98,6 +98,7 @@ void SettingsTab::Render()
     {
         if (!Cheat::Instances(CheatEntities::RADAR))
             ThreadedObject::createObject(std::make_shared<RadarHack>());
+        else Cheat::Instances(RADAR)->toggle(this->radarhackEnabled);
     }
     ImGui::ColorEdit4("CT Color", ctColor);
     ImGui::ColorEdit4("T Color", tColor);
@@ -110,6 +111,7 @@ void SettingsTab::Render()
     {
         if (!Cheat::Instances(CheatEntities::BHOP))
             ThreadedObject::createObject(std::make_shared<BhopCheat>());
+        else Cheat::Instances(BHOP)->toggle(this->bhopEnabled);
     }
 
     ImGui::Separator();
@@ -120,6 +122,7 @@ void SettingsTab::Render()
     {
         if (!Cheat::Instances(CheatEntities::TRIGGER))
             ThreadedObject::createObject(std::make_shared<TriggerBot>());
+        else Cheat::Instances(TRIGGER)->toggle(this->triggerEnabled);
     }
 
     ImGui::SliderInt("Trigger discipline", &this->triggerDelay, 10, 250);

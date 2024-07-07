@@ -21,7 +21,8 @@ namespace cheatscore
 			BHOP,
 			ENTITY_SCAN,
 			RADAR,
-			TRIGGER
+			TRIGGER,
+			AIMBOT
 		};
 
 		class Cheat : public ThreadedObject
@@ -29,6 +30,8 @@ namespace cheatscore
 		private:
 			inline static std::map<CheatEntities, Cheat*> instances;
 			CheatEntities desc;
+		protected:
+			bool bState = false;
 		public:
 			static std::map<CheatEntities, Cheat*>& getMap() { return instances; }
 			static Cheat* Instances(CheatEntities entity) {
@@ -44,7 +47,12 @@ namespace cheatscore
 			}
 
 			~Cheat() { instances.erase(desc); }
+
+			virtual void toggle(bool bState) { this->bState = bState; }
+			void Update(HANDLE, uintptr_t) override;
 			virtual void Render(ImDrawList*) = 0;
+		protected:
+			virtual void CheatUpdate(HANDLE, uintptr_t) = 0;
 		};
 
 		class EntityScannerDependency : public Cheat
@@ -52,6 +60,8 @@ namespace cheatscore
 		public:
 			EntityScannerDependency(CheatEntities entity = NONE);
 			~EntityScannerDependency();
+
+			void toggle(bool bState) override;
 		};
 	}
 #pragma endregion Utility tools for cheats
@@ -65,7 +75,7 @@ namespace cheatscore
 		public:
 			BhopCheat() : Cheat(BHOP) {}
 
-			void Update(HANDLE, uintptr_t) override;
+			void CheatUpdate(HANDLE, uintptr_t) override;
 
 			void Render(ImDrawList*) override;
 		};
@@ -78,7 +88,7 @@ namespace cheatscore
 			std::vector<CSPlayerEntity> vEntities;
 			CSPlayerEntity localEntity;
 		public:
-			EntityScanner() : Cheat(ENTITY_SCAN) { instance = this; }
+			EntityScanner() : Cheat(ENTITY_SCAN) { instance = this; bState = true; }
 			static EntityScanner* getInstance() { return instance; }
 
 			void add() { callCount++; }
@@ -87,7 +97,7 @@ namespace cheatscore
 			std::vector<CSPlayerEntity> getEntities() { return vEntities; }
 			CSPlayerEntity getLocalEntity() { return localEntity; }
 
-			void Update(HANDLE, uintptr_t) override;
+			void CheatUpdate(HANDLE, uintptr_t) override;
 			void Render(ImDrawList*) override;
 		};
 
@@ -100,7 +110,7 @@ namespace cheatscore
 			RadarHack() : EntityScannerDependency(RADAR) {}
 
 			bool Initialized() { return bInitialised; }
-			void Update(HANDLE, uintptr_t) override;
+			void CheatUpdate(HANDLE, uintptr_t) override;
 
 			void Render(ImDrawList*) override;
 		};
@@ -110,7 +120,7 @@ namespace cheatscore
 		public:
 			TriggerBot() : Cheat(TRIGGER) {}
 
-			void Update(HANDLE, uintptr_t) override;
+			void CheatUpdate(HANDLE, uintptr_t) override;
 			void Render(ImDrawList*) override;
 		};
 	}
