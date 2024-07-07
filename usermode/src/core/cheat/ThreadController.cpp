@@ -31,6 +31,7 @@ void IThreadController::Stop()
 	if (!bRunning)
 		return;
 	bRunning = false;
+
 	thControl->join();
 	thControl->~thread();
 }
@@ -83,6 +84,7 @@ void ThreadController::Stop()
 	if (!hDriver)
 		return;
 	vCallstack.clear();
+	uClient = 0;
 	IThreadController::Stop();
 	CloseHandle(hDriver);
 

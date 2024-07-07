@@ -1,5 +1,8 @@
 #include "GUIController.h"
 
+using namespace cheatscore::core;
+using namespace cheatscore::utility;
+
 GUIController::GUIController()
 {
     throw "Call GUIController constructor without parameter";
@@ -108,6 +111,18 @@ void SettingsTab::Render()
         if (!Cheat::Instances(CheatEntities::BHOP))
             ThreadedObject::createObject(std::make_shared<BhopCheat>());
     }
+
+    ImGui::Separator();
+    ImGui::Text("Trigger section");
+    ImGui::Separator();
+
+    if (ImGui::Checkbox("Trigger Enabled", &this->triggerEnabled))
+    {
+        if (!Cheat::Instances(CheatEntities::TRIGGER))
+            ThreadedObject::createObject(std::make_shared<TriggerBot>());
+    }
+
+    ImGui::SliderInt("Trigger discipline", &this->triggerDelay, 10, 250);
 
     ThreadMgr::getInstance()->getMutex().unlock();
 }

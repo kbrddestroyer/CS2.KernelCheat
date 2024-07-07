@@ -7,5 +7,5 @@
 
 #define TARGET_PNAME L"cs2.exe"
 
-#define CFG_SPACE_ON	65537
-#define CFG_SPACE_OFF	256
+#define MEM_PRESSED		65537
+#define MEM_RELEASED	256
