@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <map>
 #include <cmath>
 #include "../../imgui/imgui.h"
 
@@ -9,50 +10,119 @@
 #include "../utility/custom_types.h"
 #include "../utility/CheatUtilities.h"
 
-struct CSEntity
+namespace cheatscore
 {
-	Vector3f	pos;
-	uint8_t		uTeam = 0;
-	float		rotation;
-};
+#pragma region UTILITY
+	namespace utility
+	{
+		enum CheatEntities
+		{
+			NONE,
+			BHOP,
+			ENTITY_SCAN,
+			RADAR,
+			TRIGGER,
+			AIMBOT
+		};
 
-class Cheat : public ThreadedObject
-{
-private:
-	inline static std::vector<Cheat*> instances;
-	uint32_t uPlace;
-public:
-	static std::vector<Cheat*> Instances() { return instances; }
+		class Cheat : public ThreadedObject
+		{
+		private:
+			inline static std::map<CheatEntities, Cheat*> instances;
+			CheatEntities desc;
+		protected:
+			bool bState = false;
+		public:
+			static std::map<CheatEntities, Cheat*>& getMap() { return instances; }
+			static Cheat* Instances(CheatEntities entity) {
+				return instances[entity];
+			}
 
-	Cheat() { 
-		this->uPlace = instances.size();
-		instances.push_back(this);
+			Cheat(CheatEntities entity = CheatEntities::NONE) {
+				if (entity == NONE)
+					throw "Entity type cannot be none";
+
+				instances[entity] = this;
+				desc = entity;
+			}
+
+			~Cheat() { instances.erase(desc); }
+
+			virtual void toggle(bool bState) { this->bState = bState; }
+			void Update(HANDLE, uintptr_t) override;
+			virtual void Render(ImDrawList*) = 0;
+		protected:
+			virtual void CheatUpdate(HANDLE, uintptr_t) = 0;
+		};
+
+		class EntityScannerDependency : public Cheat
+		{
+		public:
+			EntityScannerDependency(CheatEntities entity = NONE);
+			~EntityScannerDependency();
+
+			void toggle(bool bState) override;
+		};
 	}
+#pragma endregion Utility tools for cheats
 
-	~Cheat() { instances.erase(instances.begin() + uPlace); }
-	virtual void Render(ImDrawList*) = 0;
-};
+#pragma region CHEATS
+	namespace core
+	{
+		using namespace utility;
+		class BhopCheat : public Cheat
+		{
+		public:
+			BhopCheat() : Cheat(BHOP) {}
 
-class BhopCheat : public Cheat
-{
-public:
-	void Update(HANDLE, uintptr_t) override;
+			void CheatUpdate(HANDLE, uintptr_t) override;
 
-	void Render(ImDrawList*) override;
-};
+			void Render(ImDrawList*) override;
+		};
 
-class RadarHack : public Cheat
-{
-private:
-	std::vector<RadarEntity> vEntities;
-	
-	RadarEntity localEntity;
-	
-	bool bShowDebugInfo = false;
-	bool bInitialised = false;
-public:
-	bool Initialized() { return bInitialised; }
-	void Update(HANDLE, uintptr_t) override;
+		class EntityScanner : public Cheat
+		{
+		private:
+			inline static EntityScanner* instance;
+			uint8_t callCount = 0;
+			std::vector<CSPlayerEntity> vEntities;
+			CSPlayerEntity localEntity;
+		public:
+			EntityScanner() : Cheat(ENTITY_SCAN) { instance = this; bState = true; }
+			static EntityScanner* getInstance() { return instance; }
 
-	void Render(ImDrawList*) override;
-};
+			void add() { callCount++; }
+			void remove() { if (callCount > 0) callCount--; }
+
+			std::vector<CSPlayerEntity> getEntities() { return vEntities; }
+			CSPlayerEntity getLocalEntity() { return localEntity; }
+
+			void CheatUpdate(HANDLE, uintptr_t) override;
+			void Render(ImDrawList*) override;
+		};
+
+		class RadarHack : public EntityScannerDependency
+		{
+		private:
+			bool bShowDebugInfo = false;
+			bool bInitialised = false;
+		public:
+			RadarHack() : EntityScannerDependency(RADAR) {}
+
+			bool Initialized() { return bInitialised; }
+			void CheatUpdate(HANDLE, uintptr_t) override;
+
+			void Render(ImDrawList*) override;
+		};
+
+		class TriggerBot : public Cheat
+		{
+		public:
+			TriggerBot() : Cheat(TRIGGER) {}
+
+			void CheatUpdate(HANDLE, uintptr_t) override;
+			void Render(ImDrawList*) override;
+		};
+	}
+#pragma endregion Cheats core classes
+}

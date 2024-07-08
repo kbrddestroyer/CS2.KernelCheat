@@ -11,7 +11,7 @@ public:
 	virtual void Render(ImDrawList*, ImVec2, float) = 0;
 };
 
-class RadarEntity : public GUIEntity
+class CSPlayerEntity : public GUIEntity
 {
 public:
 	std::string		sName;
@@ -27,8 +27,8 @@ public:
 
 	Vector3f		vOffset = { 1, -20 };
 public:
-	RadarEntity() {}
-	RadarEntity(std::string, std::uint8_t, std::uint32_t, std::uint32_t, Vector3f, QAngle, bool=false, bool=false, bool=false);
+	CSPlayerEntity() {}
+	CSPlayerEntity(std::string, std::uint8_t, std::uint32_t, std::uint32_t, Vector3f, QAngle, bool=false, bool=false, bool=false);
 	void setName(std::string name) { this->sName = name; }
 	void Render(ImDrawList*, ImVec2, float) override;
 

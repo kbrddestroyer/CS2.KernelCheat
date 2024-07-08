@@ -1,5 +1,8 @@
 #include "GUIController.h"
 
+using namespace cheatscore::core;
+using namespace cheatscore::utility;
+
 GUIController::GUIController()
 {
     throw "Call GUIController constructor without parameter";
@@ -72,11 +75,11 @@ void ChildGUIController::InternalUpdate()
 
 void CheatRenderer::Render()
 {
-    for (Cheat* instance : Cheat::Instances())
+    for (std::pair<CheatEntities, Cheat*> instance : Cheat::getMap())
     {
-        if (instance)
+        if (instance.second)
         {
-            instance->Render(imDrawList);
+            instance.second->Render(imDrawList);
         }
     }
 }
@@ -91,9 +94,38 @@ void SettingsTab::Render()
     ImGui::Text("Radarhack section");
     ImGui::Separator();
 
-    ImGui::Checkbox("Enabled", &this->radarhackEnabled);
+    if (ImGui::Checkbox("Radar Enabled", &this->radarhackEnabled))
+    {
+        if (!Cheat::Instances(CheatEntities::RADAR))
+            ThreadedObject::createObject(std::make_shared<RadarHack>());
+        else Cheat::Instances(RADAR)->toggle(this->radarhackEnabled);
+    }
     ImGui::ColorEdit4("CT Color", ctColor);
     ImGui::ColorEdit4("T Color", tColor);
+
+    ImGui::Separator();
+    ImGui::Text("Bunnyhop section");
+    ImGui::Separator();
+
+    if (ImGui::Checkbox("Bhop Enabled", &this->bhopEnabled))
+    {
+        if (!Cheat::Instances(CheatEntities::BHOP))
+            ThreadedObject::createObject(std::make_shared<BhopCheat>());
+        else Cheat::Instances(BHOP)->toggle(this->bhopEnabled);
+    }
+
+    ImGui::Separator();
+    ImGui::Text("Trigger section");
+    ImGui::Separator();
+
+    if (ImGui::Checkbox("Trigger Enabled", &this->triggerEnabled))
+    {
+        if (!Cheat::Instances(CheatEntities::TRIGGER))
+            ThreadedObject::createObject(std::make_shared<TriggerBot>());
+        else Cheat::Instances(TRIGGER)->toggle(this->triggerEnabled);
+    }
+
+    ImGui::SliderInt("Trigger discipline", &this->triggerDelay, 10, 250);
 
     ThreadMgr::getInstance()->getMutex().unlock();
 }

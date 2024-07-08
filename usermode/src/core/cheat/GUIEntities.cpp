@@ -1,7 +1,7 @@
 #include "GUIEntities.h"
 #include "../gui/GUIController.h"
 
-RadarEntity::RadarEntity(std::string sName, std::uint8_t uTeam, std::uint32_t uHealth, std::uint32_t uArmor, Vector3f vPos, QAngle qRot, bool isLocal, bool hasHelmet, bool isBombCarrier)
+CSPlayerEntity::CSPlayerEntity(std::string sName, std::uint8_t uTeam, std::uint32_t uHealth, std::uint32_t uArmor, Vector3f vPos, QAngle qRot, bool isLocal, bool hasHelmet, bool isBombCarrier)
 {
 	this->sName			= sName;
 	this->uTeam			= uTeam;
@@ -14,7 +14,7 @@ RadarEntity::RadarEntity(std::string sName, std::uint8_t uTeam, std::uint32_t uH
 	this->qAngle		= qRot;
 }
 
-void RadarEntity::Render(ImDrawList* imDrawList, ImVec2 entityPosition, float entityRotation)
+void CSPlayerEntity::Render(ImDrawList* imDrawList, ImVec2 entityPosition, float entityRotation)
 {
 	ImVec2 mapped = entityPosition;
 	ImVec2 mappedDir = { mapped.x + cos(entityRotation * (3.14f / 180)) * 50, mapped.y + sin(entityRotation * (3.14f / 180)) * 50 };
@@ -37,7 +37,7 @@ void RadarEntity::Render(ImDrawList* imDrawList, ImVec2 entityPosition, float en
 	imDrawList->AddText(textPos, ImColor(255, 255, 255), sName.c_str());
 }
 
-ImVec2 RadarEntity::getEntityPosition(Vector3f position, Vector3f localPlayerPosition, float rotation)
+ImVec2 CSPlayerEntity::getEntityPosition(Vector3f position, Vector3f localPlayerPosition, float rotation)
 {
 	return GUIPointToLocalObserver(position, localPlayerPosition, rotation);
 }
