@@ -76,7 +76,6 @@ void ThreadController::Update()
 
 	std::this_thread::yield();
 	ThreadMgr::getInstance()->getMutex().unlock();
-	std::this_thread::sleep_for(std::chrono::milliseconds(10));
 }
 
 void ThreadController::Stop()

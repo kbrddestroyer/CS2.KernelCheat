@@ -19,16 +19,19 @@ public:
 	std::uint32_t	uHealth;
 	std::uint32_t	uArmor;
 	bool			hasHelmet;
+	bool			isSpotted;
 	bool			isBombCarrier;
 	bool			isLocal;
 
 	Vector3f		vPosition;
+	Vector3f		vOldPosition;
+	Vector3f		vHeadPosition;
 	QAngle			qAngle;
 
 	Vector3f		vOffset = { 1, -20 };
 public:
 	CSPlayerEntity() {}
-	CSPlayerEntity(std::string, std::uint8_t, std::uint32_t, std::uint32_t, Vector3f, QAngle, bool=false, bool=false, bool=false);
+	CSPlayerEntity(std::string, std::uint8_t, std::uint32_t, std::uint32_t, Vector3f, Vector3f, Vector3f, QAngle, bool=false, bool=false, bool=false, bool=false);
 	void setName(std::string name) { this->sName = name; }
 	void Render(ImDrawList*, ImVec2, float) override;
 

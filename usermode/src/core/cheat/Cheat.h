@@ -123,6 +123,21 @@ namespace cheatscore
 			void CheatUpdate(HANDLE, uintptr_t) override;
 			void Render(ImDrawList*) override;
 		};
+
+		class AimBot : public EntityScannerDependency
+		{
+		private:
+			Vector3f mouseOffset;
+		private:
+			void MoveMouse(Vector3f);
+			CSPlayerEntity& closest(std::vector<CSPlayerEntity>&, CSPlayerEntity);
+			Vector3f worldToScreenPosition(ViewMatrix, Vector3f);
+		public:
+			AimBot() : EntityScannerDependency(AIMBOT) {}
+
+			void CheatUpdate(HANDLE, uintptr_t) override;
+			void Render(ImDrawList*) override;
+		};
 	}
 #pragma endregion Cheats core classes
 }
