@@ -31,6 +31,7 @@ void IThreadController::Stop()
 	if (!bRunning)
 		return;
 	bRunning = false;
+
 	thControl->join();
 	thControl->~thread();
 }
@@ -67,7 +68,7 @@ void ThreadController::Update()
 {
 	ThreadMgr::getInstance()->getMutex().lock();
 
-	if (hDriver && uClient)
+	if (hDriver && uClient && ThreadMgr::getInstance())
 		for (PThreadedObject ob : vCallstack)
 		{
 			ob->Update(hDriver, uClient);
@@ -83,6 +84,7 @@ void ThreadController::Stop()
 	if (!hDriver)
 		return;
 	vCallstack.clear();
+	uClient = 0;
 	IThreadController::Stop();
 	CloseHandle(hDriver);
 

@@ -1,11 +1,16 @@
 #include "Cheat.h"
 #include "../gui/GUIController.h"
 
-void BhopCheat::Update(HANDLE hDriver, uintptr_t uClient)
-{
-	if (!SettingsTab::getInstance()->bhopEnabled)
-		return;
+using namespace cheatscore::core;
 
+void Cheat::Update(HANDLE hDriver, uintptr_t uClient)
+{
+	if (bState)
+		CheatUpdate(hDriver, uClient);
+}
+
+void BhopCheat::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
+{
 	const uintptr_t playerPawn = driver::read<uintptr_t>(hDriver, uClient + offsets::client_dll::dwLocalPlayerPawn);
 
 	if (playerPawn == 0)
@@ -21,16 +26,16 @@ void BhopCheat::Update(HANDLE hDriver, uintptr_t uClient)
 	{
 		// Jump
 		std::this_thread::sleep_for(std::chrono::milliseconds(CFG_BHOP_DELAY));
-		driver::write(hDriver, uClient + buttons::jump, CFG_SPACE_ON);
-		driver::write(hDriver, uClient + buttons::duck, CFG_SPACE_ON);
+		driver::write(hDriver, uClient + buttons::jump, MEM_PRESSED);
+		driver::write(hDriver, uClient + buttons::duck, MEM_PRESSED);
 	}
 	else if (
 		(bSpace && !bInAir) ||
 		(!bSpace && forceJump == 65537)
 		)
 	{
-		driver::write(hDriver, uClient + buttons::jump, CFG_SPACE_OFF);
-		driver::write(hDriver, uClient + buttons::duck, CFG_SPACE_OFF);
+		driver::write(hDriver, uClient + buttons::jump, MEM_RELEASED);
+		driver::write(hDriver, uClient + buttons::duck, MEM_RELEASED);
 	}
 }
 
@@ -39,10 +44,9 @@ void BhopCheat::Render(ImDrawList*)
 
 }
 
-void RadarHack::Update(HANDLE hDriver, uintptr_t uClient)
-{
-	// Update thread
-	if (!SettingsTab::getInstance()->radarhackEnabled)
+void EntityScanner::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
+{	
+	if (callCount == 0)
 		return;
 
 	uintptr_t uEntityList = driver::read<uintptr_t>(hDriver, uClient + offsets::client_dll::dwEntityList);
@@ -68,7 +72,7 @@ void RadarHack::Update(HANDLE hDriver, uintptr_t uClient)
 	uint32_t uLocalHealth = driver::read<uint32_t>(hDriver, pLocalPlayer + schemas::client_dll::C_BaseEntity::m_iHealth);
 	uint32_t uLocalArmor = driver::read<uint32_t>(hDriver, pLocalPlayer + schemas::client_dll::C_CSPlayerPawn::m_ArmorValue);
 
-	localEntity = RadarEntity("Local Player", uLocalTeam, uLocalHealth, uLocalArmor, uLocalSpot, uLocalRot);
+	localEntity = CSPlayerEntity("Local Player", uLocalTeam, uLocalHealth, uLocalArmor, uLocalSpot, uLocalRot);
 
 	for (uint32_t i = 0; i < 256; i++)
 	{
@@ -101,29 +105,65 @@ void RadarHack::Update(HANDLE hDriver, uintptr_t uClient)
 
 		uint8_t uTeam = driver::read<uint8_t>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseEntity::m_iTeamNum);
 		uint32_t uArmor = driver::read<uint32_t>(hDriver, uPlayerPawn + schemas::client_dll::C_CSPlayerPawn::m_ArmorValue);
-		
-		RadarEntity csEntity("Player", uTeam, uHealth, uArmor, uSpot, uRot);
+
+		CSPlayerEntity csEntity("Player", uTeam, uHealth, uArmor, uSpot, uRot);
 		vEntities.push_back(csEntity);
 	}
 
-	bInitialised = true;
 	std::this_thread::sleep_for(std::chrono::milliseconds(CFG_BHOP_DELAY));
+}
+
+void EntityScanner::Render(ImDrawList* imDrawList)
+{
+	// Nothing to handle here yet
+}
+
+EntityScannerDependency::EntityScannerDependency(CheatEntities entity) : Cheat(entity)
+{
+	if (!Cheat::Instances(CheatEntities::ENTITY_SCAN))
+		ThreadedObject::createObject(std::make_shared<EntityScanner>());
+
+	if (EntityScanner::getInstance())
+		EntityScanner::getInstance()->add();
+
+	this->bState = true;
+}
+
+EntityScannerDependency::~EntityScannerDependency()
+{
+	if (EntityScanner::getInstance())
+		EntityScanner::getInstance()->remove();
+}
+
+void EntityScannerDependency::toggle(bool bState)
+{
+	Cheat::toggle(bState);
+	if (bState)
+	{
+		EntityScanner::getInstance()->add();
+	}
+	else EntityScanner::getInstance()->remove();
+}
+
+void RadarHack::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
+{
+	// Nothing to handle here
 }
 
 void RadarHack::Render(ImDrawList* imDrawList)
 {
-	if (!SettingsTab::getInstance()->radarhackEnabled)
+	if (!bState)
 		return;
 	ThreadMgr::getInstance()->getMutex().lock();
 	ImGui::Checkbox("Enable debug", &this->bShowDebugInfo);
-
-	if (GetAsyncKeyState(VK_F1))
-		bShowDebugInfo = !bShowDebugInfo;
 
 	ImVec2 vSize = ImGui::GetWindowSize();
 	ImVec2 vPosition = ImGui::GetWindowPos();
 
 	ImVec2 position = { vPosition.x + vSize.x / 2, vPosition.y + vSize.y / 2 };
+
+	std::vector<CSPlayerEntity> vEntities = EntityScanner::getInstance()->getEntities();
+	CSPlayerEntity localEntity = EntityScanner::getInstance()->getLocalEntity();
 
 	localEntity.Render(imDrawList, position, -90);
 
@@ -135,7 +175,7 @@ void RadarHack::Render(ImDrawList* imDrawList)
 	imDrawList->AddLine({ vPosition.x, vPosition.y + vSize.y / 2 }, { vPosition.x + vSize.x, vPosition.y + vSize.y / 2 }, ImColor(255, 255, 255, 100));
 	imDrawList->AddLine({ vPosition.x + vSize.x / 2, vPosition.y }, { vPosition.x + vSize.x / 2, vPosition.y + vSize.y }, ImColor(255, 255, 255, 100));
 
-	for (RadarEntity& entity : vEntities)
+	for (CSPlayerEntity& entity : vEntities)
 	{
 
 		if (bShowDebugInfo)
@@ -153,8 +193,46 @@ void RadarHack::Render(ImDrawList* imDrawList)
 
 		Vector3f vRotated = rotate(vDistance, fGUIAngle);
 		ImVec2 vGUIRotated = gameToGUIPoint(vRotated);
-		entity.Render(imDrawList, vGUIRotated, localEntity.qAngle.y + entity.qAngle.y - fAngleBetween + 90);
+		entity.Render(imDrawList, vGUIRotated, localEntity.qAngle.y + entity.qAngle.y - 90);
 	}
 
 	ThreadMgr::getInstance()->getMutex().unlock();
+}
+
+void TriggerBot::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
+{
+	uintptr_t uLocalPlayer = driver::read<uintptr_t>(hDriver, uClient + offsets::client_dll::dwLocalPlayerPawn);
+	uint8_t uLocalTeam = driver::read<uint8_t>(hDriver, uLocalPlayer + schemas::client_dll::C_BaseEntity::m_iTeamNum);
+
+	uintptr_t uEntityList = driver::read<uintptr_t>(hDriver, uClient + offsets::client_dll::dwEntityList);
+
+	if (!uLocalPlayer || !uEntityList)
+		return;
+
+	int32_t iCrosshairEntityID = driver::read<int32_t>(hDriver, uLocalPlayer + schemas::client_dll::C_CSPlayerPawnBase::m_iIDEntIndex);
+	if (iCrosshairEntityID < 0)
+		return;
+	uintptr_t pEntityListEntry = driver::read<uintptr_t>(hDriver, uEntityList + 8 * (iCrosshairEntityID >> 9) + 0x10);
+	if (!pEntityListEntry)
+		return;
+	uintptr_t uPlayerPawn = driver::read<uintptr_t>(hDriver, pEntityListEntry + 120 * (iCrosshairEntityID & 0x1FF));
+
+	if (!uPlayerPawn)
+		return;
+
+	int8_t uTeam = driver::read<uint8_t>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseEntity::m_iTeamNum);
+	int32_t iHealth = driver::read<int32_t>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseEntity::m_iHealth);
+
+	if (uTeam == uLocalTeam || uTeam == 0 || iHealth < 0)
+		return;
+
+	driver::write(hDriver, uClient + buttons::attack, MEM_PRESSED);
+	std::this_thread::sleep_for(std::chrono::milliseconds(10));
+	driver::write(hDriver, uClient + buttons::attack, MEM_RELEASED);
+	std::this_thread::sleep_for(std::chrono::milliseconds(SettingsTab::getInstance()->triggerDelay));
+}
+
+void TriggerBot::Render(ImDrawList* imDrawList)
+{
+
 }

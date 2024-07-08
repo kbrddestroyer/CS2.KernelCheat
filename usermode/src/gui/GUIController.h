@@ -43,6 +43,10 @@ public:
 
 	// Bhop
 	bool	bhopEnabled = false;
+
+	// Trigger
+	bool	triggerEnabled = false;
+	int		triggerDelay = 10;
 public:
 	static SettingsTab* getInstance() { return instance; }
 

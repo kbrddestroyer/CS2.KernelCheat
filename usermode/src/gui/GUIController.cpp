@@ -1,5 +1,8 @@
 #include "GUIController.h"
 
+using namespace cheatscore::core;
+using namespace cheatscore::utility;
+
 GUIController::GUIController()
 {
     throw "Call GUIController constructor without parameter";
@@ -95,6 +98,7 @@ void SettingsTab::Render()
     {
         if (!Cheat::Instances(CheatEntities::RADAR))
             ThreadedObject::createObject(std::make_shared<RadarHack>());
+        else Cheat::Instances(RADAR)->toggle(this->radarhackEnabled);
     }
     ImGui::ColorEdit4("CT Color", ctColor);
     ImGui::ColorEdit4("T Color", tColor);
@@ -107,7 +111,21 @@ void SettingsTab::Render()
     {
         if (!Cheat::Instances(CheatEntities::BHOP))
             ThreadedObject::createObject(std::make_shared<BhopCheat>());
+        else Cheat::Instances(BHOP)->toggle(this->bhopEnabled);
     }
+
+    ImGui::Separator();
+    ImGui::Text("Trigger section");
+    ImGui::Separator();
+
+    if (ImGui::Checkbox("Trigger Enabled", &this->triggerEnabled))
+    {
+        if (!Cheat::Instances(CheatEntities::TRIGGER))
+            ThreadedObject::createObject(std::make_shared<TriggerBot>());
+        else Cheat::Instances(TRIGGER)->toggle(this->triggerEnabled);
+    }
+
+    ImGui::SliderInt("Trigger discipline", &this->triggerDelay, 10, 250);
 
     ThreadMgr::getInstance()->getMutex().unlock();
 }
