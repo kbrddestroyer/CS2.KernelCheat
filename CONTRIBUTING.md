@@ -1,7 +1,7 @@
 # Contributing [En]
 ## Introduction 
 
-You can join my (Dev:: Playground)[https://discord.com/invite/KCYk7z7msN] Discord server. 
+You can join my [Dev:: Playground](https://discord.com/invite/KCYk7z7msN) Discord server. 
 
 ## Getting a copy of a repository
 
