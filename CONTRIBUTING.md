@@ -3,24 +3,119 @@
 
 You can join my [Dev:: Playground](https://discord.com/invite/KCYk7z7msN) Discord server. 
 
-## Getting a copy of a repository
+---
 
-First of all you need a **copy of this repository**. The best way to do it is *forking*.
+# Contribution Guideline
 
-## Commit requirements 
+Thank you for your interest in contributing to our project! We appreciate your help and strive to make the process as easy and clear as possible. Please follow these guidelines to ensure your changes are accepted without delays.
 
-1. Branch naming
- Please note, that **main** is protected and you cannot push to this branch. To add your changes to **main** branch you need to complete some steps:
-1.1 Creating a new branch
-   **Branch naming** is also important. Repo structure requires *wip/* prefix for work-in-progress commits. Alternatively you can put your nickname there, I guess it's ok
-   Next section describes the region you're editing. It's one of the following: *kernelmode, usermode, docs*.
-   The last section is the name of the branch. So, for example, your branch name can be something like this: `wip/usermode/nullpointer-fix`
- 1.2 Pushing changes. Make some changes, commit them and push.
-   **Commit naming**. I'm trying to keep some system in commits, so please, before main commit message put the name of the region that you're edited in upper case (e.g. KERNELMODE)
- 1.3 Opening a pull request to main
-   Pull request triggers an MSBuild action. After all check you can safely merge
+## Branches and Pull Requests
 
- ## Build trigger
- I think you've noticed **release** branch. You can open a pull request from **main** and after the merge a build action will be triggered. It automatically creates a tag and adds zipped artifacts. 
+Our repository has two main branches: `main` and `release`.
 
- ### This section will be changed
+- **Branch Protection**: Both `main` and `release` branches are protected against direct changes. You must create a pull request to make any changes.
+- **Pull Request Restrictions**: Creating a pull request directly into the `release` branch is strictly prohibited, except for pull requests coming from the `main` branch. Pull requests into the `main` branch are allowed and encouraged.
+
+## Branch Naming Convention
+
+To maintain consistency and clarity in our repository, please adhere to the following branch naming convention:
+
+```
+wip/<section-name>/nickname/<message>
+```
+
+Where `<section-name>` refers to the subproject being changed. We have three subprojects: `kernelmode`, `usermode`, and `docs`.
+
+### Example:
+
+```
+wip/kernelmode/KeyboardDestroyer/fix-memory-leak
+```
+
+## Commit Messages
+
+Commit messages should be clear and descriptive. Each commit message must include the section name in uppercase as the first word.
+
+### Example:
+
+```
+USERMODE Fixed memory leak
+```
+
+## Code Style
+
+Our project is written in C++. Please follow these coding standards:
+
+- **Smart Pointers**: Use smart pointers instead of raw pointers.
+- **Avoid using `namespace`**: Do not use `using namespace`; be explicit with your namespaces.
+- **Variable Naming**: Follow Hungarian notation. Prefix the variable name with its data type (e.g., `uint32_t uVariable`).
+- **Descriptive Variable Names**: Variable names must clearly reflect the data they hold.
+- **Preferred Data Types**: Avoid using `int` and `unsigned int`. Instead, use fixed-width integer types like `int8_t`, `int32_t`, `uint32_t`, etc.
+
+### Example:
+
+```cpp
+int32_t iCount;  // Good
+int count;      // Bad
+
+uint8_t uFlag;  // Good
+unsigned int flag; // Bad
+```
+
+## Getting Started
+
+1. **Fork the repository** on GitHub.
+2. **Create a branch** for your work:
+   ```sh
+   git checkout -b wip/<section-name>/nickname/<message>
+   ```
+3. **Make your changes** to the code. Ensure your code adheres to our style.
+4. **Commit** your changes with a descriptive message:
+   ```sh
+   git commit -m "SECTION_NAME Description of your changes"
+   ```
+5. **Push your changes** to your fork:
+   ```sh
+   git push origin wip/<section-name>/nickname/<message>
+   ```
+6. **Create a Pull Request** via GitHub.
+
+## Testing
+
+Before submitting a pull request, ensure that your code builds successfully using MSBuild.
+
+To build the project, use the following command:
+
+```sh
+msbuild /t:Build /p:Configuration=Release
+```
+
+> Opening a pull request to main will also trigger an MSBuild action. 
+
+## Pull Request
+
+When you're ready to create a Pull Request:
+
+1. Ensure your code is up to date with the main repository:
+   ```sh
+   git checkout main
+   git pull origin main
+   git checkout wip/<section-name>/nickname/<message>
+   git rebase main
+   ```
+2. Create a Pull Request on GitHub.
+3. In the Pull Request description, provide a detailed explanation of your changes and why they are necessary.
+
+## Feedback
+
+We strive to respond promptly to all Pull Requests. Sometimes we may ask you to make additional changes or clarify details. Please feel free to ask questions if anything is unclear.
+
+## Code of Conduct
+
+Please respect all project participants and follow our [Code of Conduct]().
+
+Thank you for your contribution!
+
+---
+
+KbrdDestroyer 09.06.24
