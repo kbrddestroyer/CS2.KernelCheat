@@ -112,7 +112,7 @@ We strive to respond promptly to all Pull Requests. Sometimes we may ask you to 
 
 ## Code of Conduct
 
-Please respect all project participants and follow our [Code of Conduct]().
+Please respect all project participants and follow our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 Thank you for your contribution!
 
