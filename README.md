@@ -47,6 +47,8 @@ Please, make sure that project directory is whitelisted.
 
 # Modding & Configuring
 
+If you want to contribute, please read [contribution guideline](CONTRIBUTING.md)
+
 > I want to add custom GUI layouts, GUI elements customisation (e.g. Radarhack entity customisation). Also I want to add cheat configs w/ all the settings stored.
 
 > This section will be added soon
