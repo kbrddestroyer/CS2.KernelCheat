@@ -50,6 +50,8 @@ public:
 
 	// Aimbot
 	bool	aimbotEnabled = false;
+	float	aimbotMaxDistance = 0.0f;
+	float	aimbotSmoothness = 1.0f;
 public:
 	static SettingsTab* getInstance() { return instance; }
 

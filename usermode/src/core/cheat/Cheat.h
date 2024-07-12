@@ -127,13 +127,13 @@ namespace cheatscore
 		class AimBot : public EntityScannerDependency
 		{
 		private:
-			Vector3f mouseOffset;
+			float fSmoothness;
 		private:
-			void MoveMouse(Vector3f);
 			CSPlayerEntity& closest(std::vector<CSPlayerEntity>&, CSPlayerEntity);
-			Vector3f worldToScreenPosition(ViewMatrix, Vector3f);
 		public:
-			AimBot() : EntityScannerDependency(AIMBOT) {}
+			AimBot() : EntityScannerDependency(AIMBOT) { fSmoothness = 1; }
+
+			void setSmoothness(float fVal) { this->fSmoothness = fVal; }
 
 			void CheatUpdate(HANDLE, uintptr_t) override;
 			void Render(ImDrawList*) override;

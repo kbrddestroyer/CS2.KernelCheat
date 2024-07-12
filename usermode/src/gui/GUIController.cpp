@@ -134,6 +134,9 @@ void SettingsTab::Render()
         Cheat::Instances(AIMBOT)->toggle(this->aimbotEnabled);
     }
 
+    ImGui::SliderFloat("Aimbot Max Angle", &this->aimbotMaxDistance, 1, 360);
+    ImGui::SliderFloat("Aimbot Smooth", &this->aimbotSmoothness, 1, 125);
+
     ThreadMgr::getInstance()->getMutex().unlock();
 }
 

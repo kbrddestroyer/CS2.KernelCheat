@@ -69,7 +69,7 @@ Vector3f abs(Vector3f a)
 
 float magnitude(Vector3f a)
 {
-	return sqrt(a.x * a.x + a.y * a.y);
+	return sqrt(a.x * a.x + a.y * a.y + a.z * a.z);
 }
 
 float distance(Vector3f a, Vector3f b)
