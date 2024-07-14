@@ -2,7 +2,11 @@
 
 Attempt to improve and contribute to the development of the kbrddestroyer project on CS2 in Kernel. Still needs improvement, this is for educational purposes obviously! Be careful with your use and legal or ethical prerogatives, cheating is not good.
 
+_________________________________________________________________________________________________________________________________________________________________________________________________________________
+
 **FORK FROM:** [kbrddestroyer/CS2.KernelCheat](https://github.com/kbrddestroyer/CS2.KernelCheat)
+
+_________________________________________________________________________________________________________________________________________________________________________________________________________________
 
 ## CS2 Kernel Mode Cheat
 
@@ -66,4 +70,5 @@ I want to add custom GUI layouts, GUI elements customization (e.g., Radarhack en
 
 *This section will be added soon.*
 
+_________________________________________________________________________________________________________________________________________________________________________________________________________________
 So I have made the ImGui :)
