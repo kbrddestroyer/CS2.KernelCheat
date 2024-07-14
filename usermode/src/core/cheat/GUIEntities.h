@@ -18,8 +18,9 @@ public:
 	std::uint8_t	uTeam;
 	std::uint32_t	uHealth;
 	std::uint32_t	uArmor;
+	std::uint32_t	uIndex;
 	bool			hasHelmet;
-	bool			isSpotted;
+	std::uint32_t	isSpotted;
 	bool			isBombCarrier;
 	bool			isLocal;
 
@@ -31,7 +32,7 @@ public:
 	Vector3f		vOffset = { 1, -20 };
 public:
 	CSPlayerEntity() {}
-	CSPlayerEntity(std::string, std::uint8_t, std::uint32_t, std::uint32_t, Vector3f, Vector3f, Vector3f, QAngle, bool=false, bool=false, bool=false, bool=false);
+	CSPlayerEntity(uint32_t, std::string, std::uint8_t, std::uint32_t, std::uint32_t, Vector3f, Vector3f, Vector3f, QAngle, uint32_t=0, bool=false, bool=false, bool=false);
 	void setName(std::string name) { this->sName = name; }
 	void Render(ImDrawList*, ImVec2, float) override;
 

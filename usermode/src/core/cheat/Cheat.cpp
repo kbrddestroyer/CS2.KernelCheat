@@ -76,7 +76,7 @@ void EntityScanner::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 	uint32_t uLocalHealth = driver::read<uint32_t>(hDriver, pLocalPlayer + schemas::client_dll::C_BaseEntity::m_iHealth);
 	uint32_t uLocalArmor = driver::read<uint32_t>(hDriver, pLocalPlayer + schemas::client_dll::C_CSPlayerPawn::m_ArmorValue);
 
-	localEntity = CSPlayerEntity("Local Player", uLocalTeam, uLocalHealth, uLocalArmor, uLocalSpot, vLocalOldSpot, vLocalHeadPosition, uLocalRot, true, true);
+	localEntity = CSPlayerEntity(pLocalPlayer, "Local Player", uLocalTeam, uLocalHealth, uLocalArmor, uLocalSpot, vLocalOldSpot, vLocalHeadPosition, uLocalRot, true, true);
 	
 	for (uint32_t i = 0; i < 256; i++)
 	{
@@ -112,14 +112,16 @@ void EntityScanner::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 		uint8_t		uTeam = driver::read<uint8_t>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseEntity::m_iTeamNum);
 		uint32_t	uArmor = driver::read<uint32_t>(hDriver, uPlayerPawn + schemas::client_dll::C_CSPlayerPawn::m_ArmorValue);
 		uintptr_t	uSpottedState = driver::read<uintptr_t>(hDriver, uPlayerPawn + schemas::client_dll::C_CSPlayerPawn::m_entitySpottedState);
-		bool		isSpotted = driver::read<bool>(hDriver, uSpottedState + schemas::client_dll::EntitySpottedState_t::m_bSpottedByMask);
+		uint32_t	isSpotted = driver::read<uint32_t>(hDriver, uSpottedState + schemas::client_dll::EntitySpottedState_t::m_bSpottedByMask);
 		bool		isLocal = driver::read<bool>(hDriver, uPlayerPawn + schemas::client_dll::CBasePlayerController::m_bIsLocalPlayerController);
-
+		
 		if (!isLocal)
 		{
-			CSPlayerEntity csEntity("Player", uTeam, uHealth, uArmor, vSpot, vOldOrigin, vHeadPosition, vRot, isSpotted);
+			CSPlayerEntity csEntity(i, "Player", uTeam, uHealth, uArmor, vSpot, vOldOrigin, vHeadPosition, vRot, isSpotted);
 			vEntities.push_back(csEntity);
 		}
+		else
+			localEntity.uIndex = i;
 	}
 
 	ThreadMgr::getInstance()->getMutex().unlock();
@@ -182,7 +184,7 @@ void RadarHack::Render(ImDrawList* imDrawList)
 
 	if (bShowDebugInfo)
 	{
-		ImGui::Text("%f", localEntity.qAngle.y);
+		ImGui::Text("%d", localEntity.isSpotted);
 	}
 
 	imDrawList->AddLine({ vPosition.x, vPosition.y + vSize.y / 2 }, { vPosition.x + vSize.x, vPosition.y + vSize.y / 2 }, ImColor(255, 255, 255, 100));
@@ -193,7 +195,7 @@ void RadarHack::Render(ImDrawList* imDrawList)
 
 		if (bShowDebugInfo)
 		{
-			ImGui::Text("%f %f %f", entity.vPosition.x, entity.vPosition.y, entity.vPosition.z);
+			ImGui::Text("%d", entity.isSpotted);
 		}
 		// 1. Count in-game distance
 		Vector3f vDistance = entity.vPosition - localEntity.vPosition;
@@ -289,7 +291,7 @@ void AimBot::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 	CSPlayerEntity& closestEntity = closest(entities, localEntity);
 	if (closestEntity.isLocal)
 		return;
-	if (!closestEntity.isSpotted)
+	if (!(closestEntity.isSpotted))
 		return;
 
 	float fDistance = distance(closestEntity.vHeadPosition, localEntity.vHeadPosition);

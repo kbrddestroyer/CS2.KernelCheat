@@ -1,8 +1,9 @@
 #include "GUIEntities.h"
 #include "../gui/GUIController.h"
 
-CSPlayerEntity::CSPlayerEntity(std::string sName, std::uint8_t uTeam, std::uint32_t uHealth, std::uint32_t uArmor, Vector3f vPos, Vector3f vOldPos, Vector3f vHeadPosition, QAngle qRot, bool isSpotted, bool isLocal, bool hasHelmet, bool isBombCarrier)
+CSPlayerEntity::CSPlayerEntity(uint32_t uIndex, std::string sName, std::uint8_t uTeam, std::uint32_t uHealth, std::uint32_t uArmor, Vector3f vPos, Vector3f vOldPos, Vector3f vHeadPosition, QAngle qRot, uint32_t isSpotted, bool isLocal, bool hasHelmet, bool isBombCarrier)
 {
+	this->uIndex		= uIndex;
 	this->sName			= sName;
 	this->uTeam			= uTeam;
 	this->uHealth		= uHealth;
