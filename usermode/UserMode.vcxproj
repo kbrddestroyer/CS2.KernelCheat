@@ -166,6 +166,11 @@
     <ClCompile Include="src\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\logger\UMLogger.cpp" />
     <ClCompile Include="src\core\cheat\ThreadController.cpp" />
+    <ClCompile Include="src\mapper\intel_driver.cpp" />
+    <ClCompile Include="src\mapper\kdmapper.cpp" />
+    <ClCompile Include="src\mapper\portable_executable.cpp" />
+    <ClCompile Include="src\mapper\service.cpp" />
+    <ClCompile Include="src\mapper\utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\kernelmode\src\kutils.h" />
@@ -189,6 +194,13 @@
     <ClInclude Include="src\imgui\imstb_truetype.h" />
     <ClInclude Include="src\core\utils.h" />
     <ClInclude Include="src\logger\UMLogger.h" />
+    <ClInclude Include="src\mapper\include\intel_driver.hpp" />
+    <ClInclude Include="src\mapper\include\intel_driver_resource.hpp" />
+    <ClInclude Include="src\mapper\include\kdmapper.hpp" />
+    <ClInclude Include="src\mapper\include\nt.hpp" />
+    <ClInclude Include="src\mapper\include\portable_executable.hpp" />
+    <ClInclude Include="src\mapper\include\service.hpp" />
+    <ClInclude Include="src\mapper\include\utils.hpp" />
     <ClInclude Include="src\offsets.hpp" />
     <ClInclude Include="src\core\cheat\ThreadController.h" />
   </ItemGroup>

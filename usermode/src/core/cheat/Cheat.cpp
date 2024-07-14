@@ -29,10 +29,7 @@ void BhopCheat::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 		driver::write(hDriver, uClient + buttons::jump, MEM_PRESSED);
 		driver::write(hDriver, uClient + buttons::duck, MEM_PRESSED);
 	}
-	else if (
-		(bSpace && !bInAir) ||
-		(!bSpace && forceJump == 65537)
-		)
+	else if ((bSpace && !bInAir) || (!bSpace && forceJump == 65537))
 	{
 		driver::write(hDriver, uClient + buttons::jump, MEM_RELEASED);
 		driver::write(hDriver, uClient + buttons::duck, MEM_RELEASED);

@@ -3,6 +3,31 @@
 using namespace cheatscore::core;
 using namespace cheatscore::utility;
 
+extern bool menuShow;
+extern bool safeExit;
+
+void ApplyTheme(int themeIndex)
+{
+    switch (themeIndex)
+    {
+    case 0:
+        ImGui::StyleColorsDark();
+        break;
+    case 1:
+        ImGui::StyleColorsLight();
+        break;
+    case 2:
+        ImGui::StyleColorsClassic();
+        break;
+    case 3:
+        ImGui::StyleColorsModernApple();
+        break;
+    default:
+        ImGui::StyleColorsDark();
+        break;
+    }
+}
+
 GUIController::GUIController()
 {
     throw "Call GUIController constructor without parameter";
@@ -12,9 +37,7 @@ GUIController::GUIController(ImGuiIO& io)
 {
     this->io = io;
     instance = this;
-    //vChildGUIs.push_back(std::make_shared<OverlayController>(io));
-    
-	Initialize();
+    Initialize();
 }
 
 void GUIController::Initialize()
@@ -31,35 +54,49 @@ void GUIController::Update()
 
 void GUIController::Render()
 {
-#pragma region SETTINGS_TAB
-    {   
-        ImGui::Begin("GUI Settigns");
-        ImGui::ColorEdit3("Background color", (float*)&clear_color);
-
-        ImGui::Text("INFORMATION:");
-        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-    }
-#pragma endregion
-    
-#pragma region CORE_CONTROL_TAB
+    if (menuShow)
     {
-        ImGui::Begin("Core");
-        if (ImGui::Button("ATTACH"))
+        ImGui::SetNextWindowSize(windowSize, ImGuiCond_Always);
+        if (ImGui::Begin("kbrddestroyer kernel | cs2 | external", nullptr, ImGuiWindowFlags_NoCollapse))
         {
-            if (kmControllerEntry() == EXIT_SUCCESS)
+            if (ImGui::BeginTabBar("##tabs"))
             {
-                bAttached = true;
+                if (ImGui::BeginTabItem("Settings"))
+                {
+                    settings.Render();
+                    ImGui::EndTabItem();
+                }
+                if (ImGui::BeginTabItem("Theme"))
+                {
+                    static int themeIndex = 0;
+                    const char* themes[] = { "Dark", "Light", "Classic", "Modern Apple Light" };
+
+                    ImGui::Text("Select Theme:");
+                    if (ImGui::Combo("Theme", &themeIndex, themes, IM_ARRAYSIZE(themes)))
+                    {
+                        ApplyTheme(themeIndex);
+                    }
+
+                    ImGui::Text("Window Size");
+                    ImGui::SliderFloat2("Size", (float*)&windowSize, 400.0f, 1200.0f);
+
+                    ImGui::EndTabItem();
+                }
+
+                ImGui::EndTabBar();
             }
+
+            ImGui::End();
         }
-
-        ImGui::End();
-
-        controller.InternalUpdate();
-        settings.InternalUpdate();
     }
-#pragma endregion
-    Update();
-    ImGui::End();
+    if (settings.radarhackEnabled)
+    {
+        ImGui::SetNextWindowSize(ImVec2(200, 200), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowBgAlpha(0.0f);
+        ImGui::Begin("Radar", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse);
+        controller.InternalUpdate();
+        ImGui::End();
+    }
 }
 
 void ChildGUIController::InternalUpdate()
@@ -69,7 +106,6 @@ void ChildGUIController::InternalUpdate()
     vWndPos = ImGui::GetWindowPos();
     Render();
     Update();
-
     ImGui::End();
 }
 
@@ -91,7 +127,8 @@ void CheatRenderer::Update()
 void SettingsTab::Render()
 {
     ThreadMgr::getInstance()->getMutex().lock();
-    ImGui::Text("Radarhack section");
+
+    ImGui::Text("Radar Hack");
     ImGui::Separator();
 
     if (ImGui::Checkbox("Radar Enabled", &this->radarhackEnabled))
@@ -104,7 +141,7 @@ void SettingsTab::Render()
     ImGui::ColorEdit4("T Color", tColor);
 
     ImGui::Separator();
-    ImGui::Text("Bunnyhop section");
+    ImGui::Text("BunnyHop");
     ImGui::Separator();
 
     if (ImGui::Checkbox("Bhop Enabled", &this->bhopEnabled))
@@ -115,7 +152,7 @@ void SettingsTab::Render()
     }
 
     ImGui::Separator();
-    ImGui::Text("Trigger section");
+    ImGui::Text("Trigger Bot");
     ImGui::Separator();
 
     if (ImGui::Checkbox("Trigger Enabled", &this->triggerEnabled))
@@ -125,12 +162,11 @@ void SettingsTab::Render()
         else Cheat::Instances(TRIGGER)->toggle(this->triggerEnabled);
     }
 
-    ImGui::SliderInt("Trigger discipline", &this->triggerDelay, 10, 250);
+    ImGui::SliderInt("Trigger Delay", &this->triggerDelay, 10, 250);
 
     ThreadMgr::getInstance()->getMutex().unlock();
 }
 
 void SettingsTab::Update()
 {
-
 }

@@ -1,144 +1,182 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Исходные файлы">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Файлы заголовков">
+    <Filter Include="Headers">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="Файлы ресурсов">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="Source">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source\mapper">
+      <UniqueIdentifier>{f96b7621-a45b-4032-9bb1-783cc51ff2ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\mapper header">
+      <UniqueIdentifier>{32f6ce7b-6bb8-4940-9c51-63a0edcca3fe}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\autoupdate_tool.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\imgui\imgui.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\imgui\imgui_demo.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\imgui\imgui_draw.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\imgui\imgui_tables.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\imgui\imgui_widgets.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\imgui\imgui_impl_win32.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\imgui\imgui_impl_dx9.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\gui\GUIController.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\logger\UMLogger.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\core\km_mailbox.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\core\DriverHandler.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\core\cheat\ThreadController.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\core\cheat\Cheat.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\core\utility\CheatUtilities.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\core\utility\custom_types.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\core\cheat\GUIEntities.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mapper\intel_driver.cpp">
+      <Filter>Source\mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mapper\kdmapper.cpp">
+      <Filter>Source\mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mapper\portable_executable.cpp">
+      <Filter>Source\mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mapper\service.cpp">
+      <Filter>Source\mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mapper\utils.cpp">
+      <Filter>Source\mapper</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\utils.h">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="..\kernelmode\src\kutils.h">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\core\constants.h">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\imgui\imconfig.h">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\imgui\imgui.h">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\imgui\imgui_internal.h">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\imgui\imstb_rectpack.h">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\imgui\imstb_textedit.h">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\imgui\imstb_truetype.h">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\imgui\imgui_impl_win32.h">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\imgui\imgui_impl_dx9.h">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\gui\GUIController.h">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\logger\UMLogger.h">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\core\km_mailbox.h">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\client.dll.hpp">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\offsets.hpp">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\buttons.hpp">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\core\DriverHandler.h">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\core\cheat\ThreadController.h">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\core\cheat\Cheat.h">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\core\utility\custom_types.h">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\core\utility\CheatUtilities.h">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\core\cheat\GUIEntities.h">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mapper\include\intel_driver.hpp">
+      <Filter>Headers\mapper header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mapper\include\intel_driver_resource.hpp">
+      <Filter>Headers\mapper header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mapper\include\kdmapper.hpp">
+      <Filter>Headers\mapper header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mapper\include\nt.hpp">
+      <Filter>Headers\mapper header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mapper\include\portable_executable.hpp">
+      <Filter>Headers\mapper header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mapper\include\service.hpp">
+      <Filter>Headers\mapper header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mapper\include\utils.hpp">
+      <Filter>Headers\mapper header</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
