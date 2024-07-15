@@ -65,7 +65,7 @@ private:
 	ImGuiIO io;
 	ImVec4 clear_color = ImVec4(0.15f, 0.15f, 0.15f, 1.00f);
 
-	bool bAttached = false;
+	bool bAttached = true;
 	bool bEnableChildren = false;
 	SettingsTab settings;	
 	CheatRenderer controller;
