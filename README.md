@@ -10,11 +10,14 @@ I am **NOT** responsible for your system crashes, VAC blocks, etc. This software
 #fixcs2 #fixcsgo
 
 # Credits
+## Used software
 - dear ImGui 
 - kdmapper project
 - patched kdmapper that I used in development 
 - a2x and cs2 offsets dumper
 - cazzwastaken and YouTube tutorial for basic KernelMode application 
+## Active contributors
+- [Leksa667](https://github.com/Leksa667)
 
 # Requirements
 - [KDMapper](https://github.com/TheCruZ/kdmapper)
