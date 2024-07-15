@@ -12,9 +12,7 @@ GUIController::GUIController(ImGuiIO& io)
 {
     this->io = io;
     instance = this;
-    //vChildGUIs.push_back(std::make_shared<OverlayController>(io));
-    
-	Initialize();
+    Initialize();
 }
 
 void GUIController::Initialize()
@@ -31,35 +29,32 @@ void GUIController::Update()
 
 void GUIController::Render()
 {
-#pragma region SETTINGS_TAB
-    {   
-        ImGui::Begin("GUI Settigns");
-        ImGui::ColorEdit3("Background color", (float*)&clear_color);
-
-        ImGui::Text("INFORMATION:");
-        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-    }
-#pragma endregion
-    
-#pragma region CORE_CONTROL_TAB
+    if (menuShow)
     {
-        ImGui::Begin("Core");
-        if (ImGui::Button("ATTACH"))
+        if (ImGui::Begin("kbrddestroyer kernel | cs2 | external", nullptr, ImGuiWindowFlags_NoCollapse))
         {
-            if (kmControllerEntry() == EXIT_SUCCESS)
+            if (ImGui::BeginTabBar("##tabs"))
             {
-                bAttached = true;
+                if (ImGui::BeginTabItem("Settings"))
+                {
+                    settings.Render();
+                    ImGui::EndTabItem();
+                }
+
+                ImGui::EndTabBar();
             }
+
+            ImGui::End();
         }
-
-        ImGui::End();
-
-        controller.InternalUpdate();
-        settings.InternalUpdate();
     }
-#pragma endregion
-    Update();
-    ImGui::End();
+    if (settings.radarhackEnabled)
+    {
+        ImGui::SetNextWindowSize(ImVec2(200, 200), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowBgAlpha(0.0f);
+        ImGui::Begin("Radar", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse);
+        controller.InternalUpdate();
+        ImGui::End();
+    }
 }
 
 void ChildGUIController::InternalUpdate()
@@ -69,7 +64,6 @@ void ChildGUIController::InternalUpdate()
     vWndPos = ImGui::GetWindowPos();
     Render();
     Update();
-
     ImGui::End();
 }
 
@@ -91,46 +85,46 @@ void CheatRenderer::Update()
 void SettingsTab::Render()
 {
     ThreadMgr::getInstance()->getMutex().lock();
-    ImGui::Text("Radarhack section");
+
+    ImGui::Text("Radar Hack");
     ImGui::Separator();
 
     if (ImGui::Checkbox("Radar Enabled", &this->radarhackEnabled))
     {
         if (!Cheat::Instances(CheatEntities::RADAR))
             ThreadedObject::createObject(std::make_shared<RadarHack>());
-        else Cheat::Instances(RADAR)->toggle(this->radarhackEnabled);
+        Cheat::Instances(RADAR)->toggle(this->radarhackEnabled);
     }
     ImGui::ColorEdit4("CT Color", ctColor);
     ImGui::ColorEdit4("T Color", tColor);
 
     ImGui::Separator();
-    ImGui::Text("Bunnyhop section");
+    ImGui::Text("BunnyHop");
     ImGui::Separator();
 
     if (ImGui::Checkbox("Bhop Enabled", &this->bhopEnabled))
     {
         if (!Cheat::Instances(CheatEntities::BHOP))
             ThreadedObject::createObject(std::make_shared<BhopCheat>());
-        else Cheat::Instances(BHOP)->toggle(this->bhopEnabled);
+        Cheat::Instances(BHOP)->toggle(this->bhopEnabled);
     }
 
     ImGui::Separator();
-    ImGui::Text("Trigger section");
+    ImGui::Text("Trigger Bot");
     ImGui::Separator();
 
     if (ImGui::Checkbox("Trigger Enabled", &this->triggerEnabled))
     {
         if (!Cheat::Instances(CheatEntities::TRIGGER))
             ThreadedObject::createObject(std::make_shared<TriggerBot>());
-        else Cheat::Instances(TRIGGER)->toggle(this->triggerEnabled);
+        Cheat::Instances(TRIGGER)->toggle(this->triggerEnabled);
     }
 
-    ImGui::SliderInt("Trigger discipline", &this->triggerDelay, 10, 250);
+    ImGui::SliderInt("Trigger Delay", &this->triggerDelay, 10, 250);
 
     ThreadMgr::getInstance()->getMutex().unlock();
 }
 
 void SettingsTab::Update()
 {
-
 }

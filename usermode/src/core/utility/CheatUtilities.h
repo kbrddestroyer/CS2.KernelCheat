@@ -2,7 +2,7 @@
 #include "../../imgui/imgui.h"
 #include "custom_types.h"
 
-#define MAX_MAX_COORD 3000
+#define MAX_MAX_COORD 2000
 #define MARGIN 50
 
 ImVec2 gameToGUIPoint(Vector3f, ImVec2 = { -MAX_MAX_COORD, -MAX_MAX_COORD }, ImVec2 = {MAX_MAX_COORD, MAX_MAX_COORD});

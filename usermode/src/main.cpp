@@ -107,8 +107,10 @@ void InputHandler() {
 void Render(GUIController& controller)
 {
     if (GetAsyncKeyState(VK_INSERT) & 1)
+    {
         menuShow = !menuShow;
-
+        GUIController::Instance()->toggle(menuShow);
+    }
     if (GetAsyncKeyState(VK_END) & 1)
         safeExit = true;
 
@@ -347,6 +349,11 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
     ThreadMgr thManager;
     thManager.Start();
+
+    if (kmControllerEntry() != EXIT_SUCCESS)
+    {
+        return 1;
+    }
 
     MainLoop(controller);
 

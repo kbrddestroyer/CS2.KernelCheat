@@ -71,6 +71,7 @@ private:
 	CheatRenderer controller;
 	std::vector<std::shared_ptr<ChildGUIController>> vChildren;
 protected:
+	bool menuShow = true;
 	virtual void Initialize();
 public:
 	GUIController();
@@ -82,6 +83,9 @@ public:
 	void Add(std::shared_ptr<ChildGUIController> child) { vChildren.push_back(child); }
 
 	ImVec4 getClearColor() { return clear_color; }
+
+	void toggle(bool bState) { menuShow = bState; }
+	bool getState() { return menuShow; }
 
 	static GUIController* Instance() { return instance; }
 };
