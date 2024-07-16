@@ -66,17 +66,18 @@ void ThreadController::Start()
 
 void ThreadController::Update()
 {
-	ThreadMgr::getInstance()->getMutex().lock();
-
 	if (hDriver && uClient && ThreadMgr::getInstance())
-		for (PThreadedObject ob : vCallstack)
+	{
+		ThreadMgr::getInstance()->getMutex().lock();
+		const std::vector<PThreadedObject>& callstack = vCallstack;
+		ThreadMgr::getInstance()->getMutex().unlock();
+
+		for (PThreadedObject ob : callstack)
 		{
 			ob->Update(hDriver, uClient);
 		}
-
+	}
 	std::this_thread::yield();
-	ThreadMgr::getInstance()->getMutex().unlock();
-	std::this_thread::sleep_for(std::chrono::milliseconds(10));
 }
 
 void ThreadController::Stop()
@@ -93,11 +94,7 @@ void ThreadController::Stop()
 
 void ThreadController::resize()
 {
-	for (std::vector<PThreadedObject>::iterator i = vCallstack.begin(); i < vCallstack.end(); i++)
-	{
-		if (*i == nullptr)
-			vCallstack.erase(i);
-	}
+
 }
 
 void ThreadController::addElement(PThreadedObject ob)

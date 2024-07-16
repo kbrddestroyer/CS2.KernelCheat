@@ -92,40 +92,50 @@ void SettingsTab::Render()
 {
     ThreadMgr::getInstance()->getMutex().lock();
     ImGui::Text("Radarhack section");
-    ImGui::Separator();
 
     if (ImGui::Checkbox("Radar Enabled", &this->radarhackEnabled))
     {
         if (!Cheat::Instances(CheatEntities::RADAR))
             ThreadedObject::createObject(std::make_shared<RadarHack>());
-        else Cheat::Instances(RADAR)->toggle(this->radarhackEnabled);
+        Cheat::Instances(RADAR)->toggle(this->radarhackEnabled);
     }
     ImGui::ColorEdit4("CT Color", ctColor);
     ImGui::ColorEdit4("T Color", tColor);
 
     ImGui::Separator();
     ImGui::Text("Bunnyhop section");
-    ImGui::Separator();
 
     if (ImGui::Checkbox("Bhop Enabled", &this->bhopEnabled))
     {
         if (!Cheat::Instances(CheatEntities::BHOP))
             ThreadedObject::createObject(std::make_shared<BhopCheat>());
-        else Cheat::Instances(BHOP)->toggle(this->bhopEnabled);
+        Cheat::Instances(BHOP)->toggle(this->bhopEnabled);
     }
 
     ImGui::Separator();
     ImGui::Text("Trigger section");
-    ImGui::Separator();
 
     if (ImGui::Checkbox("Trigger Enabled", &this->triggerEnabled))
     {
         if (!Cheat::Instances(CheatEntities::TRIGGER))
             ThreadedObject::createObject(std::make_shared<TriggerBot>());
-        else Cheat::Instances(TRIGGER)->toggle(this->triggerEnabled);
+        Cheat::Instances(TRIGGER)->toggle(this->triggerEnabled);
     }
 
     ImGui::SliderInt("Trigger discipline", &this->triggerDelay, 10, 250);
+
+    ImGui::Separator();
+    ImGui::Text("Aimbot section");
+
+    if (ImGui::Checkbox("Aim Enabled", &this->aimbotEnabled))
+    {
+        if (!Cheat::Instances(CheatEntities::AIMBOT))
+            ThreadedObject::createObject(std::make_shared<AimBot>());
+        Cheat::Instances(AIMBOT)->toggle(this->aimbotEnabled);
+    }
+
+    ImGui::SliderFloat("Aimbot Max Angle", &this->aimbotMaxDistance, 1, 360);
+    ImGui::SliderFloat("Aimbot Smooth", &this->aimbotSmoothness, 1, 125);
 
     ThreadMgr::getInstance()->getMutex().unlock();
 }

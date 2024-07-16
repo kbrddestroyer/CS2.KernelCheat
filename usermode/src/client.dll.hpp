@@ -1,5 +1,5 @@
 // Generated using https://github.com/a2x/cs2-dumper
-// 2024-07-02 23:05:48.145541400 UTC
+// 2024-07-16 18:29:38.160773300 UTC
 
 #pragma once
 
@@ -684,7 +684,7 @@ namespace cs2_dumper {
                 constexpr std::ptrdiff_t m_nSceneStringIndex = 0x558; // uint16
                 constexpr std::ptrdiff_t m_bClientOnly = 0x55A; // bool
                 constexpr std::ptrdiff_t m_hOwner = 0x55C; // CHandle<C_BaseFlex>
-                constexpr std::ptrdiff_t m_hActorList = 0x560; // C_NetworkUtlVectorBase<CHandle<
+                constexpr std::ptrdiff_t m_hActorList = 0x560; // C_NetworkUtlVectorBase<CHandle<C_BaseFlex>>
                 constexpr std::ptrdiff_t m_bWasPlaying = 0x578; // bool
                 constexpr std::ptrdiff_t m_QueuedEvents = 0x588; // CUtlVector<C_SceneEntity::QueuedEvents_t>
                 constexpr std::ptrdiff_t m_flCurrentTime = 0x5A0; // float32
@@ -2801,7 +2801,7 @@ namespace cs2_dumper {
                 constexpr std::ptrdiff_t m_bApplyWind = 0xCD8; // bool
                 constexpr std::ptrdiff_t m_fPrevLockedPoints = 0xCDC; // int32
                 constexpr std::ptrdiff_t m_iForcePointMoveCounter = 0xCE0; // int32
-                constexpr std::ptrdiff_t m_bPrevEndPointPos = 0xCE4; // bool[2]
+                constexpr std::ptrdiff_t m_bPrevEndPointPos = 0xCE4; // 
                 constexpr std::ptrdiff_t m_vPrevEndPointPos = 0xCE8; // Vector[2]
                 constexpr std::ptrdiff_t m_flCurScroll = 0xD00; // float32
                 constexpr std::ptrdiff_t m_flScrollSpeed = 0xD04; // float32

@@ -49,6 +49,7 @@ void EntityScanner::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 	if (callCount == 0)
 		return;
 
+	ThreadMgr::getInstance()->getMutex().lock();
 	uintptr_t uEntityList = driver::read<uintptr_t>(hDriver, uClient + offsets::client_dll::dwEntityList);
 
 	if (!uEntityList)
@@ -66,14 +67,17 @@ void EntityScanner::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 		return;
 
 	Vector3f uLocalSpot = driver::read<Vector3f>(hDriver, uLocalGameSceneNode + schemas::client_dll::CGameSceneNode::m_vecAbsOrigin);
-	QAngle uLocalRot = driver::read<QAngle>(hDriver, uLocalGameSceneNode + schemas::client_dll::CGameSceneNode::m_angRotation);
+	Vector3f vLocalOldSpot = driver::read<Vector3f>(hDriver, pLocalPlayer + schemas::client_dll::C_BasePlayerPawn::m_vOldOrigin);
+	Vector3f vLocalHeadOffset = driver::read<Vector3f>(hDriver, pLocalPlayer + schemas::client_dll::C_BaseModelEntity::m_vecViewOffset);
+	Vector3f vLocalHeadPosition = vLocalOldSpot + vLocalHeadOffset;
+	QAngle	 uLocalRot = driver::read<QAngle>(hDriver, uLocalGameSceneNode + schemas::client_dll::CGameSceneNode::m_angRotation);
 
-	uint8_t uLocalTeam = driver::read<uint8_t>(hDriver, pLocalPlayer + schemas::client_dll::C_BaseEntity::m_iTeamNum);
+	uint8_t  uLocalTeam = driver::read<uint8_t>(hDriver, pLocalPlayer + schemas::client_dll::C_BaseEntity::m_iTeamNum);
 	uint32_t uLocalHealth = driver::read<uint32_t>(hDriver, pLocalPlayer + schemas::client_dll::C_BaseEntity::m_iHealth);
 	uint32_t uLocalArmor = driver::read<uint32_t>(hDriver, pLocalPlayer + schemas::client_dll::C_CSPlayerPawn::m_ArmorValue);
 
-	localEntity = CSPlayerEntity("Local Player", uLocalTeam, uLocalHealth, uLocalArmor, uLocalSpot, uLocalRot);
-
+	localEntity = CSPlayerEntity(pLocalPlayer, "Local Player", uLocalTeam, uLocalHealth, uLocalArmor, uLocalSpot, vLocalOldSpot, vLocalHeadPosition, uLocalRot, true, true);
+	
 	for (uint32_t i = 0; i < 256; i++)
 	{
 		uintptr_t pEntityListEntry = driver::read<uintptr_t>(hDriver, uEntityList + (8 * (i & 0x7FF) >> 9) + 16);
@@ -89,7 +93,10 @@ void EntityScanner::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 		uintptr_t uPlayerPawn = driver::read<uintptr_t>(hDriver, pEntityListEntry + 120 * (uPlayerPawnIndex & 0x1FF));
 
 		if (!uPlayerPawn || uPlayerPawn == pLocalPlayer)
+		{
+			localEntity.uIndex = i;
 			continue;
+		}
 
 		uintptr_t uGameSceneNode = driver::read<uintptr_t>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseEntity::m_pGameSceneNode);
 
@@ -100,17 +107,21 @@ void EntityScanner::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 		if (uHealth <= 0 || uHealth > 100)
 			continue;
 
-		Vector3f uSpot = driver::read<Vector3f>(hDriver, uGameSceneNode + schemas::client_dll::CGameSceneNode::m_vecAbsOrigin);
-		QAngle uRot = driver::read<QAngle>(hDriver, uGameSceneNode + schemas::client_dll::CGameSceneNode::m_angRotation);
+		Vector3f	vSpot = driver::read<Vector3f>(hDriver, uGameSceneNode + schemas::client_dll::CGameSceneNode::m_vecAbsOrigin);
+		Vector3f	vOldOrigin = driver::read<Vector3f>(hDriver, uPlayerPawn + schemas::client_dll::C_BasePlayerPawn::m_vOldOrigin);
+		QAngle		vRot = driver::read<QAngle>(hDriver, uGameSceneNode + schemas::client_dll::CGameSceneNode::m_angRotation);
+		Vector3f    vHeadOffset = driver::read<Vector3f>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseModelEntity::m_vecViewOffset);
+		Vector3f	vHeadPosition = vOldOrigin + vHeadOffset;
+		uint8_t		uTeam = driver::read<uint8_t>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseEntity::m_iTeamNum);
+		uint32_t	uArmor = driver::read<uint32_t>(hDriver, uPlayerPawn + schemas::client_dll::C_CSPlayerPawn::m_ArmorValue);
+		uint32_t	isSpotted = driver::read<uint32_t>(hDriver, uPlayerPawn + schemas::client_dll::C_CSPlayerPawn::m_entitySpottedState + schemas::client_dll::EntitySpottedState_t::m_bSpottedByMask);
 
-		uint8_t uTeam = driver::read<uint8_t>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseEntity::m_iTeamNum);
-		uint32_t uArmor = driver::read<uint32_t>(hDriver, uPlayerPawn + schemas::client_dll::C_CSPlayerPawn::m_ArmorValue);
-
-		CSPlayerEntity csEntity("Player", uTeam, uHealth, uArmor, uSpot, uRot);
+		CSPlayerEntity csEntity(i, "Player", uTeam, uHealth, uArmor, vSpot, vOldOrigin, vHeadPosition, vRot, isSpotted);
 		vEntities.push_back(csEntity);
 	}
 
-	std::this_thread::sleep_for(std::chrono::milliseconds(CFG_BHOP_DELAY));
+	ThreadMgr::getInstance()->getMutex().unlock();
+	std::this_thread::yield();
 }
 
 void EntityScanner::Render(ImDrawList* imDrawList)
@@ -169,7 +180,7 @@ void RadarHack::Render(ImDrawList* imDrawList)
 
 	if (bShowDebugInfo)
 	{
-		ImGui::Text("%f", localEntity.qAngle.y);
+		ImGui::Text("%d", localEntity.isSpotted);
 	}
 
 	imDrawList->AddLine({ vPosition.x, vPosition.y + vSize.y / 2 }, { vPosition.x + vSize.x, vPosition.y + vSize.y / 2 }, ImColor(255, 255, 255, 100));
@@ -180,7 +191,7 @@ void RadarHack::Render(ImDrawList* imDrawList)
 
 		if (bShowDebugInfo)
 		{
-			ImGui::Text("%f %f %f", entity.vPosition.x, entity.vPosition.y, entity.vPosition.z);
+			ImGui::Text("%d", entity.isSpotted);
 		}
 		// 1. Count in-game distance
 		Vector3f vDistance = entity.vPosition - localEntity.vPosition;
@@ -236,3 +247,61 @@ void TriggerBot::Render(ImDrawList* imDrawList)
 {
 
 }
+
+CSPlayerEntity& AimBot::closest(std::vector<CSPlayerEntity>& entityList, CSPlayerEntity localPlayer)
+{
+	if (entityList.size() == 0)
+		return localPlayer;
+
+	CSPlayerEntity& closestEntity = localPlayer;
+	float fDistance = -1;
+	for (const CSPlayerEntity& entity : entityList)
+	{
+		if (! (entity.isSpotted & (1 << localPlayer.uIndex - 1)))
+			continue;
+		if (entity.uTeam == 0 || entity.uTeam == localPlayer.uTeam)
+			continue;
+		if (entity.uHealth == 0)
+			continue;
+
+		float fCurrDistance = distance(localPlayer.vHeadPosition, entity.vHeadPosition);
+		if (fCurrDistance < fDistance || fDistance < 0)
+		{
+			fCurrDistance = fDistance;
+			closestEntity = entity;
+		}
+	}
+
+	return closestEntity;
+}
+
+void AimBot::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
+{
+	CSPlayerEntity localEntity = EntityScanner::getInstance()->getLocalEntity();
+
+	if (localEntity.uHealth == 0)
+		return;
+
+	std::vector<CSPlayerEntity> entities = EntityScanner::getInstance()->getEntities();
+	
+	CSPlayerEntity& closestEntity = closest(entities, localEntity);
+	if (closestEntity.isLocal)
+		return;
+	if (!(closestEntity.isSpotted))
+		return;
+
+	float fDistance = distance(closestEntity.vHeadPosition, localEntity.vHeadPosition);
+
+	Vector3f vOffset = closestEntity.vHeadPosition - localEntity.vHeadPosition;
+	QAngle angle = toAngle(closestEntity.vHeadPosition - localEntity.vHeadPosition);
+
+	QAngle oldAngle = driver::read<QAngle>(hDriver, uClient + offsets::client_dll::dwViewAngles);
+	QAngle delta = oldAngle - angle;
+	QAngle newAngle = oldAngle - delta / fSmoothness;
+
+	driver::write<QAngle>(hDriver, uClient + offsets::client_dll::dwViewAngles, newAngle);
+	
+	std::this_thread::yield();
+}
+
+void AimBot::Render(ImDrawList* imDrawList) {}
