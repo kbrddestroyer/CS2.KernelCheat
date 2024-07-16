@@ -29,6 +29,8 @@ void GUIController::Update()
 
 void GUIController::Render()
 {
+    io.MouseDrawCursor = menuShow;
+
     if (menuShow)
     {
         if (ImGui::Begin("kbrddestroyer kernel | cs2 | external", nullptr, ImGuiWindowFlags_NoCollapse))
@@ -89,18 +91,37 @@ void SettingsTab::Render()
     ImGui::Text("Radar Hack");
     ImGui::Separator();
 
+    if (GetAsyncKeyState(VK_F1) & 1)
+    {
+        this->radarhackEnabled = !this->radarhackEnabled;
+
+        if (!Cheat::Instances(CheatEntities::RADAR))
+            ThreadedObject::createObject(std::make_shared<RadarHack>());
+        Cheat::Instances(RADAR)->toggle(this->radarhackEnabled);
+    }
+
     if (ImGui::Checkbox("Radar Enabled", &this->radarhackEnabled))
     {
         if (!Cheat::Instances(CheatEntities::RADAR))
             ThreadedObject::createObject(std::make_shared<RadarHack>());
         Cheat::Instances(RADAR)->toggle(this->radarhackEnabled);
     }
+
     ImGui::ColorEdit4("CT Color", ctColor);
     ImGui::ColorEdit4("T Color", tColor);
 
     ImGui::Separator();
     ImGui::Text("BunnyHop");
     ImGui::Separator();
+
+    if (GetAsyncKeyState(VK_F2) & 1)
+    {
+        this->bhopEnabled = !this->bhopEnabled;
+
+        if (!Cheat::Instances(CheatEntities::BHOP))
+            ThreadedObject::createObject(std::make_shared<BhopCheat>());
+        Cheat::Instances(BHOP)->toggle(this->bhopEnabled);
+    }
 
     if (ImGui::Checkbox("Bhop Enabled", &this->bhopEnabled))
     {
@@ -113,6 +134,15 @@ void SettingsTab::Render()
     ImGui::Text("Trigger Bot");
     ImGui::Separator();
 
+    if (GetAsyncKeyState(VK_F3) & 1)
+    {
+        this->triggerEnabled = !this->triggerEnabled;
+
+        if (!Cheat::Instances(CheatEntities::TRIGGER))
+            ThreadedObject::createObject(std::make_shared<TriggerBot>());
+        Cheat::Instances(TRIGGER)->toggle(this->triggerEnabled);
+    }
+
     if (ImGui::Checkbox("Trigger Enabled", &this->triggerEnabled))
     {
         if (!Cheat::Instances(CheatEntities::TRIGGER))
@@ -121,6 +151,16 @@ void SettingsTab::Render()
     }
 
     ImGui::SliderInt("Trigger Delay", &this->triggerDelay, 10, 250);
+
+    if (GetAsyncKeyState(VK_OEM_PLUS) & 1)
+    {
+        this->triggerDelay = std::clamp(this->triggerDelay + 10, 10, 250);
+    }
+
+    if (GetAsyncKeyState(VK_OEM_MINUS) & 1)
+    {
+        this->triggerDelay = std::clamp(this->triggerDelay - 10, 10, 250);
+    }
 
     ThreadMgr::getInstance()->getMutex().unlock();
 }

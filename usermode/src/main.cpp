@@ -16,7 +16,6 @@
 #pragma comment(lib, "d3d9.lib")
 #pragma comment(lib, "dwmapi.lib")
 
-bool menuShow = true;
 bool safeExit = false;
 bool driverLoaded = false;
 HWND _HWND = NULL;
@@ -108,8 +107,7 @@ void Render(GUIController& controller)
 {
     if (GetAsyncKeyState(VK_INSERT) & 1)
     {
-        menuShow = !menuShow;
-        GUIController::Instance()->toggle(menuShow);
+        GUIController::Instance()->toggle(!GUIController::Instance()->getState());
     }
     if (GetAsyncKeyState(VK_END) & 1)
         safeExit = true;
@@ -117,7 +115,6 @@ void Render(GUIController& controller)
     ImGui_ImplDX9_NewFrame();
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
-    ImGui::GetIO().MouseDrawCursor = menuShow;
 
     controller.Render();
 

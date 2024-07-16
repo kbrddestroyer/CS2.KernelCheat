@@ -20,8 +20,6 @@ int kmControllerEntry()
 
 	if (driver::attach(hDriverHandle, dPid) == true)
 	{
-		MessageBox(NULL, L"Succecssfully attached kernelmode to target", L"Success", MB_ICONINFORMATION | MB_OK);
-
 		initialize(hDriverHandle, dPid);
 	}
 
