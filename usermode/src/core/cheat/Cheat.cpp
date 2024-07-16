@@ -93,7 +93,10 @@ void EntityScanner::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 		uintptr_t uPlayerPawn = driver::read<uintptr_t>(hDriver, pEntityListEntry + 120 * (uPlayerPawnIndex & 0x1FF));
 
 		if (!uPlayerPawn || uPlayerPawn == pLocalPlayer)
+		{
+			localEntity.uIndex = i;
 			continue;
+		}
 
 		uintptr_t uGameSceneNode = driver::read<uintptr_t>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseEntity::m_pGameSceneNode);
 
@@ -111,17 +114,10 @@ void EntityScanner::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 		Vector3f	vHeadPosition = vOldOrigin + vHeadOffset;
 		uint8_t		uTeam = driver::read<uint8_t>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseEntity::m_iTeamNum);
 		uint32_t	uArmor = driver::read<uint32_t>(hDriver, uPlayerPawn + schemas::client_dll::C_CSPlayerPawn::m_ArmorValue);
-		uintptr_t	uSpottedState = driver::read<uintptr_t>(hDriver, uPlayerPawn + schemas::client_dll::C_CSPlayerPawn::m_entitySpottedState);
-		uint32_t	isSpotted = driver::read<uint32_t>(hDriver, uSpottedState + schemas::client_dll::EntitySpottedState_t::m_bSpottedByMask);
-		bool		isLocal = driver::read<bool>(hDriver, uPlayerPawn + schemas::client_dll::CBasePlayerController::m_bIsLocalPlayerController);
-		
-		if (!isLocal)
-		{
-			CSPlayerEntity csEntity(i, "Player", uTeam, uHealth, uArmor, vSpot, vOldOrigin, vHeadPosition, vRot, isSpotted);
-			vEntities.push_back(csEntity);
-		}
-		else
-			localEntity.uIndex = i;
+		uint32_t	isSpotted = driver::read<uint32_t>(hDriver, uPlayerPawn + schemas::client_dll::C_CSPlayerPawn::m_entitySpottedState + schemas::client_dll::EntitySpottedState_t::m_bSpottedByMask);
+
+		CSPlayerEntity csEntity(i, "Player", uTeam, uHealth, uArmor, vSpot, vOldOrigin, vHeadPosition, vRot, isSpotted);
+		vEntities.push_back(csEntity);
 	}
 
 	ThreadMgr::getInstance()->getMutex().unlock();
@@ -257,11 +253,11 @@ CSPlayerEntity& AimBot::closest(std::vector<CSPlayerEntity>& entityList, CSPlaye
 	if (entityList.size() == 0)
 		return localPlayer;
 
-	CSPlayerEntity& closestEntity = entityList[0];
-	float fDistance = distance(localPlayer.vHeadPosition, entityList[0].vHeadPosition);
+	CSPlayerEntity& closestEntity = localPlayer;
+	float fDistance = -1;
 	for (const CSPlayerEntity& entity : entityList)
 	{
-		if (!entity.isSpotted)
+		if (! (entity.isSpotted & (1 << localPlayer.uIndex - 1)))
 			continue;
 		if (entity.uTeam == 0 || entity.uTeam == localPlayer.uTeam)
 			continue;
@@ -269,7 +265,7 @@ CSPlayerEntity& AimBot::closest(std::vector<CSPlayerEntity>& entityList, CSPlaye
 			continue;
 
 		float fCurrDistance = distance(localPlayer.vHeadPosition, entity.vHeadPosition);
-		if (fCurrDistance < fDistance)
+		if (fCurrDistance < fDistance || fDistance < 0)
 		{
 			fCurrDistance = fDistance;
 			closestEntity = entity;
