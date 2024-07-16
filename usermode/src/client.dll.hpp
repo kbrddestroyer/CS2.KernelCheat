@@ -1,5 +1,5 @@
 // Generated using https://github.com/a2x/cs2-dumper
-// 2024-07-15 19:03:31.565888700 UTC
+// 2024-07-16 18:29:38.160773300 UTC
 
 #pragma once
 
@@ -2801,7 +2801,7 @@ namespace cs2_dumper {
                 constexpr std::ptrdiff_t m_bApplyWind = 0xCD8; // bool
                 constexpr std::ptrdiff_t m_fPrevLockedPoints = 0xCDC; // int32
                 constexpr std::ptrdiff_t m_iForcePointMoveCounter = 0xCE0; // int32
-                constexpr std::ptrdiff_t m_bPrevEndPointPos = 0xCE4; // 
+                constexpr std::ptrdiff_t m_bPrevEndPointPos = 0xCE4; //
                 constexpr std::ptrdiff_t m_vPrevEndPointPos = 0xCE8; // Vector[2]
                 constexpr std::ptrdiff_t m_flCurScroll = 0xD00; // float32
                 constexpr std::ptrdiff_t m_flScrollSpeed = 0xD04; // float32

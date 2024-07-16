@@ -18,4 +18,6 @@ Vector3f operator/(Vector3f, float);
 
 Vector3f abs(Vector3f);
 float magnitude(Vector3f);
+float distance(Vector3f, Vector3f);
 Vector3f rotate(Vector3f, float);
+QAngle toAngle(Vector3f);

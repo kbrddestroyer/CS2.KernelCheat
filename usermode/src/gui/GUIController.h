@@ -48,6 +48,11 @@ public:
 	// Trigger
 	bool	triggerEnabled = false;
 	int		triggerDelay = 10;
+
+	// Aimbot
+	bool	aimbotEnabled = false;
+	float	aimbotMaxDistance = 0.0f;
+	float	aimbotSmoothness = 1.0f;
 public:
 	static SettingsTab* getInstance() { return instance; }
 
@@ -81,7 +86,9 @@ public:
 
 	virtual void Render();
 	virtual void Update();
-	void Add(std::shared_ptr<ChildGUIController> child) { vChildren.push_back(child); }
+	void Add(std::shared_ptr<ChildGUIController> child) { 
+		vChildren.push_back(child); 
+	}
 
 	ImVec4 getClearColor() { return clear_color; }
 

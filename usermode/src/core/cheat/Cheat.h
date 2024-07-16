@@ -123,6 +123,21 @@ namespace cheatscore
 			void CheatUpdate(HANDLE, uintptr_t) override;
 			void Render(ImDrawList*) override;
 		};
+
+		class AimBot : public EntityScannerDependency
+		{
+		private:
+			float fSmoothness;
+		private:
+			CSPlayerEntity& closest(std::vector<CSPlayerEntity>&, CSPlayerEntity);
+		public:
+			AimBot() : EntityScannerDependency(AIMBOT) { fSmoothness = 1; }
+
+			void setSmoothness(float fVal) { this->fSmoothness = fVal; }
+
+			void CheatUpdate(HANDLE, uintptr_t) override;
+			void Render(ImDrawList*) override;
+		};
 	}
 #pragma endregion Cheats core classes
 }

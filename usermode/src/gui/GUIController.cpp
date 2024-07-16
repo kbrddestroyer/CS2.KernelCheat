@@ -162,6 +162,19 @@ void SettingsTab::Render()
         this->triggerDelay = std::clamp(this->triggerDelay - 10, 10, 250);
     }
 
+    ImGui::Separator();
+    ImGui::Text("Aimbot section");
+
+    if (ImGui::Checkbox("Aim Enabled", &this->aimbotEnabled))
+    {
+        if (!Cheat::Instances(CheatEntities::AIMBOT))
+            ThreadedObject::createObject(std::make_shared<AimBot>());
+        Cheat::Instances(AIMBOT)->toggle(this->aimbotEnabled);
+    }
+
+    ImGui::SliderFloat("Aimbot Max Angle", &this->aimbotMaxDistance, 1, 360);
+    ImGui::SliderFloat("Aimbot Smooth", &this->aimbotSmoothness, 1, 125);
+
     ThreadMgr::getInstance()->getMutex().unlock();
 }
 

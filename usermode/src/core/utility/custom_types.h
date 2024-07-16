@@ -10,6 +10,12 @@ struct Vector3
 	T x, y, z;
 };
 
+struct ViewMatrix
+{
+	float matrix[4][4];
+	float* operator[](int index) { return matrix[index]; }
+};
+
 typedef Vector3<int> Vector3i;
 typedef Vector3<float> Vector3f;
 typedef Vector3f QAngle;
