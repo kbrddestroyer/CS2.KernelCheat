@@ -49,8 +49,10 @@ namespace cheatscore
 			~Cheat() { instances.erase(desc); }
 
 			virtual void toggle(bool bState) { this->bState = bState; }
+			bool enabled() { return bState; }
+
 			void Update(HANDLE, uintptr_t) override;
-			virtual void Render(ImDrawList*) = 0;
+			virtual void Render() = 0;
 		protected:
 			virtual void CheatUpdate(HANDLE, uintptr_t) = 0;
 		};
@@ -77,7 +79,7 @@ namespace cheatscore
 
 			void CheatUpdate(HANDLE, uintptr_t) override;
 
-			void Render(ImDrawList*) override;
+			void Render() override;
 		};
 
 		class EntityScanner : public Cheat
@@ -98,7 +100,7 @@ namespace cheatscore
 			CSPlayerEntity getLocalEntity() { return localEntity; }
 
 			void CheatUpdate(HANDLE, uintptr_t) override;
-			void Render(ImDrawList*) override;
+			void Render() override;
 		};
 
 		class RadarHack : public EntityScannerDependency
@@ -112,7 +114,7 @@ namespace cheatscore
 			bool Initialized() { return bInitialised; }
 			void CheatUpdate(HANDLE, uintptr_t) override;
 
-			void Render(ImDrawList*) override;
+			void Render() override;
 		};
 
 		class TriggerBot : public Cheat
@@ -121,7 +123,7 @@ namespace cheatscore
 			TriggerBot() : Cheat(TRIGGER) {}
 
 			void CheatUpdate(HANDLE, uintptr_t) override;
-			void Render(ImDrawList*) override;
+			void Render() override;
 		};
 
 		class AimBot : public EntityScannerDependency
@@ -136,7 +138,7 @@ namespace cheatscore
 			void setSmoothness(float fVal) { this->fSmoothness = fVal; }
 
 			void CheatUpdate(HANDLE, uintptr_t) override;
-			void Render(ImDrawList*) override;
+			void Render() override;
 		};
 	}
 #pragma endregion Cheats core classes

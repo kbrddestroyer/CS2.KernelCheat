@@ -39,7 +39,7 @@ void BhopCheat::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 	}
 }
 
-void BhopCheat::Render(ImDrawList*)
+void BhopCheat::Render()
 {
 
 }
@@ -124,7 +124,7 @@ void EntityScanner::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 	std::this_thread::yield();
 }
 
-void EntityScanner::Render(ImDrawList* imDrawList)
+void EntityScanner::Render()
 {
 	// Nothing to handle here yet
 }
@@ -161,11 +161,15 @@ void RadarHack::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 	// Nothing to handle here
 }
 
-void RadarHack::Render(ImDrawList* imDrawList)
+void RadarHack::Render()
 {
-	if (!bState)
+	if (!this->bState)
 		return;
-	ThreadMgr::getInstance()->getMutex().lock();
+
+	ImGui::SetNextWindowSize(ImVec2(200, 200), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowBgAlpha(0.0f);
+	ImGui::Begin("Radar", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse);
+
 	ImGui::Checkbox("Enable debug", &this->bShowDebugInfo);
 
 	ImVec2 vSize = ImGui::GetWindowSize();
@@ -173,8 +177,13 @@ void RadarHack::Render(ImDrawList* imDrawList)
 
 	ImVec2 position = { vPosition.x + vSize.x / 2, vPosition.y + vSize.y / 2 };
 
+	ThreadMgr::getInstance()->getMutex().lock();
 	std::vector<CSPlayerEntity> vEntities = EntityScanner::getInstance()->getEntities();
+	ThreadMgr::getInstance()->getMutex().unlock();
+
 	CSPlayerEntity localEntity = EntityScanner::getInstance()->getLocalEntity();
+
+	ImDrawList* imDrawList = ImGui::GetWindowDrawList();
 
 	localEntity.Render(imDrawList, position, -90);
 
@@ -186,7 +195,7 @@ void RadarHack::Render(ImDrawList* imDrawList)
 	imDrawList->AddLine({ vPosition.x, vPosition.y + vSize.y / 2 }, { vPosition.x + vSize.x, vPosition.y + vSize.y / 2 }, ImColor(255, 255, 255, 100));
 	imDrawList->AddLine({ vPosition.x + vSize.x / 2, vPosition.y }, { vPosition.x + vSize.x / 2, vPosition.y + vSize.y }, ImColor(255, 255, 255, 100));
 
-	for (CSPlayerEntity& entity : vEntities)
+	for (CSPlayerEntity entity : vEntities)
 	{
 
 		if (bShowDebugInfo)
@@ -207,7 +216,7 @@ void RadarHack::Render(ImDrawList* imDrawList)
 		entity.Render(imDrawList, vGUIRotated, localEntity.qAngle.y + entity.qAngle.y - 90);
 	}
 
-	ThreadMgr::getInstance()->getMutex().unlock();
+	ImGui::End();
 }
 
 void TriggerBot::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
@@ -243,7 +252,7 @@ void TriggerBot::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 	std::this_thread::sleep_for(std::chrono::milliseconds(SettingsTab::getInstance()->triggerDelay));
 }
 
-void TriggerBot::Render(ImDrawList* imDrawList)
+void TriggerBot::Render()
 {
 
 }
@@ -297,11 +306,20 @@ void AimBot::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 
 	QAngle oldAngle = driver::read<QAngle>(hDriver, uClient + offsets::client_dll::dwViewAngles);
 	QAngle delta = oldAngle - angle;
-	QAngle newAngle = oldAngle - delta / fSmoothness;
+
+	if (magnitude(delta) > SettingsTab::getInstance()->aimbotMaxDistance / 2)
+		return;
+
+	QAngle newAngle = oldAngle - delta / SettingsTab::getInstance()->aimbotSmoothness;
 
 	driver::write<QAngle>(hDriver, uClient + offsets::client_dll::dwViewAngles, newAngle);
 	
 	std::this_thread::yield();
 }
 
-void AimBot::Render(ImDrawList* imDrawList) {}
+void AimBot::Render() {
+	ImDrawList* imBackground = ImGui::GetBackgroundDrawList();
+
+	ImVec2 vSize = ImGui::GetIO().DisplaySize;
+	imBackground->AddCircle({ vSize.x / 2, vSize.y / 2 }, SettingsTab::getInstance()->aimbotMaxDistance * 5, ImColor(255, 255, 255, 255), 0, 2);
+}

@@ -30,7 +30,7 @@ void GUIController::Update()
 void GUIController::Render()
 {
     io.MouseDrawCursor = menuShow;
-
+    settings.Update();
     if (menuShow)
     {
         if (ImGui::Begin("kbrddestroyer kernel | cs2 | external", nullptr, ImGuiWindowFlags_NoCollapse))
@@ -49,48 +49,34 @@ void GUIController::Render()
             ImGui::End();
         }
     }
-    if (settings.radarhackEnabled)
-    {
-        ImGui::SetNextWindowSize(ImVec2(200, 200), ImGuiCond_FirstUseEver);
-        ImGui::SetNextWindowBgAlpha(0.0f);
-        ImGui::Begin("Radar", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse);
-        controller.InternalUpdate();
-        ImGui::End();
-    }
+    controller.InternalUpdate();
 }
 
 void ChildGUIController::InternalUpdate()
 {
-    ImGui::Begin(name.c_str());
-    imDrawList = ImGui::GetWindowDrawList();
-    vWndPos = ImGui::GetWindowPos();
     Render();
     Update();
-    ImGui::End();
 }
 
 void CheatRenderer::Render()
 {
     for (std::pair<CheatEntities, Cheat*> instance : Cheat::getMap())
     {
-        if (instance.second)
+        if (instance.second && instance.second->enabled())
         {
-            instance.second->Render(imDrawList);
+            instance.second->Render();
         }
     }
 }
 
 void CheatRenderer::Update()
 {
+
 }
 
-void SettingsTab::Render()
+
+void SettingsTab::Update()
 {
-    ThreadMgr::getInstance()->getMutex().lock();
-
-    ImGui::Text("Radar Hack");
-    ImGui::Separator();
-
     if (GetAsyncKeyState(VK_F1) & 1)
     {
         this->radarhackEnabled = !this->radarhackEnabled;
@@ -99,6 +85,47 @@ void SettingsTab::Render()
             ThreadedObject::createObject(std::make_shared<RadarHack>());
         Cheat::Instances(RADAR)->toggle(this->radarhackEnabled);
     }
+    if (GetAsyncKeyState(VK_F2) & 1)
+    {
+        this->bhopEnabled = !this->bhopEnabled;
+
+        if (!Cheat::Instances(CheatEntities::BHOP))
+            ThreadedObject::createObject(std::make_shared<BhopCheat>());
+        Cheat::Instances(BHOP)->toggle(this->bhopEnabled);
+    }
+    if (GetAsyncKeyState(VK_F3) & 1)
+    {
+        this->triggerEnabled = !this->triggerEnabled;
+
+        if (!Cheat::Instances(CheatEntities::TRIGGER))
+            ThreadedObject::createObject(std::make_shared<TriggerBot>());
+        Cheat::Instances(TRIGGER)->toggle(this->triggerEnabled);
+    }
+
+    if (GetAsyncKeyState(VK_OEM_PLUS) & 1)
+    {
+        this->triggerDelay = std::clamp(this->triggerDelay + 10, 10, 250);
+    }
+
+    if (GetAsyncKeyState(VK_OEM_MINUS) & 1)
+    {
+        this->triggerDelay = std::clamp(this->triggerDelay - 10, 10, 250);
+    }
+
+    if (GetAsyncKeyState(VK_F4) & 1)
+    {
+        if (!Cheat::Instances(CheatEntities::AIMBOT))
+            ThreadedObject::createObject(std::make_shared<AimBot>());
+        Cheat::Instances(AIMBOT)->toggle(this->aimbotEnabled);
+    }
+}
+
+void SettingsTab::Render()
+{
+    ThreadMgr::getInstance()->getMutex().lock();
+
+    ImGui::Text("Radar Hack");
+    ImGui::Separator();
 
     if (ImGui::Checkbox("Radar Enabled", &this->radarhackEnabled))
     {
@@ -114,15 +141,6 @@ void SettingsTab::Render()
     ImGui::Text("BunnyHop");
     ImGui::Separator();
 
-    if (GetAsyncKeyState(VK_F2) & 1)
-    {
-        this->bhopEnabled = !this->bhopEnabled;
-
-        if (!Cheat::Instances(CheatEntities::BHOP))
-            ThreadedObject::createObject(std::make_shared<BhopCheat>());
-        Cheat::Instances(BHOP)->toggle(this->bhopEnabled);
-    }
-
     if (ImGui::Checkbox("Bhop Enabled", &this->bhopEnabled))
     {
         if (!Cheat::Instances(CheatEntities::BHOP))
@@ -134,15 +152,6 @@ void SettingsTab::Render()
     ImGui::Text("Trigger Bot");
     ImGui::Separator();
 
-    if (GetAsyncKeyState(VK_F3) & 1)
-    {
-        this->triggerEnabled = !this->triggerEnabled;
-
-        if (!Cheat::Instances(CheatEntities::TRIGGER))
-            ThreadedObject::createObject(std::make_shared<TriggerBot>());
-        Cheat::Instances(TRIGGER)->toggle(this->triggerEnabled);
-    }
-
     if (ImGui::Checkbox("Trigger Enabled", &this->triggerEnabled))
     {
         if (!Cheat::Instances(CheatEntities::TRIGGER))
@@ -151,16 +160,6 @@ void SettingsTab::Render()
     }
 
     ImGui::SliderInt("Trigger Delay", &this->triggerDelay, 10, 250);
-
-    if (GetAsyncKeyState(VK_OEM_PLUS) & 1)
-    {
-        this->triggerDelay = std::clamp(this->triggerDelay + 10, 10, 250);
-    }
-
-    if (GetAsyncKeyState(VK_OEM_MINUS) & 1)
-    {
-        this->triggerDelay = std::clamp(this->triggerDelay - 10, 10, 250);
-    }
 
     ImGui::Separator();
     ImGui::Text("Aimbot section");
@@ -176,8 +175,4 @@ void SettingsTab::Render()
     ImGui::SliderFloat("Aimbot Smooth", &this->aimbotSmoothness, 1, 125);
 
     ThreadMgr::getInstance()->getMutex().unlock();
-}
-
-void SettingsTab::Update()
-{
 }
