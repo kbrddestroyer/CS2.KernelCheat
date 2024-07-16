@@ -1,6 +1,7 @@
 #pragma once
 #include <imgui.h>
 #include <vector>
+#include <cmath>
 
 #include <Windows.h>
 
@@ -70,12 +71,13 @@ private:
 	ImGuiIO io;
 	ImVec4 clear_color = ImVec4(0.15f, 0.15f, 0.15f, 1.00f);
 
-	bool bAttached = false;
+	bool bAttached = true;
 	bool bEnableChildren = false;
 	SettingsTab settings;	
 	CheatRenderer controller;
 	std::vector<std::shared_ptr<ChildGUIController>> vChildren;
 protected:
+	bool menuShow = true;
 	virtual void Initialize();
 public:
 	GUIController();
@@ -89,6 +91,9 @@ public:
 	}
 
 	ImVec4 getClearColor() { return clear_color; }
+
+	void toggle(bool bState) { menuShow = bState; }
+	bool getState() { return menuShow; }
 
 	static GUIController* Instance() { return instance; }
 };
