@@ -56,15 +56,6 @@ namespace cheatscore
 		protected:
 			virtual void CheatUpdate(HANDLE, uintptr_t) = 0;
 		};
-
-		class EntityScannerDependency : public Cheat
-		{
-		public:
-			EntityScannerDependency(CheatEntities entity = NONE);
-			~EntityScannerDependency();
-
-			void toggle(bool bState) override;
-		};
 	}
 #pragma endregion Utility tools for cheats
 
@@ -82,34 +73,18 @@ namespace cheatscore
 			void Render() override;
 		};
 
-		class EntityScanner : public Cheat
-		{
-		private:
-			inline static EntityScanner* instance;
-			uint8_t callCount = 0;
-			std::vector<CSPlayerEntity> vEntities;
-			CSPlayerEntity localEntity;
-		public:
-			EntityScanner() : Cheat(ENTITY_SCAN) { instance = this; bState = true; }
-			static EntityScanner* getInstance() { return instance; }
-
-			void add() { callCount++; }
-			void remove() { if (callCount > 0) callCount--; }
-
-			std::vector<CSPlayerEntity> getEntities() { return vEntities; }
-			CSPlayerEntity getLocalEntity() { return localEntity; }
-
-			void CheatUpdate(HANDLE, uintptr_t) override;
-			void Render() override;
-		};
-
-		class RadarHack : public EntityScannerDependency
+		class RadarHack : public Cheat
 		{
 		private:
 			bool bShowDebugInfo = false;
 			bool bInitialised = false;
+
+			bool isBusyRendering = false;
+
+			std::vector<CSPlayerEntity> vEntities;
+			CSPlayerEntity localEntity;
 		public:
-			RadarHack() : EntityScannerDependency(RADAR) {}
+			RadarHack() : Cheat(RADAR) {}
 
 			bool Initialized() { return bInitialised; }
 			void CheatUpdate(HANDLE, uintptr_t) override;
@@ -126,14 +101,12 @@ namespace cheatscore
 			void Render() override;
 		};
 
-		class AimBot : public EntityScannerDependency
+		class AimBot : public Cheat
 		{
 		private:
 			float fSmoothness;
-		private:
-			CSPlayerEntity& closest(std::vector<CSPlayerEntity>&, CSPlayerEntity);
 		public:
-			AimBot() : EntityScannerDependency(AIMBOT) { fSmoothness = 1; }
+			AimBot() : Cheat(AIMBOT) { fSmoothness = 1; }
 
 			void setSmoothness(float fVal) { this->fSmoothness = fVal; }
 

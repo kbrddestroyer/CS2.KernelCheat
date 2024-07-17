@@ -75,8 +75,6 @@ private:
 public:
 	ThreadMgr();
 	~ThreadMgr();
-
-	std::mutex&			getMutex()	{ return mtx; }
 	HANDLE				DRIVER()	{ return hDriver; }
 	uintptr_t			CLIENT()	{ return uClient; }
 	ThreadController*	getThread();
