@@ -122,8 +122,6 @@ void SettingsTab::Update()
 
 void SettingsTab::Render()
 {
-    ThreadMgr::getInstance()->getMutex().lock();
-
     ImGui::Text("Radar Hack");
     ImGui::Separator();
 
@@ -173,6 +171,4 @@ void SettingsTab::Render()
 
     ImGui::SliderFloat("Aimbot Max Angle", &this->aimbotMaxDistance, 1, 360);
     ImGui::SliderFloat("Aimbot Smooth", &this->aimbotSmoothness, 1, 125);
-
-    ThreadMgr::getInstance()->getMutex().unlock();
 }

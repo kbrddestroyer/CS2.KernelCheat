@@ -68,9 +68,7 @@ void ThreadController::Update()
 {
 	if (hDriver && uClient && ThreadMgr::getInstance())
 	{
-		ThreadMgr::getInstance()->getMutex().lock();
 		const std::vector<PThreadedObject>& callstack = vCallstack;
-		ThreadMgr::getInstance()->getMutex().unlock();
 
 		for (PThreadedObject ob : callstack)
 		{
