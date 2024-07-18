@@ -1,4 +1,0 @@
-name: Build Agent
-on:
-  workflow-call:
-
