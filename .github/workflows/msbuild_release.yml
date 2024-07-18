@@ -9,40 +9,12 @@ on:
   push:
     branches: [ "release" ]
   workflow_dispatch:
-  
-env:
-  # Path to the solution file relative to the root of the project.
-  SOLUTION_FILE_PATH: ./CS2.KernelHack.sln
-
-permissions:
-  contents: write
-
 jobs:
   build:
-    strategy:
-      matrix:
-        configuration: [Release]
-        platform: [x64]
     runs-on: windows-2022
-
     steps:
-    - uses: actions/checkout@v4
-
-    - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
-
-    - name: Restore NuGet packages
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: nuget restore ${{env.SOLUTION_FILE_PATH}}
-
-    - name: Build
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      # Add additional options to the MSBuild command line here (like platform or verbosity level).
-      # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
-      run: msbuild /m /p:Configuration=${{env.Configuration}} ${{env.SOLUTION_FILE_PATH}}
-      env:
-        Configuration: ${{ matrix.configuration }}
-        Platform: ${{ matrix.platform }}
+    - name: Call build agent
+      uses: ./.github/workflows/build-agent.yml
     - name: Compress arifacts
       working-directory: ${{env.GITHUB_WORKSPACE}}
       shell: pwsh
