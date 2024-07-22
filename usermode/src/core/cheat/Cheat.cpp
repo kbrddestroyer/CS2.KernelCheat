@@ -5,7 +5,7 @@ using namespace cheatscore::core;
 
 void Cheat::Update(HANDLE hDriver, uintptr_t uClient)
 {
-	if (bState)
+	if (bState.load(std::memory_order_relaxed))
 		CheatUpdate(hDriver, uClient);
 }
 
@@ -46,9 +46,13 @@ void BhopCheat::Render()
 
 void RadarHack::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 {
-	if (isBusyRendering)
+	if (!this->bState.load())
 		return;
+	if (isBusyRendering.load())
+		return;
+
 	vEntities.clear();
+
 	uintptr_t uEntityList = driver::read<uintptr_t>(hDriver, uClient + offsets::client_dll::dwEntityList);
 
 	if (!uEntityList)
@@ -126,7 +130,7 @@ void RadarHack::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 
 void RadarHack::Render()
 {
-	if (!this->bState)
+	if (!bState.load())
 		return;
 
 	ImGui::SetNextWindowSize(ImVec2(200, 200), ImGuiCond_FirstUseEver);
@@ -142,7 +146,7 @@ void RadarHack::Render()
 
 	ImDrawList* imDrawList = ImGui::GetWindowDrawList();
 
-	isBusyRendering = true;
+	isBusyRendering.store(true);
 
 	localEntity.Render(imDrawList, position, -90);
 
@@ -177,7 +181,7 @@ void RadarHack::Render()
 		entity.Render(imDrawList, vGUIRotated, localEntity.qAngle.y - entity.qAngle.y - 90);
 	}
 
-	isBusyRendering = false;
+	isBusyRendering.store(false);
 	ImGui::End();
 }
 
@@ -315,7 +319,7 @@ void AimBot::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 
 	QAngle newAngle = oldAngle - delta / SettingsTab::getInstance()->aimbotSmoothness;
 
-	driver::write<QAngle>(hDriver, uClient + offsets::client_dll::dwViewAngles, newAngle);
+	driver::write<QAngle>(hDriver, uClient + offsets::client_dll::dwViewAngles, angle);
 }
 
 void AimBot::Render() {

@@ -1,5 +1,5 @@
 // Generated using https://github.com/a2x/cs2-dumper
-// 2024-07-16 18:29:38.160773300 UTC
+// 2024-07-21 14:51:31.386494100 UTC
 
 #pragma once
 
@@ -2796,12 +2796,12 @@ namespace cs2_dumper {
             // NetworkVarNames: m_Width (float32)
             // NetworkVarNames: m_bConstrainBetweenEndpoints (bool)
             namespace C_RopeKeyframe {
-                constexpr std::ptrdiff_t m_LinksTouchingSomething = 0xCD0; // CBitVec<10>
+                constexpr std::ptrdiff_t m_LinksTouchingSomething = 0xCD0; // 
                 constexpr std::ptrdiff_t m_nLinksTouchingSomething = 0xCD4; // int32
                 constexpr std::ptrdiff_t m_bApplyWind = 0xCD8; // bool
                 constexpr std::ptrdiff_t m_fPrevLockedPoints = 0xCDC; // int32
                 constexpr std::ptrdiff_t m_iForcePointMoveCounter = 0xCE0; // int32
-                constexpr std::ptrdiff_t m_bPrevEndPointPos = 0xCE4; //
+                constexpr std::ptrdiff_t m_bPrevEndPointPos = 0xCE4; // bool[2]
                 constexpr std::ptrdiff_t m_vPrevEndPointPos = 0xCE8; // Vector[2]
                 constexpr std::ptrdiff_t m_flCurScroll = 0xD00; // float32
                 constexpr std::ptrdiff_t m_flScrollSpeed = 0xD04; // float32
@@ -2883,7 +2883,7 @@ namespace cs2_dumper {
             // NetworkVarNames: m_bSpottedByMask (uint32)
             namespace EntitySpottedState_t {
                 constexpr std::ptrdiff_t m_bSpotted = 0x8; // bool
-                constexpr std::ptrdiff_t m_bSpottedByMask = 0xC; // 
+                constexpr std::ptrdiff_t m_bSpottedByMask = 0xC; // uint32[2]
             }
             // Parent: C_CSGO_MapPreviewCameraPath
             // Fields count: 7
@@ -5857,7 +5857,7 @@ namespace cs2_dumper {
                 constexpr std::ptrdiff_t m_fStartFrame = 0xD60; // float32
                 constexpr std::ptrdiff_t m_fSpeed = 0xD64; // float32
                 constexpr std::ptrdiff_t m_flFrame = 0xD68; // float32
-                constexpr std::ptrdiff_t m_nClipStyle = 0xD6C; // BeamClipStyle_t
+                constexpr std::ptrdiff_t m_nClipStyle = 0xD6C; // 
                 constexpr std::ptrdiff_t m_bTurnedOff = 0xD70; // bool
                 constexpr std::ptrdiff_t m_vecEndPos = 0xD74; // Vector
                 constexpr std::ptrdiff_t m_hEndEntity = 0xD80; // CHandle<C_BaseEntity>

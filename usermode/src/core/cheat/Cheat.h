@@ -2,6 +2,8 @@
 #include <vector>
 #include <map>
 #include <cmath>
+#include <atomic>
+
 #include "../../imgui/imgui.h"
 
 #include "ThreadController.h"
@@ -31,7 +33,7 @@ namespace cheatscore
 			inline static std::map<CheatEntities, Cheat*> instances;
 			CheatEntities desc;
 		protected:
-			bool bState = false;
+			std::atomic<bool> bState = false;
 		public:
 			static std::map<CheatEntities, Cheat*>& getMap() { return instances; }
 			static Cheat* Instances(CheatEntities entity) {
@@ -48,8 +50,8 @@ namespace cheatscore
 
 			~Cheat() { instances.erase(desc); }
 
-			virtual void toggle(bool bState) { this->bState = bState; }
-			bool enabled() { return bState; }
+			virtual void toggle(bool bState) { this->bState.store(bState); }
+			bool enabled() { return bState.load(std::memory_order_relaxed); }
 
 			void Update(HANDLE, uintptr_t) override;
 			virtual void Render() = 0;
@@ -79,7 +81,7 @@ namespace cheatscore
 			bool bShowDebugInfo = false;
 			bool bInitialised = false;
 
-			bool isBusyRendering = false;
+			std::atomic<bool> isBusyRendering = false;
 
 			std::vector<CSPlayerEntity> vEntities;
 			CSPlayerEntity localEntity;

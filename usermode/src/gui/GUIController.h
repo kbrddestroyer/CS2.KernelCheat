@@ -3,6 +3,8 @@
 #include <vector>
 #include <cmath>
 
+#include <atomic>
+
 #include <Windows.h>
 
 #include "../core/km_mailbox.h"
@@ -11,12 +13,14 @@
 class ChildGUIController
 {
 protected:
-	bool		bEnabled = false;
+	std::atomic<bool> bEnabled;
 	ImVec2		vWndPos;
 	ImDrawList* imDrawList;
 public:
 	std::string name;
 public:
+	ChildGUIController() { bEnabled.store(false); }
+
 	void InternalUpdate();
 
 	virtual void Render() = 0;
@@ -77,7 +81,7 @@ private:
 	CheatRenderer controller;
 	std::vector<std::shared_ptr<ChildGUIController>> vChildren;
 protected:
-	bool menuShow = true;
+	std::atomic<bool> menuShow = true;
 	virtual void Initialize();
 public:
 	GUIController();
@@ -92,8 +96,8 @@ public:
 
 	ImVec4 getClearColor() { return clear_color; }
 
-	void toggle(bool bState) { menuShow = bState; }
-	bool getState() { return menuShow; }
+	void toggle(bool bState) { menuShow.store(bState); }
+	bool getState() { return menuShow.load(std::memory_order_relaxed); }
 
 	static GUIController* Instance() { return instance; }
 };
