@@ -1,0 +1,1 @@
+echo "--- Precompile step call ---"

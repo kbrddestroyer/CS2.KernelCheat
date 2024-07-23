@@ -115,14 +115,14 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>src\imgui\GL;src\imgui;%(AdditionalIncludeDirectories); $(DXSDK_DIR)Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\imgui\GL;src\imgui;%(AdditionalIncludeDirectories);$(DXSDK_DIR)Include;src\Python\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
-      <AdditionalLibraryDirectories>D:\work\CPP\CS2.KernelHack\usermode\src\imgui\backends;D:\work\CPP\CS2.KernelHack\usermode\src\imgui;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);d3d9.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>src\imgui\backends;src\imgui;src\Python\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);d3d9.lib;python310.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -135,7 +135,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>src\imgui\GL;src\imgui;%(AdditionalIncludeDirectories); $(DXSDK_DIR)Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\imgui\GL;src\imgui;%(AdditionalIncludeDirectories);$(DXSDK_DIR)Include;src\Python\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -143,8 +143,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
-      <AdditionalLibraryDirectories>D:\work\CPP\CS2.KernelHack\usermode\src\imgui\backends;D:\work\CPP\CS2.KernelHack\usermode\src\imgui;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);d3d9.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>src\imgui\backends;src\imgui;src\Python\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);d3d9.lib;python310.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -154,6 +154,7 @@
     <ClCompile Include="src\core\DriverHandler.cpp" />
     <ClCompile Include="src\core\km_mailbox.cpp" />
     <ClCompile Include="src\core\utility\custom_types.cpp" />
+    <ClCompile Include="src\core\web\webserver_c.cpp" />
     <ClCompile Include="src\gui\GUIController.cpp" />
     <ClCompile Include="src\autoupdate_tool.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -177,6 +178,8 @@
     <ClInclude Include="src\client.dll.hpp" />
     <ClInclude Include="src\core\km_mailbox.h" />
     <ClInclude Include="src\core\utility\custom_types.h" />
+    <ClInclude Include="src\core\web\webserver_c.h" />
+    <ClInclude Include="src\core\web\static_config.h" />
     <ClInclude Include="src\gui\GUIController.h" />
     <ClInclude Include="src\core\constants.h" />
     <ClInclude Include="src\imgui\imconfig.h" />
@@ -191,6 +194,10 @@
     <ClInclude Include="src\logger\UMLogger.h" />
     <ClInclude Include="src\offsets.hpp" />
     <ClInclude Include="src\core\cheat\ThreadController.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="postcompile.bat" />
+    <None Include="prelink.bat" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
