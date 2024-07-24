@@ -5,7 +5,7 @@
 
 I am **NOT** responsible for your system crashes, VAC blocks, etc. This software is educational purposes only.
 
-## I just want to show that VAC still doesn't work properly and anyone with coding skills can break Counter Strike game. I am not supporting game hacking, cheating, exploiting etx.
+## I just want to show that VAC still doesn't work properly and anyone with coding skills can break Counter Strike game. I am not supporting game hacking, cheating, exploiting etc.
 
 #fixcs2 #fixcsgo
 
