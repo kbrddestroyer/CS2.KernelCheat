@@ -55,8 +55,11 @@ public:
 
 	// Aimbot
 	bool	aimbotEnabled = false;
+	bool	ignoreWalls = false;
 	float	aimbotMaxDistance = 0.0f;
 	float	aimbotSmoothness = 1.0f;
+
+	bool	antirecoilEnabled = false;
 public:
 	static SettingsTab* getInstance() { return instance; }
 

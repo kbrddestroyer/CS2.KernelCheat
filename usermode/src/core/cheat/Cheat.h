@@ -24,7 +24,8 @@ namespace cheatscore
 			ENTITY_SCAN,
 			RADAR,
 			TRIGGER,
-			AIMBOT
+			AIMBOT,
+			ANTIRECOIL
 		};
 
 		class Cheat : public ThreadedObject
@@ -111,6 +112,18 @@ namespace cheatscore
 			AimBot() : Cheat(AIMBOT) { fSmoothness = 1; }
 
 			void setSmoothness(float fVal) { this->fSmoothness = fVal; }
+
+			void CheatUpdate(HANDLE, uintptr_t) override;
+			void Render() override;
+		};
+
+		class Antirecoil : public Cheat
+		{
+		private:
+			QAngle oldPunch = { 0, 0, 0 };
+			int32_t iShotsFired = 0;
+		public:
+			Antirecoil() : Cheat(ANTIRECOIL) {}
 
 			void CheatUpdate(HANDLE, uintptr_t) override;
 			void Render() override;

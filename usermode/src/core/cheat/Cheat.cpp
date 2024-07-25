@@ -303,7 +303,7 @@ void AimBot::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 
 	if (fClosestDistance < 0)
 		return;
-	if (!(uClosestSpotted & (1 << uLocalIndex - 1)))
+	if (!(uClosestSpotted & (1 << uLocalIndex - 1) || SettingsTab::getInstance()->ignoreWalls))
 		return;
 
 	float fDistance = fClosestDistance;
@@ -319,7 +319,7 @@ void AimBot::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 
 	QAngle newAngle = oldAngle - delta / SettingsTab::getInstance()->aimbotSmoothness;
 
-	driver::write<QAngle>(hDriver, uClient + offsets::client_dll::dwViewAngles, angle);
+	driver::write<QAngle>(hDriver, uClient + offsets::client_dll::dwViewAngles, newAngle);
 }
 
 void AimBot::Render() {
@@ -327,4 +327,47 @@ void AimBot::Render() {
 
 	ImVec2 vSize = ImGui::GetIO().DisplaySize;
 	imBackground->AddCircle({ vSize.x / 2, vSize.y / 2 }, SettingsTab::getInstance()->aimbotMaxDistance * 5, ImColor(255, 255, 255, 255), 0, 2);
+}
+
+void Antirecoil::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
+{
+	uintptr_t uLocalPlayer = driver::read<uintptr_t>(hDriver, uClient + offsets::client_dll::dwLocalPlayerPawn);
+	iShotsFired = driver::read<int32_t>(hDriver, uLocalPlayer + schemas::client_dll::C_CSPlayerPawn::m_iShotsFired);
+
+	uint32_t attack = driver::read<uint32_t>(hDriver, uClient + buttons::attack);
+
+	if (iShotsFired > 1 && attack == MEM_PRESSED)
+	{
+		QAngle viewAngle = driver::read<QAngle>(hDriver, uClient + offsets::client_dll::dwViewAngles);
+		QAngle aimPunchAngle = driver::read<QAngle>(hDriver, uLocalPlayer + schemas::client_dll::C_CSPlayerPawn::m_aimPunchAngle) * 2.f;
+
+		QAngle newAngle = {
+			viewAngle.x + oldPunch.x - aimPunchAngle.x,
+			viewAngle.y + oldPunch.y - aimPunchAngle.y,
+			0
+		};
+
+		if (newAngle.x > 89.f) newAngle.x = 89.f;
+		if (newAngle.x < -89.f) newAngle.x = -89.f;
+		if (newAngle.y > 180.f) newAngle.y -= 360.f;
+		if (newAngle.y < -180.f) newAngle.y += 360.f;
+
+		driver::write<QAngle>(hDriver, uClient + offsets::client_dll::dwViewAngles, newAngle);
+
+		oldPunch = aimPunchAngle;
+	}
+	else
+	{
+		oldPunch = { 0, 0, 0 };
+	}
+}
+
+void Antirecoil::Render()
+{
+	ImGui::Begin("Recoil Debug");
+
+	ImGui::Text("%d", iShotsFired);
+	ImGui::Text("%f %f %f", oldPunch.x, oldPunch.y, oldPunch.z);
+
+	ImGui::End();
 }

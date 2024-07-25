@@ -10,6 +10,12 @@ struct Vector3
 	T x, y, z;
 };
 
+template <typename T>
+struct Vector2
+{
+	T x, y;
+};
+
 struct ViewMatrix
 {
 	float matrix[4][4];
@@ -18,6 +24,10 @@ struct ViewMatrix
 
 typedef Vector3<int> Vector3i;
 typedef Vector3<float> Vector3f;
+
+typedef Vector2<int> Vector2i;
+typedef Vector2<float> Vector2f;
+
 typedef Vector3f QAngle;
 typedef float angle_t;
 

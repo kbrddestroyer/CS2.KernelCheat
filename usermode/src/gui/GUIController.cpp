@@ -168,7 +168,17 @@ void SettingsTab::Render()
             ThreadedObject::createObject(std::make_shared<AimBot>());
         Cheat::Instances(AIMBOT)->toggle(this->aimbotEnabled);
     }
-
+    ImGui::Checkbox("Aim Walls", &this->ignoreWalls);
     ImGui::SliderFloat("Aimbot Max Angle", &this->aimbotMaxDistance, 1, 360);
     ImGui::SliderFloat("Aimbot Smooth", &this->aimbotSmoothness, 1, 125);
+
+    ImGui::Separator();
+    ImGui::Text("Antirecoil");
+
+    if (ImGui::Checkbox("Antirecoil", &this->antirecoilEnabled))
+    {
+        if (!Cheat::Instances(CheatEntities::ANTIRECOIL))
+            ThreadedObject::createObject(std::make_shared<Antirecoil>());
+        Cheat::Instances(ANTIRECOIL)->toggle(this->antirecoilEnabled);
+    }
 }
