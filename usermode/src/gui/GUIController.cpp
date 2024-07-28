@@ -181,4 +181,13 @@ void SettingsTab::Render()
             ThreadedObject::createObject(std::make_shared<Antirecoil>());
         Cheat::Instances(ANTIRECOIL)->toggle(this->antirecoilEnabled);
     }
+
+    ImGui::Separator();
+    ImGui::Text("Wallhack");
+    if (ImGui::Checkbox("Wallhack", &this->wallhackEnabled))
+    {
+        if (!Cheat::Instances(CheatEntities::BONE_ESP))
+            ThreadedObject::createObject(std::make_shared<BoneESP>());
+        Cheat::Instances(BONE_ESP)->toggle(this->wallhackEnabled);
+    }
 }

@@ -45,3 +45,12 @@ public:
 
 typedef Exception<std::string> StringException;
 typedef Exception<uint32_t> ErrorCode;
+
+struct BoneMatrix {
+	float bones[4][2];
+};
+
+class Bone
+{
+
+};

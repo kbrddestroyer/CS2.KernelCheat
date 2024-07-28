@@ -25,7 +25,8 @@ namespace cheatscore
 			RADAR,
 			TRIGGER,
 			AIMBOT,
-			ANTIRECOIL
+			ANTIRECOIL,
+			BONE_ESP
 		};
 
 		class Cheat : public ThreadedObject
@@ -125,6 +126,38 @@ namespace cheatscore
 		public:
 			Antirecoil() : Cheat(ANTIRECOIL) {}
 
+			void CheatUpdate(HANDLE, uintptr_t) override;
+			void Render() override;
+		};
+
+		class BoneESP : public Cheat
+		{
+		private:
+			typedef struct CSEntity
+			{
+				uint32_t uIndex;
+				Vector3f vOrigin;
+				Vector3f vHeadPosition;
+				uint8_t uTeam;
+				int32_t iHealth;
+				Vector3f* bones;
+				bool bUpdated;
+			};
+
+			Vector3f vLocalPosition = {};
+			QAngle viewAngle = {};
+			ViewMatrix viewMatrix = {};
+			uint8_t uLocalTeam = 0;
+
+			std::map<uint32_t, CSEntity> mEntities;
+			bool bNeedFullSync = true;
+
+			float passedTime = 0.f;
+		public:
+			BoneESP() : Cheat(BONE_ESP) {}
+
+			void fullSyncRebuild(HANDLE, uintptr_t);
+			void scanForBones();
 			void CheatUpdate(HANDLE, uintptr_t) override;
 			void Render() override;
 		};

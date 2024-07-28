@@ -59,6 +59,7 @@ void RadarHack::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 		return;
 
 	uintptr_t pLocalPlayer = driver::read<uintptr_t>(hDriver, uClient + offsets::client_dll::dwLocalPlayerPawn);
+	uintptr_t pLocalPlayerController = driver::read<uintptr_t>(hDriver, uClient + offsets::client_dll::dwLocalPlayerController);
 
 	if (!pLocalPlayer)
 		return;
@@ -89,12 +90,15 @@ void RadarHack::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 		if (!uPlayerController)
 			continue;
 
-		uint32_t uPlayerPawnIndex = driver::read<uint32_t>(hDriver, uPlayerController + schemas::client_dll::CCSPlayerController::m_hPlayerPawn);
+		uintptr_t uPlayerPawnIndex = driver::read<uint32_t>(hDriver, uPlayerController + schemas::client_dll::CCSPlayerController::m_hPlayerPawn);
 		if (!uPlayerPawnIndex)
 			continue;
-		uintptr_t uPlayerPawn = driver::read<uintptr_t>(hDriver, pEntityListEntry + 120 * (uPlayerPawnIndex & 0x1FF));
 
-		if (!uPlayerPawn || uPlayerPawn == pLocalPlayer)
+		pEntityListEntry = driver::read<uintptr_t>(hDriver, uEntityList + (0x8 * ((uPlayerPawnIndex & 0x7FFF) >> 9) + 16));
+
+		uintptr_t uPlayerPawn = driver::read<uintptr_t>(hDriver, pEntityListEntry + (120 * (uPlayerPawnIndex & 0x1FF)));
+
+		if (!uPlayerPawn || uPlayerPawn == pLocalPlayer || uPlayerController == pLocalPlayerController)
 		{
 			localEntity.uIndex = i;
 			continue;
@@ -106,10 +110,7 @@ void RadarHack::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 			continue;
 
 		int32_t		uHealth = driver::read<int32_t>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseEntity::m_iHealth);
-		
-		if (uHealth <= 0)
-			continue;
-		
+
 		Vector3f	vSpot = driver::read<Vector3f>(hDriver, uGameSceneNode + schemas::client_dll::CGameSceneNode::m_vecAbsOrigin);
 		Vector3f	vOldOrigin = driver::read<Vector3f>(hDriver, uPlayerPawn + schemas::client_dll::C_BasePlayerPawn::m_vOldOrigin);
 		QAngle		vRot = driver::read<QAngle>(hDriver, uGameSceneNode + schemas::client_dll::CGameSceneNode::m_angRotation);
@@ -201,7 +202,10 @@ void TriggerBot::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 	uintptr_t pEntityListEntry = driver::read<uintptr_t>(hDriver, uEntityList + 8 * (iCrosshairEntityID >> 9) + 0x10);
 	if (!pEntityListEntry)
 		return;
-	uintptr_t uPlayerPawn = driver::read<uintptr_t>(hDriver, pEntityListEntry + 120 * (iCrosshairEntityID & 0x1FF));
+
+	pEntityListEntry = driver::read<uintptr_t>(hDriver, uEntityList + (0x8 * ((iCrosshairEntityID & 0x7FFF) >> 9) + 16));
+
+	uintptr_t uPlayerPawn = driver::read<uintptr_t>(hDriver, pEntityListEntry + (120 * (iCrosshairEntityID & 0x1FF)));
 
 	if (!uPlayerPawn)
 		return;
@@ -267,6 +271,8 @@ void AimBot::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 		uint32_t uPlayerPawnIndex = driver::read<uint32_t>(hDriver, uPlayerController + schemas::client_dll::CCSPlayerController::m_hPlayerPawn);
 		if (!uPlayerPawnIndex)
 			continue;
+
+		pEntityListEntry = driver::read<uintptr_t>(hDriver, uEntityList + (0x8 * ((uPlayerPawnIndex & 0x7FFF) >> 9) + 16));
 		uintptr_t uPlayerPawn = driver::read<uintptr_t>(hDriver, pEntityListEntry + 120 * (uPlayerPawnIndex & 0x1FF));
 
 		if (!uPlayerPawn || uPlayerPawn == pLocalPlayer)
@@ -290,6 +296,15 @@ void AimBot::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 		Vector3f	vOldOrigin = driver::read<Vector3f>(hDriver, uPlayerPawn + schemas::client_dll::C_BasePlayerPawn::m_vOldOrigin);
 		Vector3f    vHeadOffset = driver::read<Vector3f>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseModelEntity::m_vecViewOffset);
 		Vector3f	vHeadPosition = vOldOrigin + vHeadOffset;
+
+		uintptr_t pGameSceneNode = driver::read<uintptr_t>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseEntity::m_pGameSceneNode);
+		uintptr_t pBonearray = driver::read<uintptr_t>(hDriver, pGameSceneNode + schemas::client_dll::CSkeletonInstance::m_modelState + 0x80);
+
+		if (pBonearray)
+		{
+			vHeadPosition = driver::read<Vector3f>(hDriver, pBonearray + (6 * 0x20));
+		}
+
 		uint32_t	isSpotted = driver::read<uint32_t>(hDriver, uPlayerPawn + schemas::client_dll::C_CSPlayerPawn::m_entitySpottedState + schemas::client_dll::EntitySpottedState_t::m_bSpottedByMask);
 
 		float fDistance = distance(vLocalHeadPosition, vHeadPosition);
@@ -364,10 +379,248 @@ void Antirecoil::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 
 void Antirecoil::Render()
 {
-	ImGui::Begin("Recoil Debug");
 
-	ImGui::Text("%d", iShotsFired);
-	ImGui::Text("%f %f %f", oldPunch.x, oldPunch.y, oldPunch.z);
+}
 
-	ImGui::End();
+void BoneESP::scanForBones()
+{
+
+}
+
+void BoneESP::fullSyncRebuild(HANDLE hDriver, uintptr_t uClient)
+{
+	if (!this->bState.load())
+		return;
+
+	mEntities.clear();
+	uintptr_t uEntityList = driver::read<uintptr_t>(hDriver, uClient + offsets::client_dll::dwEntityList);
+
+	if (!uEntityList)
+		return;
+
+	uintptr_t pLocalPlayer = driver::read<uintptr_t>(hDriver, uClient + offsets::client_dll::dwLocalPlayerPawn);
+
+	if (!pLocalPlayer)
+		return;
+
+	uintptr_t uLocalGameSceneNode = driver::read<uintptr_t>(hDriver, pLocalPlayer + schemas::client_dll::C_BaseEntity::m_pGameSceneNode);
+
+	if (!uLocalGameSceneNode)
+		return;
+
+	uintptr_t uLocalPlayer = driver::read<uintptr_t>(hDriver, uClient + offsets::client_dll::dwLocalPlayerPawn);
+	vLocalPosition = driver::read<Vector3f>(hDriver, pLocalPlayer + schemas::client_dll::C_BasePlayerPawn::m_vOldOrigin);
+	viewAngle = driver::read<QAngle>(hDriver, uClient + offsets::client_dll::dwViewAngles);
+	viewMatrix = driver::read<ViewMatrix>(hDriver, uClient + offsets::client_dll::dwViewMatrix);
+
+	uLocalTeam = driver::read<uint8_t>(hDriver, pLocalPlayer + schemas::client_dll::C_BaseEntity::m_iTeamNum);
+
+	for (uint32_t i = 0; i < 32; i++)
+	{
+		uintptr_t pEntityListEntry = driver::read<uintptr_t>(hDriver, uEntityList + (8 * (i & 0x7FF) >> 9) + 16);
+		if (!pEntityListEntry)
+			continue;
+		uintptr_t uPlayerController = driver::read<uintptr_t>(hDriver, pEntityListEntry + 120 * (i & 0x1FF));
+		if (!uPlayerController)
+			continue;
+
+		uint32_t uPlayerPawnIndex = driver::read<uint32_t>(hDriver, uPlayerController + schemas::client_dll::CCSPlayerController::m_hPlayerPawn);
+		if (!uPlayerPawnIndex)
+			continue;
+		
+		pEntityListEntry = driver::read<uintptr_t>(hDriver, uEntityList + (0x8 * ((uPlayerPawnIndex & 0x7FFF) >> 9) + 16));
+		uintptr_t uPlayerPawn = driver::read<uintptr_t>(hDriver, pEntityListEntry + (120 * (uPlayerPawnIndex & 0x1FF)));
+
+		if (!uPlayerPawn || uPlayerPawn == pLocalPlayer)
+		{
+			continue;
+		}
+
+		int32_t	uHealth = driver::read<int32_t>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseEntity::m_iHealth);
+
+		if (uHealth <= 0)
+			continue;
+
+		uintptr_t pGameSceneNode = driver::read<uintptr_t>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseEntity::m_pGameSceneNode);
+		uintptr_t pBonearray = driver::read<uintptr_t>(hDriver, pGameSceneNode + schemas::client_dll::CSkeletonInstance::m_modelState + 0x80);
+
+		Vector3f boneMatrix[18];
+		if (pBonearray)
+		{
+			for (uint8_t boneId = 1; boneId < 19; boneId++)
+			{
+				boneMatrix[boneId - 1] = driver::read<Vector3f>(hDriver, pBonearray + (boneId * 0x20));
+			}
+		}
+
+		Vector3f	vOldOrigin = driver::read<Vector3f>(hDriver, uPlayerPawn + schemas::client_dll::C_BasePlayerPawn::m_vOldOrigin);
+		Vector3f    vHeadOffset = driver::read<Vector3f>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseModelEntity::m_vecViewOffset);
+		Vector3f	vHeadPosition = vOldOrigin + vHeadOffset;
+		uint8_t		uTeam = driver::read<uint8_t>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseEntity::m_iTeamNum);
+
+		mEntities[uPlayerPawnIndex] = {
+			uPlayerPawnIndex,
+			vOldOrigin,
+			vHeadPosition,
+			uTeam,
+			uHealth,
+			boneMatrix,
+			true
+		};
+	}
+
+	bNeedFullSync = false;
+}
+
+void BoneESP::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
+{
+	if (bNeedFullSync)
+	{
+		fullSyncRebuild(hDriver, uClient);
+		return;
+	}
+	uintptr_t pLocalPlayer = driver::read<uintptr_t>(hDriver, uClient + offsets::client_dll::dwLocalPlayerPawn);
+	vLocalPosition = driver::read<Vector3f>(hDriver, pLocalPlayer + schemas::client_dll::C_BasePlayerPawn::m_vOldOrigin);
+	viewAngle = driver::read<QAngle>(hDriver, uClient + offsets::client_dll::dwViewAngles);
+	viewMatrix = driver::read<ViewMatrix>(hDriver, uClient + offsets::client_dll::dwViewMatrix);
+	uLocalTeam = driver::read<uint8_t>(hDriver, pLocalPlayer + schemas::client_dll::C_BaseEntity::m_iTeamNum);
+	
+	uintptr_t uEntityList = driver::read<uintptr_t>(hDriver, uClient + offsets::client_dll::dwEntityList);
+
+	uint32_t uUpdated = 0;
+
+	for (const std::pair<uintptr_t, CSEntity>& entityDesc : mEntities)
+	{
+		uintptr_t pEntityListEntry = driver::read<uintptr_t>(hDriver, uEntityList + (0x8 * ((entityDesc.first & 0x7FFF) >> 9) + 16));
+		if (!pEntityListEntry)
+			continue;
+		uintptr_t uPlayerPawn = driver::read<uintptr_t>(hDriver, pEntityListEntry + 120 * (entityDesc.second.uIndex & 0x1FF));
+
+		if (!uPlayerPawn || uPlayerPawn == pLocalPlayer)
+		{
+			continue;
+		}
+
+		int32_t	uHealth = driver::read<int32_t>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseEntity::m_iHealth);
+
+		Vector3f	vOldOrigin = driver::read<Vector3f>(hDriver, uPlayerPawn + schemas::client_dll::C_BasePlayerPawn::m_vOldOrigin);
+		Vector3f    vHeadOffset = driver::read<Vector3f>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseModelEntity::m_vecViewOffset);
+		Vector3f	vHeadPosition = vOldOrigin + vHeadOffset;
+		uint8_t		uTeam = driver::read<uint8_t>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseEntity::m_iTeamNum);
+
+		uintptr_t pGameSceneNode = driver::read<uintptr_t>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseEntity::m_pGameSceneNode);
+		uintptr_t pBonearray = driver::read<uintptr_t>(hDriver, pGameSceneNode + schemas::client_dll::CSkeletonInstance::m_modelState + 0x80);
+
+		Vector3f boneMatrix[18];
+		if (pBonearray)
+		{
+			for (uint8_t boneId = 1; boneId < 19; boneId++)
+			{
+				boneMatrix[boneId - 1] = driver::read<Vector3f>(hDriver, pBonearray + (boneId * 0x20));
+			}
+		}
+		mEntities[entityDesc.first] = {
+			entityDesc.second.uIndex,
+			vOldOrigin,
+			vHeadPosition,
+			uTeam,
+			uHealth,
+			boneMatrix,
+			true
+		};
+
+		uUpdated++;
+	}
+
+	if (uUpdated < mEntities.size())
+	{
+		for (const std::pair<uintptr_t, CSEntity>& entityDesc : mEntities)
+		{
+			if (!entityDesc.second.bUpdated)
+			{
+				bNeedFullSync = true;
+				return;
+			}
+		}
+	}
+}
+
+void BoneESP::Render()
+{
+	ImDrawList* imBackground = ImGui::GetBackgroundDrawList();
+
+	for (const std::pair<uintptr_t, CSEntity>& entityDesc : mEntities)
+	{
+		if (entityDesc.second.iHealth <= 0)
+			continue;
+
+		Vector3f vEntityPosition = entityDesc.second.vOrigin;
+		Vector3f vHeadPosition = entityDesc.second.vHeadPosition;
+
+		Vector3f vPoint = worldToScreenPoint(viewMatrix, vEntityPosition);
+		Vector3f vHead = worldToScreenPoint(viewMatrix, vHeadPosition);
+		
+		float height = vPoint.y - vHead.y;
+		float width = height / 2.8f;
+		float* fEntColor = (entityDesc.second.uTeam == 2) ? SettingsTab::getInstance()->tColor : SettingsTab::getInstance()->ctColor;
+		ImColor imEntColor = ImColor(fEntColor[0], fEntColor[1], fEntColor[2], 1.f);
+
+ 		imBackground->AddRect(
+			{
+				vPoint.x - width,
+				vPoint.y
+			},
+			{
+				vHead.x + width,
+				vHead.y
+			},
+			imEntColor, 0, 0, 2
+		);
+
+		imBackground->AddLine(
+			{
+				vHead.x - width,
+				vHead.y - 25
+			},
+			{
+				vHead.x + width,
+				vHead.y - 25
+			},
+			ImColor(0, 0 ,0),
+			7
+		);
+
+		float fComputedHealth = width * 2 * entityDesc.second.iHealth / 100;
+
+		imBackground->AddLine(
+			{
+				vHead.x - width,
+				vHead.y - 25
+			},
+			{
+				vHead.x - width + fComputedHealth,
+				vHead.y - 25
+			},
+			imEntColor,
+			7
+		);
+
+		for (uint8_t boneId = 0; boneId < 7; boneId++)
+		{
+			Vector3f bone = entityDesc.second.bones[boneId];
+			Vector3f casted = worldToScreenPoint(viewMatrix, bone);
+			imBackground->AddCircleFilled(
+				{ casted.x, casted.y },
+				3,
+				ImColor(255, 255, 255)
+			);
+		}
+	}
+
+	passedTime += ImGui::GetIO().DeltaTime;
+	if (passedTime >= 1)
+	{
+		bNeedFullSync = true;
+		passedTime = 0;
+	}
 }

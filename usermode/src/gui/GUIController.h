@@ -60,6 +60,7 @@ public:
 	float	aimbotSmoothness = 1.0f;
 
 	bool	antirecoilEnabled = false;
+	bool	wallhackEnabled = false;
 public:
 	static SettingsTab* getInstance() { return instance; }
 
