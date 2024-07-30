@@ -61,6 +61,7 @@ public:
 
 	bool	antirecoilEnabled = false;
 	bool	wallhackEnabled = false;
+	bool	counterstrafeEnabled = false;
 public:
 	static SettingsTab* getInstance() { return instance; }
 

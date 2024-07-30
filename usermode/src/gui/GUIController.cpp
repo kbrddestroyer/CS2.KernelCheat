@@ -122,6 +122,11 @@ void SettingsTab::Update()
 
 void SettingsTab::Render()
 {
+    ImGui::Separator();
+    if (ImGui::Button("Safe exit"))
+    {
+        exit(0);
+    }
     ImGui::Text("Radar Hack");
     ImGui::Separator();
 
@@ -189,5 +194,15 @@ void SettingsTab::Render()
         if (!Cheat::Instances(CheatEntities::BONE_ESP))
             ThreadedObject::createObject(std::make_shared<BoneESP>());
         Cheat::Instances(BONE_ESP)->toggle(this->wallhackEnabled);
+    }
+
+    ImGui::Separator();
+    ImGui::Text("Counterstrafe");
+
+    if (ImGui::Checkbox("Counter strafe", &this->counterstrafeEnabled))
+    {
+        if (!Cheat::Instances(CheatEntities::AUTOSTRAFE))
+            ThreadedObject::createObject(std::make_shared<Autostrafe>());
+        Cheat::Instances(AUTOSTRAFE)->toggle(this->counterstrafeEnabled);
     }
 }

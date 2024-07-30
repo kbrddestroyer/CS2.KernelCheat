@@ -301,6 +301,7 @@ void SetupWindow() {
 }
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
+
     _HWND = FindWindow(NULL, L"Counter-Strike 2");
 
     if (_HWND == NULL)
