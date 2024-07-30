@@ -1,6 +1,8 @@
 # CS2 Kernel Mode cheat
 *Just my attempt to break CS2 in kernel mode app for win32/64*
 
+[Discord](https://discord.com/invite/FQvZhSeHrr)
+
 # Disclaimer 
 
 I am **NOT** responsible for your system crashes, VAC blocks, etc. This software is educational purposes only.
