@@ -12,12 +12,11 @@
 #include "imgui/imgui_impl_win32.h"
 #include "gui/GUIController.h"
 #include "core/cheat/ThreadController.h"
+#include "../KDMapperAPI.h"
 
 #pragma comment(lib, "d3d9.lib")
 #pragma comment(lib, "dwmapi.lib")
 
-bool safeExit = false;
-bool driverLoaded = false;
 HWND _HWND = NULL;
 uint32_t ScreenWidth = 0;
 uint32_t ScreenHeight = 0;
@@ -80,6 +79,7 @@ std::wstring OpenFileDialog()
     }
     return L"";
 }
+
 namespace OverlayWindow
 {
     WNDCLASSEX WindowClass;
@@ -110,7 +110,7 @@ void Render(GUIController& controller)
         GUIController::Instance()->toggle(!GUIController::Instance()->getState());
     }
     if (GetAsyncKeyState(VK_END) & 1)
-        safeExit = true;
+        controller.safeExit(true);
 
     ImGui_ImplDX9_NewFrame();
     ImGui_ImplWin32_NewFrame();
@@ -143,7 +143,7 @@ void MainLoop(GUIController& controller) {
     static RECT OldRect;
     ZeroMemory(&DirectX9Interface::Message, sizeof(MSG));
 
-    while (DirectX9Interface::Message.message != WM_QUIT && !safeExit) {
+    while (DirectX9Interface::Message.message != WM_QUIT && !controller.safeExit()) {
         if (PeekMessage(&DirectX9Interface::Message, OverlayWindow::Hwnd, 0, 0, PM_REMOVE)) {
             TranslateMessage(&DirectX9Interface::Message);
             DispatchMessage(&DirectX9Interface::Message);
@@ -299,8 +299,20 @@ void SetupWindow() {
     ShowWindow(OverlayWindow::Hwnd, SW_SHOW);
     UpdateWindow(OverlayWindow::Hwnd);
 }
+
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
+    KDMapperAPI kdmapper;
+
+    if (kdmapper.load())
+    {
+        MessageBoxA(NULL, "Successfully mapped driver", "Success", MB_OK);
+    }
+    else
+    {
+        MessageBoxA(NULL, "Driver was not mapped", "Error", MB_OK);
+        exit(0);
+    }
 
     _HWND = FindWindow(NULL, L"Counter-Strike 2");
 

@@ -69,22 +69,22 @@
     <ClCompile Include="src\core\cheat\GUIEntities.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="src\kdmapper\intel_driver.cpp">
+    <ClCompile Include="KDMapperAPI.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="src\kdmapper\kdmapper.cpp">
+    <ClCompile Include="kdmapper\intel_driver.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="src\kdmapper\service.cpp">
+    <ClCompile Include="kdmapper\kdmapper.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="src\kdmapper\utils.cpp">
+    <ClCompile Include="kdmapper\portable_executable.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="src\kdmapper\main.cpp">
+    <ClCompile Include="kdmapper\service.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="src\kdmapper\portable_executable.cpp">
+    <ClCompile Include="kdmapper\utils.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -158,25 +158,28 @@
     <ClInclude Include="src\core\cheat\GUIEntities.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="src\kdmapper\include\intel_driver.hpp">
+    <ClInclude Include="KDMapperAPI.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="src\kdmapper\include\intel_driver_resource.hpp">
+    <ClInclude Include="kdmapper\include\intel_driver.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="src\kdmapper\include\kdmapper.hpp">
+    <ClInclude Include="kdmapper\include\intel_driver_resource.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="src\kdmapper\include\nt.hpp">
+    <ClInclude Include="kdmapper\include\kdmapper.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="src\kdmapper\include\portable_executable.hpp">
+    <ClInclude Include="kdmapper\include\nt.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="src\kdmapper\include\service.hpp">
+    <ClInclude Include="kdmapper\include\portable_executable.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="src\kdmapper\include\utils.hpp">
+    <ClInclude Include="kdmapper\include\service.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="kdmapper\include\utils.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

@@ -82,6 +82,8 @@ private:
 
 	bool bAttached = true;
 	bool bEnableChildren = false;
+	bool bSafeExit = false;
+
 	SettingsTab settings;	
 	CheatRenderer controller;
 	std::vector<std::shared_ptr<ChildGUIController>> vChildren;
@@ -103,6 +105,9 @@ public:
 
 	void toggle(bool bState) { menuShow.store(bState); }
 	bool getState() { return menuShow.load(std::memory_order_relaxed); }
+
+	void safeExit(bool bState) { this->bSafeExit = bState; }
+	bool safeExit() { return bSafeExit; }
 
 	static GUIController* Instance() { return instance; }
 };
