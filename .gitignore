@@ -5,6 +5,7 @@
 
 x64/
 kdmapper-master/
+.idea/
 
 # User-specific files
 *.rsuser
