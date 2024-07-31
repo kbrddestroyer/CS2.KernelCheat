@@ -1,5 +1,5 @@
 // Generated using https://github.com/a2x/cs2-dumper
-// 2024-07-16 18:29:38.160773300 UTC
+// 2024-07-28 20:43:57.563770700 UTC
 
 #pragma once
 
@@ -683,7 +683,7 @@ namespace cs2_dumper {
                 constexpr std::ptrdiff_t m_flForceClientTime = 0x554; // float32
                 constexpr std::ptrdiff_t m_nSceneStringIndex = 0x558; // uint16
                 constexpr std::ptrdiff_t m_bClientOnly = 0x55A; // bool
-                constexpr std::ptrdiff_t m_hOwner = 0x55C; // CHandle<C_BaseFlex>
+                constexpr std::ptrdiff_t m_hOwner = 0x55C; // 
                 constexpr std::ptrdiff_t m_hActorList = 0x560; // C_NetworkUtlVectorBase<CHandle<C_BaseFlex>>
                 constexpr std::ptrdiff_t m_bWasPlaying = 0x578; // bool
                 constexpr std::ptrdiff_t m_QueuedEvents = 0x588; // CUtlVector<C_SceneEntity::QueuedEvents_t>
@@ -872,7 +872,7 @@ namespace cs2_dumper {
                 constexpr std::ptrdiff_t m_bReleaseRagdoll = 0xEEC; // bool
                 constexpr std::ptrdiff_t m_iEyeAttachment = 0xEED; // AttachmentHandle_t
                 constexpr std::ptrdiff_t m_bFadingOut = 0xEEE; // bool
-                constexpr std::ptrdiff_t m_flScaleEnd = 0xEF0; // float32[10]
+                constexpr std::ptrdiff_t m_flScaleEnd = 0xEF0; // 
                 constexpr std::ptrdiff_t m_flScaleTimeStart = 0xF18; // GameTime_t[10]
                 constexpr std::ptrdiff_t m_flScaleTimeEnd = 0xF40; // GameTime_t[10]
             }
@@ -2743,7 +2743,7 @@ namespace cs2_dumper {
                 constexpr std::ptrdiff_t m_PredNetFloatVariables = 0x98; // C_NetworkUtlVectorBase<float32>
                 constexpr std::ptrdiff_t m_PredNetVectorVariables = 0xB0; // C_NetworkUtlVectorBase<Vector>
                 constexpr std::ptrdiff_t m_PredNetQuaternionVariables = 0xC8; // C_NetworkUtlVectorBase<Quaternion>
-                constexpr std::ptrdiff_t m_PredNetGlobalSymbolVariables = 0xE0; // C_NetworkUtlVectorBase<CGlobalSymbol>
+                constexpr std::ptrdiff_t m_PredNetGlobalSymbolVariables = 0xE0; // C_NetworkUtlVectorBase<CGlobalS
                 constexpr std::ptrdiff_t m_OwnerOnlyPredNetBoolVariables = 0xF8; // C_NetworkUtlVectorBase<uint32>
                 constexpr std::ptrdiff_t m_OwnerOnlyPredNetByteVariables = 0x110; // C_NetworkUtlVectorBase<uint8>
                 constexpr std::ptrdiff_t m_OwnerOnlyPredNetUInt16Variables = 0x128; // C_NetworkUtlVectorBase<uint16>
@@ -2801,7 +2801,7 @@ namespace cs2_dumper {
                 constexpr std::ptrdiff_t m_bApplyWind = 0xCD8; // bool
                 constexpr std::ptrdiff_t m_fPrevLockedPoints = 0xCDC; // int32
                 constexpr std::ptrdiff_t m_iForcePointMoveCounter = 0xCE0; // int32
-                constexpr std::ptrdiff_t m_bPrevEndPointPos = 0xCE4; //
+                constexpr std::ptrdiff_t m_bPrevEndPointPos = 0xCE4; // bool[2]
                 constexpr std::ptrdiff_t m_vPrevEndPointPos = 0xCE8; // Vector[2]
                 constexpr std::ptrdiff_t m_flCurScroll = 0xD00; // float32
                 constexpr std::ptrdiff_t m_flScrollSpeed = 0xD04; // float32
@@ -5899,7 +5899,7 @@ namespace cs2_dumper {
             // NetworkVarNames: m_bIsActive (bool)
             namespace C_EnvScreenOverlay {
                 constexpr std::ptrdiff_t m_iszOverlayNames = 0x548; // CUtlSymbolLarge[10]
-                constexpr std::ptrdiff_t m_flOverlayTimes = 0x598; // float32[10]
+                constexpr std::ptrdiff_t m_flOverlayTimes = 0x598; // 
                 constexpr std::ptrdiff_t m_flStartTime = 0x5C0; // GameTime_t
                 constexpr std::ptrdiff_t m_iDesiredOverlay = 0x5C4; // int32
                 constexpr std::ptrdiff_t m_bIsActive = 0x5C8; // bool

@@ -9,7 +9,7 @@ ImVec2 gameToGUIPoint(Vector3f, ImVec2 = { -MAX_MAX_COORD, -MAX_MAX_COORD }, ImV
 ImVec2 getPlayerOffset(ImVec2 vLocalPlayer);
 ImVec2 GUIPointToLocalObserver(Vector3f position, Vector3f localObserverPosition, float rotation);
 
-
+Vector3f worldToScreenPoint(ViewMatrix, Vector3f);
 Vector3f operator+(Vector3f, Vector3f);
 Vector3f operator-(Vector3f, Vector3f);
 Vector3f operator*(Vector3f, float);

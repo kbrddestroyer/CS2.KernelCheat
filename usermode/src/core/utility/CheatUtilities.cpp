@@ -42,6 +42,31 @@ ImVec2 GUIPointToLocalObserver(Vector3f position, Vector3f localObserverPosition
 	return vOffset;
 }
 
+Vector3f worldToScreenPoint(ViewMatrix matrix, Vector3f vPosition)
+{
+	float invW = matrix[3][0] * vPosition.x + matrix[3][1] * vPosition.y + matrix[3][2] * vPosition.z + matrix[3][3];
+	if (invW <= 0.01f)
+		return { 0, 0, 0 };
+
+	Vector2f vPrecompPosition = {
+		(matrix[0][0] * vPosition.x + matrix[0][1] * vPosition.y + matrix[0][2] * vPosition.z + matrix[0][3]) / invW,
+		(matrix[1][0] * vPosition.x + matrix[1][1] * vPosition.y + matrix[1][2] * vPosition.z + matrix[1][3]) / invW,
+	};
+
+	ImVec2 vSize = ImGui::GetIO().DisplaySize;
+	ImVec2 vScreenCenter = {
+		vSize.x / 2,
+		vSize.y / 2
+	};
+
+	ImVec2 vScreenPoint = {
+		vScreenCenter.x + (vPrecompPosition.x * vScreenCenter.x),
+		vScreenCenter.y - (vPrecompPosition.y * vScreenCenter.y)
+	};
+
+	return { vScreenPoint.x, vScreenPoint.y, invW };
+}
+
 Vector3f operator+(Vector3f a, Vector3f b)
 {
 	return { a.x + b.x, a.y + b.y, a.z + b.z };

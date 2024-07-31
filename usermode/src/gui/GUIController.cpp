@@ -122,6 +122,11 @@ void SettingsTab::Update()
 
 void SettingsTab::Render()
 {
+    ImGui::Separator();
+    if (ImGui::Button("Safe exit"))
+    {
+        exit(0);
+    }
     ImGui::Text("Radar Hack");
     ImGui::Separator();
 
@@ -168,7 +173,36 @@ void SettingsTab::Render()
             ThreadedObject::createObject(std::make_shared<AimBot>());
         Cheat::Instances(AIMBOT)->toggle(this->aimbotEnabled);
     }
-
+    ImGui::Checkbox("Aim Walls", &this->ignoreWalls);
     ImGui::SliderFloat("Aimbot Max Angle", &this->aimbotMaxDistance, 1, 360);
     ImGui::SliderFloat("Aimbot Smooth", &this->aimbotSmoothness, 1, 125);
+
+    ImGui::Separator();
+    ImGui::Text("Antirecoil");
+
+    if (ImGui::Checkbox("Antirecoil", &this->antirecoilEnabled))
+    {
+        if (!Cheat::Instances(CheatEntities::ANTIRECOIL))
+            ThreadedObject::createObject(std::make_shared<Antirecoil>());
+        Cheat::Instances(ANTIRECOIL)->toggle(this->antirecoilEnabled);
+    }
+
+    ImGui::Separator();
+    ImGui::Text("Wallhack");
+    if (ImGui::Checkbox("Wallhack", &this->wallhackEnabled))
+    {
+        if (!Cheat::Instances(CheatEntities::BONE_ESP))
+            ThreadedObject::createObject(std::make_shared<BoneESP>());
+        Cheat::Instances(BONE_ESP)->toggle(this->wallhackEnabled);
+    }
+
+    ImGui::Separator();
+    ImGui::Text("Counterstrafe");
+
+    if (ImGui::Checkbox("Counter strafe", &this->counterstrafeEnabled))
+    {
+        if (!Cheat::Instances(CheatEntities::AUTOSTRAFE))
+            ThreadedObject::createObject(std::make_shared<Autostrafe>());
+        Cheat::Instances(AUTOSTRAFE)->toggle(this->counterstrafeEnabled);
+    }
 }
