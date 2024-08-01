@@ -3,11 +3,12 @@
 
 **Repo health**
 
-- main - Latest push ![Main branch - latest push](https://github.com/kbrddestroyer/CS2.KernelCheat/actions/workflows/msbuild.yml/badge.svg?branch=main&event=push)
-
-- main - Latest pull request ![Main branch - latest pull request](https://github.com/kbrddestroyer/CS2.KernelCheat/actions/workflows/msbuild.yml/badge.svg?branch=main&event=pull-request)
-
-- Release ![Release branch](https://github.com/kbrddestroyer/CS2.KernelCheat/actions/workflows/msbuild.yml/badge.svg?branch=release)
+-------------------
+| Branch | Health |
+-------------------
+| main health | ![Main branch - latest push](https://github.com/kbrddestroyer/CS2.KernelCheat/actions/workflows/msbuild.yml/badge.svg?branch=main&event=push)
+| main - pull request | ![Main branch - latest pull request](https://github.com/kbrddestroyer/CS2.KernelCheat/actions/workflows/msbuild.yml/badge.svg?branch=main&event=pull-request)
+| Release | ![Release branch](https://github.com/kbrddestroyer/CS2.KernelCheat/actions/workflows/msbuild.yml/badge.svg?branch=release)
 
 [Discord](https://discord.com/invite/FQvZhSeHrr)
 
