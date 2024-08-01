@@ -1,6 +1,14 @@
 # CS2 Kernel Mode cheat
 *Just my attempt to break CS2 in kernel mode app for win32/64*
 
+**Repo health**
+
+| Branch | Health |
+| ------ | ------ |
+| main | ![Main branch - latest push](https://github.com/kbrddestroyer/CS2.KernelCheat/actions/workflows/msbuild.yml/badge.svg?branch=main)
+| Release | ![Release branch](https://github.com/kbrddestroyer/CS2.KernelCheat/actions/workflows/msbuild.yml/badge.svg?branch=release)
+| Tag build | ![Latest tag](https://github.com/kbrddestroyer/CS2.KernelCheat/actions/workflows/msbuild_release.yml/badge.svg) |
+
 [Discord](https://discord.com/invite/FQvZhSeHrr)
 
 # Disclaimer 
