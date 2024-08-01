@@ -2,7 +2,10 @@
 *Just my attempt to break CS2 in kernel mode app for win32/64*
 
 **Repo health**
+
 ![Main branch - latest push](https://github.com/kbrddestroyer/CS2.KernelCheat/actions/workflows/msbuild.yml/badge.svg?branch=main&event=push)
+![Main branch - latest pull request](https://github.com/kbrddestroyer/CS2.KernelCheat/actions/workflows/msbuild.yml/badge.svg?branch=main&event=pull-request)
+![Release branch](https://github.com/kbrddestroyer/CS2.KernelCheat/actions/workflows/msbuild.yml/badge.svg?branch=release)
 
 [Discord](https://discord.com/invite/FQvZhSeHrr)
 
