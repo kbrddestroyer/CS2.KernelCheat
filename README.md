@@ -1,7 +1,8 @@
 # CS2 Kernel Mode cheat
 *Just my attempt to break CS2 in kernel mode app for win32/64*
 
-**Repo health**
+# Brief information 
+## Repository health status
 
 | Branch | Health |
 | ------ | ------ |
@@ -9,23 +10,24 @@
 | Release | ![Release branch](https://github.com/kbrddestroyer/CS2.KernelCheat/actions/workflows/msbuild.yml/badge.svg?branch=release)
 | Tag build | ![Latest tag](https://github.com/kbrddestroyer/CS2.KernelCheat/actions/workflows/msbuild_release.yml/badge.svg) |
 
+## Socials
+
 [Discord](https://discord.com/invite/FQvZhSeHrr)
 
 # Disclaimer 
 
 I am **NOT** responsible for your system crashes, VAC blocks, etc. This software is educational purposes only.
-
-## I just want to show that VAC still doesn't work properly and anyone with coding skills can break Counter Strike game. I am not supporting game hacking, cheating, exploiting etc.
-
-#fixcs2 #fixcsgo
+I just want to show that VAC still doesn't work properly and anyone with coding skills can break Counter Strike game. I am not supporting game hacking, cheating, exploiting etc. #fixcs2
 
 # Credits
+
 ## Used software
+
 - dear ImGui 
 - [kdmapper](https://github.com/TheCruZ/kdmapper) added as usermode library
-- patched kdmapper that I used in development 
-- a2x and cs2 offsets dumper
+- [a2x's](https://github.com/a2x/cs2-dumper) offsets dumper
 - cazzwastaken and YouTube tutorial for basic KernelMode application 
+
 ## Active contributors
 - [Leksa667](https://github.com/Leksa667)
 
