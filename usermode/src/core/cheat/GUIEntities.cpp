@@ -1,8 +1,9 @@
 #include "GUIEntities.h"
 #include "../gui/GUIController.h"
 
-CSPlayerEntity::CSPlayerEntity(std::string sName, std::uint8_t uTeam, std::uint32_t uHealth, std::uint32_t uArmor, Vector3f vPos, QAngle qRot, bool isLocal, bool hasHelmet, bool isBombCarrier)
+CSPlayerEntity::CSPlayerEntity(uint32_t uIndex, std::string sName, std::uint8_t uTeam, std::uint32_t uHealth, std::uint32_t uArmor, Vector3f vPos, Vector3f vOldPos, Vector3f vHeadPosition, QAngle qRot, uint32_t isSpotted, bool isLocal, bool hasHelmet, bool isBombCarrier)
 {
+	this->uIndex		= uIndex;
 	this->sName			= sName;
 	this->uTeam			= uTeam;
 	this->uHealth		= uHealth;
@@ -11,7 +12,10 @@ CSPlayerEntity::CSPlayerEntity(std::string sName, std::uint8_t uTeam, std::uint3
 	this->isBombCarrier = isBombCarrier;
 	this->isLocal		= isLocal;
 	this->vPosition		= vPos;
+	this->vOldPosition	= vOldPos;
+	this->vHeadPosition	= vHeadPosition;
 	this->qAngle		= qRot;
+	this->isSpotted		= isSpotted;
 }
 
 void CSPlayerEntity::Render(ImDrawList* imDrawList, ImVec2 entityPosition, float entityRotation)

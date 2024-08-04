@@ -1,6 +1,9 @@
 #pragma once
 #include <imgui.h>
 #include <vector>
+#include <cmath>
+
+#include <atomic>
 
 #include <Windows.h>
 
@@ -10,12 +13,14 @@
 class ChildGUIController
 {
 protected:
-	bool		bEnabled = false;
-	ImVec2		vWndPos;
-	ImDrawList* imDrawList;
+	std::atomic<bool> bEnabled;
+	ImVec2		vWndPos = {};
+	ImDrawList* imDrawList = nullptr;
 public:
-	std::string name;
+	std::string name = "";
 public:
+	ChildGUIController() { bEnabled.store(false); }
+
 	void InternalUpdate();
 
 	virtual void Render() = 0;
@@ -47,6 +52,16 @@ public:
 	// Trigger
 	bool	triggerEnabled = false;
 	int		triggerDelay = 10;
+
+	// Aimbot
+	bool	aimbotEnabled = false;
+	bool	ignoreWalls = false;
+	float	aimbotMaxDistance = 0.0f;
+	float	aimbotSmoothness = 1.0f;
+
+	bool	antirecoilEnabled = false;
+	bool	wallhackEnabled = false;
+	bool	counterstrafeEnabled = false;
 public:
 	static SettingsTab* getInstance() { return instance; }
 
@@ -65,12 +80,14 @@ private:
 	ImGuiIO io;
 	ImVec4 clear_color = ImVec4(0.15f, 0.15f, 0.15f, 1.00f);
 
-	bool bAttached = false;
+	bool bAttached = true;
 	bool bEnableChildren = false;
+	bool bSafeExit = false;
+
 	SettingsTab settings;	
 	CheatRenderer controller;
-	std::vector<std::shared_ptr<ChildGUIController>> vChildren;
 protected:
+	std::atomic<bool> menuShow = true;
 	virtual void Initialize();
 public:
 	GUIController();
@@ -79,9 +96,14 @@ public:
 
 	virtual void Render();
 	virtual void Update();
-	void Add(std::shared_ptr<ChildGUIController> child) { vChildren.push_back(child); }
 
 	ImVec4 getClearColor() { return clear_color; }
+
+	void toggle(bool bState) { menuShow.store(bState); }
+	bool getState() { return menuShow.load(std::memory_order_relaxed); }
+
+	void safeExit(bool bState) { this->bSafeExit = bState; }
+	bool safeExit() { return bSafeExit; }
 
 	static GUIController* Instance() { return instance; }
 };

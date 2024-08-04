@@ -41,7 +41,7 @@ class ThreadController : public IThreadController
 private:
 	HANDLE		hDriver;
 	uintptr_t	uClient;
-	const uint32_t	uMaximum = 3;
+	const uint32_t	uMaximum = 1;
 	uint32_t	id = 0;
 	std::vector<PThreadedObject> vCallstack;
 private:
@@ -75,8 +75,6 @@ private:
 public:
 	ThreadMgr();
 	~ThreadMgr();
-
-	std::mutex&			getMutex()	{ return mtx; }
 	HANDLE				DRIVER()	{ return hDriver; }
 	uintptr_t			CLIENT()	{ return uClient; }
 	ThreadController*	getThread();

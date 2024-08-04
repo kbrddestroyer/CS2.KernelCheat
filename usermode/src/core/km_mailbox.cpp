@@ -15,13 +15,14 @@ int kmControllerEntry()
 	if (hDriverHandle == INVALID_HANDLE_VALUE)
 	{
 		MessageBox(NULL, L"Invalid handle", L"Error", MB_ICONERROR | MB_OK);
+
+
+
 		return EXIT_FAILURE;
 	}
 
 	if (driver::attach(hDriverHandle, dPid) == true)
 	{
-		MessageBox(NULL, L"Succecssfully attached kernelmode to target", L"Success", MB_ICONINFORMATION | MB_OK);
-
 		initialize(hDriverHandle, dPid);
 	}
 
