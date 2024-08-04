@@ -8,11 +8,11 @@ name: MSBuild Release
 on:
   push:
     branches: [ "release" ]
-  workflow_dispatch:
 jobs:
   build:
     runs-on: windows-2022
     steps:
+    - uses: actions/checkout@v4
     - name: Call build agent
       uses: ./.github/workflows/build-agent.yml
     - name: Compress arifacts
