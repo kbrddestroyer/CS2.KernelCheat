@@ -301,7 +301,10 @@ void AimBot::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 		bool bIgnoreWalls = SettingsTab::getInstance()->ignoreWalls;
 
 		uintptr_t uPlayerPawn = getPlayerPawnByIndex(hDriver, uClient, uEntityList, i);
-		if (!uPlayerPawn || uPlayerPawn == pLocalPlayer)
+
+		if (!uPlayerPawn)
+			continue;
+		if (uPlayerPawn == pLocalPlayer)
 		{
 			uLocalIndex = i;
 			continue;
@@ -318,11 +321,14 @@ void AimBot::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 			mEntities[uPlayerPawn] = { true, false, {} };
 			continue;
 		}
-		uint8_t		uTeam = driver::read<uint8_t>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseEntity::m_iTeamNum);
+		uint8_t	uTeam = driver::read<uint8_t>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseEntity::m_iTeamNum);
 		if (uTeam == uLocalTeam)
 			continue;
 
 		uintptr_t pGameSceneNode = driver::read<uintptr_t>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseEntity::m_pGameSceneNode);
+		if (!pGameSceneNode)
+			continue;
+
 		uintptr_t pBonearray = driver::read<uintptr_t>(hDriver, pGameSceneNode + schemas::client_dll::CSkeletonInstance::m_modelState + 0x80);
 
 		if (!pBonearray)
@@ -333,8 +339,9 @@ void AimBot::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 		uint32_t isSpotted = 0;
 
 		if (!bIgnoreWalls)
+		{
 			isSpotted = driver::read<uint32_t>(hDriver, uPlayerPawn + schemas::client_dll::C_CSPlayerPawn::m_entitySpottedState + schemas::client_dll::EntitySpottedState_t::m_bSpottedByMask);
-
+		}
 		Vector3f screenHead = worldToScreenPoint(localViewMatrix, vHeadPosition);
 		screenHead.z = 0;
 		float fDistance = distance(vWindowCenter, screenHead);
@@ -345,7 +352,7 @@ void AimBot::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 		{
 			fClosestDistance = fDistance;
 			vClosestHeadPosition = vHeadPosition;
-			uClosestSpotted = (bIgnoreWalls) ? bIgnoreWalls : isSpotted;
+			uClosestSpotted = isSpotted;
 		}
 	}
 
