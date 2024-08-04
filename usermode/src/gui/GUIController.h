@@ -14,10 +14,10 @@ class ChildGUIController
 {
 protected:
 	std::atomic<bool> bEnabled;
-	ImVec2		vWndPos;
-	ImDrawList* imDrawList;
+	ImVec2		vWndPos = {};
+	ImDrawList* imDrawList = nullptr;
 public:
-	std::string name;
+	std::string name = "";
 public:
 	ChildGUIController() { bEnabled.store(false); }
 
@@ -86,7 +86,6 @@ private:
 
 	SettingsTab settings;	
 	CheatRenderer controller;
-	std::vector<std::shared_ptr<ChildGUIController>> vChildren;
 protected:
 	std::atomic<bool> menuShow = true;
 	virtual void Initialize();
@@ -97,9 +96,6 @@ public:
 
 	virtual void Render();
 	virtual void Update();
-	void Add(std::shared_ptr<ChildGUIController> child) { 
-		vChildren.push_back(child); 
-	}
 
 	ImVec4 getClearColor() { return clear_color; }
 

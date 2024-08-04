@@ -23,8 +23,7 @@ void GUIController::Initialize()
 
 void GUIController::Update()
 {
-    for (std::shared_ptr<ChildGUIController> controller : vChildren)
-        controller->Render();
+
 }
 
 void GUIController::Render()
@@ -60,7 +59,7 @@ void ChildGUIController::InternalUpdate()
 
 void CheatRenderer::Render()
 {
-    for (std::pair<CheatEntities, Cheat*> instance : Cheat::getMap())
+    for (const std::pair<CheatEntities, Cheat*>& instance : Cheat::getMap())
     {
         if (instance.second && instance.second->enabled())
         {
@@ -71,7 +70,7 @@ void CheatRenderer::Render()
 
 void CheatRenderer::Update()
 {
-
+    // No update but needs to be overriden
 }
 
 

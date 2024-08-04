@@ -1,3 +1,11 @@
+/*
+*	Made by: KeyboardDestroyer
+* Contains all cheat functionality, that's controlled from GUIController
+* 
+* TODO:
+* - Cleanup
+*/
+
 #pragma once
 #include <vector>
 #include <map>
@@ -18,6 +26,8 @@ namespace cheatscore
 #pragma region UTILITY
 	namespace utility
 	{
+		// Add new values if you're adding new Cheat class and make a constructow w/ base class constructor call, passing new enum value as an attribute: 
+		// NewCheat() : Cheat(ChectEntities.NEW_CHEAT) {}
 		enum CheatEntities
 		{
 			NONE,
@@ -31,60 +41,86 @@ namespace cheatscore
 			AUTOSTRAFE,
 		};
 
-
-		/**
-		* Cheat - base class for every cheat functionality
-		* TODO:
-		*  Make this SOLID
-		*  Add base entity scan for all children
-		*  Make this shit readable
-		* 
-		*/
+		//
+		// Cheat - base class for every cheat functionality
+		// TODO:
+		// - Make this SOLID
+		// - - Single Responsibility [?]
+		// - - 
+		// - Add base entity scan for all children
+		// - Make this shit readable
+		// 
+		// Interface:
+		// CheatUpdate(HANDLE hDriver, uintptr_t uClient) can be overriden, runs from separate thread and has access to driver
+		// Render() can be overriden, runs from main thread and should never use driver functions
+		// 
 		class Cheat : public ThreadedObject
 		{
 		private:
 			inline static std::map<CheatEntities, Cheat*> instances;
-			CheatEntities desc;
-		protected:
+			CheatEntities entityKey;
 			std::atomic<bool> bState = false;
+		private:
+			Cheat() {
+				throw "Should not be accessed!";
+			}
+		protected:
+			virtual void CheatUpdate(HANDLE, uintptr_t) = 0;
 		public:
-			static std::map<CheatEntities, Cheat*>& getMap() { return instances; }
 			static Cheat* Instances(CheatEntities entity) {
 				return instances[entity];
 			}
-
-			Cheat(CheatEntities entity = CheatEntities::NONE) {
-				if (entity == NONE)
-					throw "Entity type cannot be none";
-
-				instances[entity] = this;
-				desc = entity;
+			static std::map<CheatEntities, Cheat*>& getMap()
+			{
+				return instances;
 			}
 
-			~Cheat() { instances.erase(desc); }
+			Cheat(CheatEntities entity) {
+				if (entity == NONE)
+					throw "Entity type cannot be none";
+				entityKey = entity;
+				instances[entity] = this;
+			}
+
+			// Should never be accessed manually (e.g. SomeCheat.~Cheat())
+			// That won't delete the cheat and break the control mapping
+			~Cheat() { instances.erase(entityKey); }
+
 			/**
 			* Get uPlayerPawn pointer by index in entity list.
-			* @remark uPlayerPawn scan process became more complicated and it keeps being dublicated in every Cheat class
-			* it's recommended to keep this logic common for all classes since it's the most basic thing
-			* and cannot be simplified
-			* Anyway it really helps in optimisation since I don't need to change this everywhere
 			* 
-			* @param uIndex Index of player in dwEntityList
-			* @return uintptr_t pointer to uPlayerPawn or nullptr if invalid
-			* @throws should not throw exceptions
+			* @param hDriver HANDLE -  handle of kernelmode.sys
+			* @param uClient uintptr_t -  Base address of client.dll
+			* @param uEntityList uintptr_t - Index of player in dwEntityList
+			* @param uIndex uint32_t Index of player in dwEntityList
+			* 
+			* @return uintptr_t address of uPlayerPawn or nullptr if invalid
 			*/
-			uintptr_t getPlayerPawnByIndex(HANDLE, uintptr_t, uintptr_t, uint32_t);
-			uintptr_t getLocalPlayerPawn(HANDLE, uintptr_t);
+			const uintptr_t getPlayerPawnByIndex(const HANDLE, const uintptr_t, uintptr_t, uint32_t) noexcept;
 
+			/**
+			* Common logic of finding the local player is delegated to base class
+			* 
+			* @param hDriver: HANDLE handle of kernelmode.sys
+			* @param uClient: uintptr_t Base address of client.dll
+			* 
+			* @return uintptr_t address of LocalPlayerPawn
+			*/
+			const uintptr_t getLocalPlayerPawn(const HANDLE, const uintptr_t) noexcept;
 
+			/**
+			* Toggle cheat state on/off
+			* @param bState Current state
+			*/
 			virtual void toggle(bool bState) { this->bState.store(bState); }
 			bool enabled() { return bState.load(std::memory_order_relaxed); }
 
-			void Update(HANDLE, uintptr_t) override;
+			/*
+			* This function cannot be overriden
+			*/
+			void Update(HANDLE, uintptr_t) override final;
 
 			virtual void Render() = 0;
-		protected:
-			virtual void CheatUpdate(HANDLE, uintptr_t) = 0;
 		};
 	}
 #pragma endregion Utility tools for cheats
@@ -93,6 +129,9 @@ namespace cheatscore
 	namespace core
 	{
 		using namespace utility;
+
+		// TODO:
+		// Needs some updates, works terrible
 		class BhopCheat : public Cheat
 		{
 		public:

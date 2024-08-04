@@ -9,7 +9,7 @@ void Cheat::Update(HANDLE hDriver, uintptr_t uClient)
 		CheatUpdate(hDriver, uClient);
 }
 
-uintptr_t Cheat::getPlayerPawnByIndex(HANDLE hDriver, uintptr_t uClient, uintptr_t uEntityList, uint32_t uIndex)
+const uintptr_t Cheat::getPlayerPawnByIndex(const HANDLE hDriver, const uintptr_t uClient, uintptr_t uEntityList, uint32_t uIndex) noexcept
 {
 	uintptr_t pEntityListEntry = driver::read<uintptr_t>(hDriver, uEntityList + (8 * (uIndex & 0x7FF) >> 9) + 16);
 	if (!pEntityListEntry)
@@ -27,7 +27,7 @@ uintptr_t Cheat::getPlayerPawnByIndex(HANDLE hDriver, uintptr_t uClient, uintptr
 	return driver::read<uintptr_t>(hDriver, pEntityListEntry + (120 * (uPlayerPawnIndex & 0x1FF)));
 }
 
-uintptr_t Cheat::getLocalPlayerPawn(HANDLE hDriver, uintptr_t uClient)
+const uintptr_t Cheat::getLocalPlayerPawn(const HANDLE hDriver, const uintptr_t uClient) noexcept
 {
 	return driver::read<uintptr_t>(hDriver, uClient + offsets::client_dll::dwLocalPlayerPawn);
 }
@@ -94,9 +94,6 @@ bool RadarHack::updateEntity(CSPlayerEntity& target, HANDLE hDriver, uintptr_t u
 
 void RadarHack::fullSyncUpdate(HANDLE hDriver, uintptr_t uClient)
 {
-	if (!this->bState.load())
-		return;
-
 	vEntities.clear();
 
 	uintptr_t uEntityList = driver::read<uintptr_t>(hDriver, uClient + offsets::client_dll::dwEntityList);
@@ -142,9 +139,6 @@ void RadarHack::fullSyncUpdate(HANDLE hDriver, uintptr_t uClient)
 
 void RadarHack::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 {
-	if (!this->bState.load())
-		return;
-
 	if (bNeedFullSync)
 	{
 		fullSyncUpdate(hDriver, uClient);
@@ -169,9 +163,6 @@ void RadarHack::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 
 void RadarHack::Render()
 {
-	if (!bState.load())
-		return;
-
 	ImGui::SetNextWindowSize(ImVec2(200, 200), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowBgAlpha(0.0f);
 	ImGui::Begin("Radar", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse);
@@ -452,8 +443,6 @@ void BoneESP::scanForBones()
 
 void BoneESP::fullSyncRebuild(HANDLE hDriver, uintptr_t uClient)
 {
-	if (!this->bState.load())
-		return;
 	std::vector<CSEntity> entities = mEntities.load();
 	entities.clear();
 
