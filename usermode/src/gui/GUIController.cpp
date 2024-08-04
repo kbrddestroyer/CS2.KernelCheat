@@ -194,14 +194,4 @@ void SettingsTab::Render()
             ThreadedObject::createObject(std::make_shared<BoneESP>());
         Cheat::Instances(BONE_ESP)->toggle(this->wallhackEnabled);
     }
-
-    ImGui::Separator();
-    ImGui::Text("Counterstrafe");
-
-    if (ImGui::Checkbox("Counter strafe", &this->counterstrafeEnabled))
-    {
-        if (!Cheat::Instances(CheatEntities::AUTOSTRAFE))
-            ThreadedObject::createObject(std::make_shared<Autostrafe>());
-        Cheat::Instances(AUTOSTRAFE)->toggle(this->counterstrafeEnabled);
-    }
 }
