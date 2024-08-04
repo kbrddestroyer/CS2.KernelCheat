@@ -52,7 +52,8 @@ DWORD getParentProcess()
 
     }
     __finally {
-        if (hSnapshot != INVALID_HANDLE_VALUE) CloseHandle(hSnapshot);
+        if (hSnapshot && hSnapshot != INVALID_HANDLE_VALUE) 
+            CloseHandle(hSnapshot);
     }
     return ppid;
 }
@@ -300,20 +301,12 @@ void SetupWindow() {
     UpdateWindow(OverlayWindow::Hwnd);
 }
 
-int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+int WINAPI WinMain(
+    _In_ HINSTANCE hInstance, 
+    _In_opt_ HINSTANCE hPrevInstance, 
+    _In_ LPSTR lpCmdLine,
+    _In_ int nCmdShow)
 {
-    KDMapperAPI kdmapper;
-
-    if (kdmapper.load())
-    {
-        MessageBoxA(NULL, "Successfully mapped driver", "Success", MB_OK);
-    }
-    else
-    {
-        MessageBoxA(NULL, "Driver was not mapped", "Error", MB_OK);
-        exit(0);
-    }
-
     _HWND = FindWindow(NULL, L"Counter-Strike 2");
 
     if (_HWND == NULL)
@@ -362,6 +355,14 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
     if (kmControllerEntry() != EXIT_SUCCESS)
     {
+        KDMapperAPI kdmapper;
+
+        if (kdmapper.load())
+        {
+            if (kmControllerEntry() != EXIT_SUCCESS)
+                return 1;
+        }
+        MessageBoxA(NULL, "Driver was not mapped, there may be an error in kdmapper or kernelmode.sys does not exist in cheat root path", "Critical error", MB_OK | MB_ICONERROR);
         return 1;
     }
 

@@ -23,8 +23,7 @@ void GUIController::Initialize()
 
 void GUIController::Update()
 {
-    for (std::shared_ptr<ChildGUIController> controller : vChildren)
-        controller->Render();
+
 }
 
 void GUIController::Render()
@@ -60,7 +59,7 @@ void ChildGUIController::InternalUpdate()
 
 void CheatRenderer::Render()
 {
-    for (std::pair<CheatEntities, Cheat*> instance : Cheat::getMap())
+    for (const std::pair<CheatEntities, Cheat*>& instance : Cheat::getMap())
     {
         if (instance.second && instance.second->enabled())
         {
@@ -71,7 +70,7 @@ void CheatRenderer::Render()
 
 void CheatRenderer::Update()
 {
-
+    // No update but needs to be overriden
 }
 
 
@@ -194,15 +193,5 @@ void SettingsTab::Render()
         if (!Cheat::Instances(CheatEntities::BONE_ESP))
             ThreadedObject::createObject(std::make_shared<BoneESP>());
         Cheat::Instances(BONE_ESP)->toggle(this->wallhackEnabled);
-    }
-
-    ImGui::Separator();
-    ImGui::Text("Counterstrafe");
-
-    if (ImGui::Checkbox("Counter strafe", &this->counterstrafeEnabled))
-    {
-        if (!Cheat::Instances(CheatEntities::AUTOSTRAFE))
-            ThreadedObject::createObject(std::make_shared<Autostrafe>());
-        Cheat::Instances(AUTOSTRAFE)->toggle(this->counterstrafeEnabled);
     }
 }

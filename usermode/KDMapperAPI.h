@@ -9,9 +9,8 @@
 class KDMapperAPI
 {
 private:
-	std::wstring wPath;
-	HANDLE iqvw64e_device_handle;
-
+	std::wstring wPath = L"";
+	HANDLE iqvw64e_device_handle = nullptr;
 public:
 	KDMapperAPI() {}
 
