@@ -14,12 +14,35 @@ jobs:
     steps:
       - uses: actions/checkout@v4
   build:
-    needs: checkout
-    uses: ./.github/workflows/build-agent.yml
-  post-build:
     runs-on: windows-2022
-    needs: build
+    strategy:
+        matrix:
+          configuration: [Debug, Release]
+          platform: [x64]
     steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+
+    - name: Restore NuGet packages
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: nuget restore ${{env.SOLUTION_FILE_PATH}}
+
+    - name: Build
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      # Add additional options to the MSBuild command line here (like platform or verbosity level).
+      # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
+      run: msbuild /m /p:Configuration=${{env.Configuration}} ${{env.SOLUTION_FILE_PATH}}
+      env:
+          Configuration: ${{ matrix.configuration }}
+          Platform: ${{ matrix.platform }}
+
+    - name: Store artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: Artifact
+        path: "x64/build/"
     - name: Download Artifact
       uses: actions/download-artifact@master
       with:
