@@ -9,12 +9,17 @@ on:
   push:
     branches: [ "release" ]
 jobs:
-  build:
+  checkout: 
     runs-on: windows-2022
     steps:
-    - uses: actions/checkout@v4
-    - name: Call build agent
-      uses: ./.github/workflows/build-agent.yml
+      - uses: actions/checkout@v4
+  build:
+    needs: checkout
+    uses: ./.github/workflows/build-agent.yml
+  post-build:
+    runs-on: windows-2022
+    needs: build
+    steps:
     - name: Compress arifacts
       working-directory: ${{env.GITHUB_WORKSPACE}}
       shell: pwsh
