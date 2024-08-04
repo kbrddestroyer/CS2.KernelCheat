@@ -20,6 +20,11 @@ jobs:
     runs-on: windows-2022
     needs: build
     steps:
+    - name: Download Artifact
+      uses: actions/download-artifact@master
+      with:
+        name: Artifact
+        path: "x64/build/"
     - name: Compress arifacts
       working-directory: ${{env.GITHUB_WORKSPACE}}
       shell: pwsh
