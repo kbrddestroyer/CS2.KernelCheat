@@ -43,11 +43,6 @@ jobs:
       with:
         name: Artifact
         path: "x64/build/"
-    - name: Download Artifact
-      uses: actions/download-artifact@master
-      with:
-        name: Artifact
-        path: "x64/build/"
     - name: Compress arifacts
       working-directory: ${{env.GITHUB_WORKSPACE}}
       shell: pwsh
