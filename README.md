@@ -1,36 +1,63 @@
 # CS2 Kernel Mode cheat
 *Just my attempt to break CS2 in kernel mode app for win32/64*
 
+# Brief information 
+## Repository health status
+
+| Branch | Health |
+| ------ | ------ |
+| main | ![Main branch - latest push](https://github.com/kbrddestroyer/CS2.KernelCheat/actions/workflows/msbuild.yml/badge.svg?branch=main)
+| Release | ![Release branch](https://github.com/kbrddestroyer/CS2.KernelCheat/actions/workflows/msbuild.yml/badge.svg?branch=release)
+| Tag build | ![Latest tag](https://github.com/kbrddestroyer/CS2.KernelCheat/actions/workflows/msbuild_release.yml/badge.svg) |
+
+## Socials
+
+[Discord](https://discord.com/invite/FQvZhSeHrr)
+
 # Disclaimer 
 
 I am **NOT** responsible for your system crashes, VAC blocks, etc. This software is educational purposes only.
-
-## I just want to show that VAC still doesn't work properly and anyone with coding skills can break Counter Strike game. I am not supporting game hacking, cheating, exploiting etx.
-
-#fixcs2 #fixcsgo
+I just want to show that VAC still doesn't work properly and anyone with coding skills can break Counter Strike game. I am not supporting game hacking, cheating, exploiting etc. #fixcs2
 
 # Credits
+
 ## Used software
-- dear ImGui 
-- kdmapper project
-- patched kdmapper that I used in development 
-- a2x and cs2 offsets dumper
-- cazzwastaken and YouTube tutorial for basic KernelMode application 
+
+- [dear ImGui](https://github.com/ocornut/imgui) and d3d9 for backend as GUI framework
+- [kdmapper](https://github.com/TheCruZ/kdmapper) added as usermode library
+- [a2x's](https://github.com/a2x/cs2-dumper) offsets dumper
+- [cazzwastaken](https://youtube.com/@cazz?si=juMpTGDWsf86qhqw) and his [YouTube tutorial for basic kernel driver](https://youtu.be/n463QJ4cjsU?si=QQDnUOpgAzZ1oLV3)
+
 ## Active contributors
+
 - [Leksa667](https://github.com/Leksa667)
 
-# Requirements
-- [KDMapper](https://github.com/TheCruZ/kdmapper)
+## Dependencies
+
 - Windows Driver Kit [*Install Guide*](https://learn.microsoft.com/en-us/windows-hardware/drivers/download-the-wdk)
 - Windows SDK
+- [DirectX SDK](https://www.microsoft.com/ru-ru/download/details.aspx?id=6812)
 
-### Project build
-> Project building from source code requires dearImGui library, that can be installed from [here](https://github.com/ocornut/imgui)
+---
 
-# Install
-All up-to-date releases can be found [here](https://github.com/kbrddestroyer/CS2.KernelCheat/releases)
+# Installation guide
 
-## Mapping driver
+Currently the installation section is in project wiki tab, all releases can be found [here](https://github.com/kbrddestroyer/CS2.KernelCheat/releases)
+
+# Project build
+
+## Building usermode and kernelmode binaries
+
+- Install Windows SDK and Windows Driver Kit by following the [official tutorial](https://learn.microsoft.com/en-us/windows-hardware/drivers/download-the-wdk)
+- Install [DirectX SDK](https://www.microsoft.com/ru-ru/download/details.aspx?id=6812)
+- Clone the repository and whitelist it folder in your antivirus software
+- Run Microsoft Visual Studio 2022 and open the project
+- That should be enough, but you can tweak project settings altering project directories, etc.
+- Run build from VS2022 GUI or by `msbuild` command
+
+## Mapping the driver
+
+If native mapping from usermode.exe does not work or leads to system failure you can follow this steps:
 1. Download kdmapper release
 2. Whitelist kdmapper/project directory for your antimalware software
 3. Download cheat release from *Releases* tab

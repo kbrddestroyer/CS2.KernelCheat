@@ -9,6 +9,7 @@ kdmapper-master/
 *.ini
 usermode/*.sys
 
+
 # User-specific files
 *.rsuser
 *.suo
