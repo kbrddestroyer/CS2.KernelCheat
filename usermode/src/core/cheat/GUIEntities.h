@@ -11,6 +11,7 @@ public:
 	virtual void Render(ImDrawList*, ImVec2, float) = 0;
 };
 
+// Too heavy, optimize
 class CSPlayerEntity : public GUIEntity
 {
 public:

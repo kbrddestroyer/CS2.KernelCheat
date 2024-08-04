@@ -660,13 +660,3 @@ void BoneESP::Render()
 		passedTime = 0;
 	}
 }
-
-void Autostrafe::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
-{
-
-}
-
-void Autostrafe::Render()
-{
-
-}

@@ -37,8 +37,7 @@ namespace cheatscore
 			TRIGGER,
 			AIMBOT,
 			ANTIRECOIL,
-			BONE_ESP,
-			AUTOSTRAFE,
+			BONE_ESP
 		};
 
 		//
@@ -251,15 +250,6 @@ namespace cheatscore
 
 			void fullSyncRebuild(HANDLE, uintptr_t);
 			void scanForBones();
-			void CheatUpdate(HANDLE, uintptr_t) override;
-			void Render() override;
-		};
-
-		class Autostrafe : public Cheat
-		{
-		public:
-			Autostrafe() : Cheat(AUTOSTRAFE) {}
-
 			void CheatUpdate(HANDLE, uintptr_t) override;
 			void Render() override;
 		};
