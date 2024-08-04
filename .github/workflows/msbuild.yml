@@ -12,10 +12,10 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  checkout:
     runs-on: windows-2022
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Build agent
-        uses: ./.github/workflows/build-agent.yml
+  build:
+      uses: ./.github/workflows/build-agent.yml
