@@ -1,0 +1,26 @@
+name: Delete merged branch
+
+on:
+  push:
+    branches:
+      - main
+      - release
+      - 'feature/*'
+
+jobs:
+  delete-branch:
+    if: github.ref != 'refs/heads/main' && github.ref != 'refs/heads/release' && github.ref != 'refs/heads/feature/*'
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Delete branch
+      run: |
+        BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})
+        echo "Branch to delete: ${BRANCH_NAME}"
+        git push origin --delete ${BRANCH_NAME}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
