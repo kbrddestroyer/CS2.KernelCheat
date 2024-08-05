@@ -27,12 +27,18 @@ jobs:
     needs: checkout
     uses: ./.github/workflows/build-agent.yml
   create-release:
+    runs-on: windows-2022
     needs: build
+    steps:
     - name: Download artifact
       uses: actions/download-artifact@v2
       with:
         name: build-artifact
         path: ./
+    - name: Compress
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      shell: pwsh
+      run: Compress-Archive -Path kernelmode.sys, usermode.exe -DestinationPath release.zip
     - name: Create release tag
       uses: actions/create-release@v1
       id: create_release
