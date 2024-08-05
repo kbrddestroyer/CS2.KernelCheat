@@ -26,7 +26,7 @@ jobs:
     steps:
       - name: Check filepath
         shell: cmd
-        run: echo ${{needs.build.outputs.artifact-path}}
+        run: dir ${{github.workspace}}
       - name: Attempt to create release archive
         shell: pwsh
         run: Compress-Archive -Path ${{github.workspace}}\x64\build -DestinationPath release.zip
