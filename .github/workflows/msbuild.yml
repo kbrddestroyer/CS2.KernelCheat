@@ -32,11 +32,8 @@ jobs:
       - name: DIR
         shell: cmd
         run: dir ${{github.workspace}}
-      - name: Attempt to create release archive
-        shell: pwsh
-        run: Compress-Archive -Path ${{github.workspace}}\* -DestinationPath release.zip
       - name: Store artifact
         uses: actions/upload-artifact@v2
         with:
           name: test-release-artifact
-          path: "release.zip"
+          path: "./"
