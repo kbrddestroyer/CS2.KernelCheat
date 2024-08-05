@@ -25,7 +25,7 @@ jobs:
     runs-on: windows-2022
     steps:
       - name: Check filepath
-        run: echo ${needs.build.outputs.artifact_path}
+        run: echo ${{needs.build.outputs.artifact_path}}
       - name: Attempt to create release archive
         shell: pwsh
-        run: Compress-Archive -Path ${needs.build.outputs.artifact_path} -DestinationPath release.zip
+        run: Compress-Archive -Path ${{needs.build.outputs.artifact_path}} -DestinationPath release.zip
