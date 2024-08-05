@@ -25,6 +25,7 @@ jobs:
     runs-on: windows-2022
     steps:
       - name: Check filepath
+        shell: cmd
         run: echo ${{needs.build.outputs.artifact_path}}
       - name: Attempt to create release archive
         shell: pwsh
