@@ -8,7 +8,7 @@
 | ------ | ------ |
 | main | ![Main branch - latest push](https://github.com/kbrddestroyer/CS2.KernelCheat/actions/workflows/msbuild.yml/badge.svg?branch=main)
 | Release | ![Release branch](https://github.com/kbrddestroyer/CS2.KernelCheat/actions/workflows/msbuild.yml/badge.svg?branch=release)
-| Tag build | ![Latest tag](https://github.com/kbrddestroyer/CS2.KernelCheat/actions/workflows/msbuild_release.yml/badge.svg) |
+| Tag build | ![Latest tag](https://github.com/kbrddestroyer/CS2.KernelCheat/actions/workflows/msbuild_release.yml/badge.svg?branch=release) |
 
 ## Socials
 
