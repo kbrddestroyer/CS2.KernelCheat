@@ -38,7 +38,7 @@ jobs:
     - name: Store artifact
       uses: actions/upload-artifact@v2
       with:
-        name: Artifact
+        name: build-artifact
         path: "x64/build/"
     outputs:
       artifact-path: $(pwd)/x64/build/
