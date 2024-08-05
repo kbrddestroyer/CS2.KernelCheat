@@ -28,6 +28,7 @@ jobs:
     uses: ./.github/workflows/build-agent.yml
   create-release:
     needs: build
+    steps:
     - name: Download artifact
       uses: actions/download-artifact@v2
       with:
