@@ -27,6 +27,7 @@ jobs:
     needs: checkout
     uses: ./.github/workflows/build-agent.yml
   create-release:
+    runs-on: windows-2022
     needs: build
     steps:
     - name: Download artifact
