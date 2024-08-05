@@ -40,3 +40,5 @@ jobs:
       with:
         name: Artifact
         path: "x64/build/"
+    outputs:
+      artifact-path: $(pwd)/x64/build/
