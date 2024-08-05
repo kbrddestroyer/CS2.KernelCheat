@@ -12,6 +12,8 @@ GUIController::GUIController(ImGuiIO& io)
 {
     this->io = io;
     instance = this;
+    io = ImGui::GetIO();
+    io.IniFilename = nullptr;
     Initialize();
 }
 
@@ -32,19 +34,10 @@ void GUIController::Render()
     settings.Update();
     if (menuShow)
     {
+        ImGui::SetNextWindowSize(ImVec2(667, 400), ImGuiCond_Always);
         if (ImGui::Begin("kbrddestroyer kernel | cs2 | external", nullptr, ImGuiWindowFlags_NoCollapse))
         {
-            if (ImGui::BeginTabBar("##tabs"))
-            {
-                if (ImGui::BeginTabItem("Settings"))
-                {
-                    settings.Render();
-                    ImGui::EndTabItem();
-                }
-
-                ImGui::EndTabBar();
-            }
-
+            settings.Render();
             ImGui::End();
         }
     }
@@ -121,77 +114,103 @@ void SettingsTab::Update()
 
 void SettingsTab::Render()
 {
-    ImGui::Separator();
     if (ImGui::Button("Safe exit"))
     {
         exit(0);
     }
-    ImGui::Text("Radar Hack");
-    ImGui::Separator();
 
-    if (ImGui::Checkbox("Radar Enabled", &this->radarhackEnabled))
+    if (ImGui::BeginTabBar("CheatTabs"))
     {
-        if (!Cheat::Instances(CheatEntities::RADAR))
-            ThreadedObject::createObject(std::make_shared<RadarHack>());
-        Cheat::Instances(RADAR)->toggle(this->radarhackEnabled);
-    }
+        if (ImGui::BeginTabItem("Aimbot"))
+        {
+            ImGui::Text("Aimbot");
+            ImGui::Separator();
 
-    ImGui::ColorEdit4("CT Color", ctColor);
-    ImGui::ColorEdit4("T Color", tColor);
+            if (ImGui::Checkbox("Aim Enabled", &this->aimbotEnabled))
+            {
+                if (!Cheat::Instances(CheatEntities::AIMBOT))
+                    ThreadedObject::createObject(std::make_shared<AimBot>());
+                Cheat::Instances(AIMBOT)->toggle(this->aimbotEnabled);
+            }
+            ImGui::Checkbox("Aim Walls", &this->ignoreWalls);
+            ImGui::SliderFloat("Aimbot Max Angle", &this->aimbotMaxDistance, 1, 280);
+            ImGui::SliderFloat("Aimbot Smooth", &this->aimbotSmoothness, 1, 250);
 
-    ImGui::Separator();
-    ImGui::Text("BunnyHop");
-    ImGui::Separator();
+            ImGui::Separator();
+            ImGui::Text("TriggerBot");
+            ImGui::Separator();
 
-    if (ImGui::Checkbox("Bhop Enabled", &this->bhopEnabled))
-    {
-        if (!Cheat::Instances(CheatEntities::BHOP))
-            ThreadedObject::createObject(std::make_shared<BhopCheat>());
-        Cheat::Instances(BHOP)->toggle(this->bhopEnabled);
-    }
+            if (ImGui::Checkbox("Trigger Enabled", &this->triggerEnabled))
+            {
+                if (!Cheat::Instances(CheatEntities::TRIGGER))
+                    ThreadedObject::createObject(std::make_shared<TriggerBot>());
+                Cheat::Instances(TRIGGER)->toggle(this->triggerEnabled);
+            }
 
-    ImGui::Separator();
-    ImGui::Text("Trigger Bot");
-    ImGui::Separator();
+            ImGui::SliderInt("Trigger Delay", &this->triggerDelay, 10, 250);
 
-    if (ImGui::Checkbox("Trigger Enabled", &this->triggerEnabled))
-    {
-        if (!Cheat::Instances(CheatEntities::TRIGGER))
-            ThreadedObject::createObject(std::make_shared<TriggerBot>());
-        Cheat::Instances(TRIGGER)->toggle(this->triggerEnabled);
-    }
+            ImGui::EndTabItem();
+        }
 
-    ImGui::SliderInt("Trigger Delay", &this->triggerDelay, 10, 250);
+        if (ImGui::BeginTabItem("Visuals"))
+        {
+            ImGui::Text("Wallhack");
+            ImGui::Separator();
 
-    ImGui::Separator();
-    ImGui::Text("Aimbot section");
+            if (ImGui::Checkbox("Wallhack", &this->wallhackEnabled))
+            {
+                if (!Cheat::Instances(CheatEntities::BONE_ESP))
+                    ThreadedObject::createObject(std::make_shared<BoneESP>());
+                Cheat::Instances(BONE_ESP)->toggle(this->wallhackEnabled);
+            }
 
-    if (ImGui::Checkbox("Aim Enabled", &this->aimbotEnabled))
-    {
-        if (!Cheat::Instances(CheatEntities::AIMBOT))
-            ThreadedObject::createObject(std::make_shared<AimBot>());
-        Cheat::Instances(AIMBOT)->toggle(this->aimbotEnabled);
-    }
-    ImGui::Checkbox("Aim Walls", &this->ignoreWalls);
-    ImGui::SliderFloat("Aimbot Max Angle", &this->aimbotMaxDistance, 1, 360);
-    ImGui::SliderFloat("Aimbot Smooth", &this->aimbotSmoothness, 1, 125);
+            ImGui::Separator();
+            ImGui::Text("Radar Hack");
+            ImGui::Separator();
 
-    ImGui::Separator();
-    ImGui::Text("Antirecoil");
+            if (ImGui::Checkbox("Radar Enabled", &this->radarhackEnabled))
+            {
+                if (!Cheat::Instances(CheatEntities::RADAR))
+                    ThreadedObject::createObject(std::make_shared<RadarHack>());
+                Cheat::Instances(RADAR)->toggle(this->radarhackEnabled);
+            }
 
-    if (ImGui::Checkbox("Antirecoil", &this->antirecoilEnabled))
-    {
-        if (!Cheat::Instances(CheatEntities::ANTIRECOIL))
-            ThreadedObject::createObject(std::make_shared<Antirecoil>());
-        Cheat::Instances(ANTIRECOIL)->toggle(this->antirecoilEnabled);
-    }
+            ImGui::ColorEdit4("CT Color", ctColor);
+            ImGui::ColorEdit4("T Color", tColor);
 
-    ImGui::Separator();
-    ImGui::Text("Wallhack");
-    if (ImGui::Checkbox("Wallhack", &this->wallhackEnabled))
-    {
-        if (!Cheat::Instances(CheatEntities::BONE_ESP))
-            ThreadedObject::createObject(std::make_shared<BoneESP>());
-        Cheat::Instances(BONE_ESP)->toggle(this->wallhackEnabled);
+            ImGui::EndTabItem();
+        }
+
+        if (ImGui::BeginTabItem("RCS"))
+        {
+            ImGui::Text("Antirecoil");
+            ImGui::Separator();
+
+            if (ImGui::Checkbox("Antirecoil", &this->antirecoilEnabled))
+            {
+                if (!Cheat::Instances(CheatEntities::ANTIRECOIL))
+                    ThreadedObject::createObject(std::make_shared<Antirecoil>());
+                Cheat::Instances(ANTIRECOIL)->toggle(this->antirecoilEnabled);
+            }
+
+            ImGui::EndTabItem();
+        }
+
+        if (ImGui::BeginTabItem("Misc"))
+        {
+            ImGui::Text("BunnyHop");
+            ImGui::Separator();
+
+            if (ImGui::Checkbox("BunnyHop Enabled", &this->bhopEnabled))
+            {
+                if (!Cheat::Instances(CheatEntities::BHOP))
+                    ThreadedObject::createObject(std::make_shared<BhopCheat>());
+                Cheat::Instances(BHOP)->toggle(this->bhopEnabled);
+            }
+
+            ImGui::EndTabItem();
+        }
+
+        ImGui::EndTabBar();
     }
 }
