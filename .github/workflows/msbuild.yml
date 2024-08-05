@@ -27,6 +27,11 @@ jobs:
       - name: Check filepath
         shell: cmd
         run: dir ${{github.workspace}}
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: build-artifacts
+          path: ./
       - name: Attempt to create release archive
         shell: pwsh
-        run: Compress-Archive -Path ${{github.workspace}}\x64\build -DestinationPath release.zip
+        run: Compress-Archive -Path ${{github.workspace}}\* -DestinationPath release.zip
