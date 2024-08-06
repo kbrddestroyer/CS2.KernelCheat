@@ -21,7 +21,7 @@ jobs:
             exit 1
           fi
 
-          CENTRAL_SECTION=$($BRANCH_NAME | cut -d'/' -f2)
+          CENTRAL_SECTION=$(echo $BRANCH_NAME | cut -d'/' -f2)
           VALID_SECTIONS=("actions" "usermode" "kernelmode" "docs")
 
           if [[ ! " ${VALID_SECTIONS[@]} " =~ " ${CENTRAL_SECTION} " ]]; then
