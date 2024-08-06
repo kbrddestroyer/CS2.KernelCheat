@@ -19,10 +19,12 @@ jobs:
         uses: actions/checkout@v4
   build:
     needs: checkout
+    name: Build
     uses: ./.github/workflows/build-agent.yml
   workflow-test:
     needs: build
     runs-on: windows-2022
+    name: Test
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v2
