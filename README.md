@@ -55,6 +55,9 @@ Currently the installation section is in project wiki tab, all releases can be f
 - That should be enough, but you can tweak project settings altering project directories, etc.
 - Run build from VS2022 GUI or by `msbuild` command
 
+## Known issues
+-`libucrtd.lib(checkcfg.obj) : error LNK2001: unresolved external symbol guard_check_icall$fo$` - remove security checks from compilation configuration 
+
 ## Mapping the driver
 
 If native mapping from usermode.exe does not work or leads to system failure you can follow this steps:
