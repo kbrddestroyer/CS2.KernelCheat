@@ -8,7 +8,7 @@
 | ------ | ------ |
 | main | ![Main branch - latest push](https://github.com/kbrddestroyer/CS2.KernelCheat/actions/workflows/msbuild.yml/badge.svg?branch=main)
 | Release | ![Release branch](https://github.com/kbrddestroyer/CS2.KernelCheat/actions/workflows/msbuild.yml/badge.svg?branch=release)
-| Tag build | ![Latest tag](https://github.com/kbrddestroyer/CS2.KernelCheat/actions/workflows/msbuild_release.yml/badge.svg) |
+| Tag build | ![Latest tag](https://github.com/kbrddestroyer/CS2.KernelCheat/actions/workflows/msbuild_release.yml/badge.svg?branch=release) |
 
 ## Socials
 
@@ -54,6 +54,9 @@ Currently the installation section is in project wiki tab, all releases can be f
 - Run Microsoft Visual Studio 2022 and open the project
 - That should be enough, but you can tweak project settings altering project directories, etc.
 - Run build from VS2022 GUI or by `msbuild` command
+
+## Known issues
+-`libucrtd.lib(checkcfg.obj) : error LNK2001: unresolved external symbol guard_check_icall$fo$` - remove security checks from compilation configuration 
 
 ## Mapping the driver
 
