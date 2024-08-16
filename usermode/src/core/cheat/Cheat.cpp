@@ -9,7 +9,7 @@ void Cheat::Update(HANDLE hDriver, uintptr_t uClient)
 		CheatUpdate(hDriver, uClient);
 }
 
-uintptr_t Cheat::getPlayerPawnByIndex(HANDLE hDriver, uintptr_t uClient, uintptr_t uEntityList, uint32_t uIndex)
+const uintptr_t Cheat::getPlayerPawnByIndex(const HANDLE hDriver, const uintptr_t uClient, uintptr_t uEntityList, uint32_t uIndex) noexcept
 {
 	uintptr_t pEntityListEntry = driver::read<uintptr_t>(hDriver, uEntityList + (8 * (uIndex & 0x7FF) >> 9) + 16);
 	if (!pEntityListEntry)
@@ -27,7 +27,7 @@ uintptr_t Cheat::getPlayerPawnByIndex(HANDLE hDriver, uintptr_t uClient, uintptr
 	return driver::read<uintptr_t>(hDriver, pEntityListEntry + (120 * (uPlayerPawnIndex & 0x1FF)));
 }
 
-uintptr_t Cheat::getLocalPlayerPawn(HANDLE hDriver, uintptr_t uClient)
+const uintptr_t Cheat::getLocalPlayerPawn(const HANDLE hDriver, const uintptr_t uClient) noexcept
 {
 	return driver::read<uintptr_t>(hDriver, uClient + offsets::client_dll::dwLocalPlayerPawn);
 }
@@ -94,9 +94,6 @@ bool RadarHack::updateEntity(CSPlayerEntity& target, HANDLE hDriver, uintptr_t u
 
 void RadarHack::fullSyncUpdate(HANDLE hDriver, uintptr_t uClient)
 {
-	if (!this->bState.load())
-		return;
-
 	vEntities.clear();
 
 	uintptr_t uEntityList = driver::read<uintptr_t>(hDriver, uClient + offsets::client_dll::dwEntityList);
@@ -142,9 +139,6 @@ void RadarHack::fullSyncUpdate(HANDLE hDriver, uintptr_t uClient)
 
 void RadarHack::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 {
-	if (!this->bState.load())
-		return;
-
 	if (bNeedFullSync)
 	{
 		fullSyncUpdate(hDriver, uClient);
@@ -169,9 +163,6 @@ void RadarHack::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 
 void RadarHack::Render()
 {
-	if (!bState.load())
-		return;
-
 	ImGui::SetNextWindowSize(ImVec2(200, 200), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowBgAlpha(0.0f);
 	ImGui::Begin("Radar", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse);
@@ -301,7 +292,10 @@ void AimBot::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 		bool bIgnoreWalls = SettingsTab::getInstance()->ignoreWalls;
 
 		uintptr_t uPlayerPawn = getPlayerPawnByIndex(hDriver, uClient, uEntityList, i);
-		if (!uPlayerPawn || uPlayerPawn == pLocalPlayer)
+
+		if (!uPlayerPawn)
+			continue;
+		if (uPlayerPawn == pLocalPlayer)
 		{
 			uLocalIndex = i;
 			continue;
@@ -318,11 +312,14 @@ void AimBot::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 			mEntities[uPlayerPawn] = { true, false, {} };
 			continue;
 		}
-		uint8_t		uTeam = driver::read<uint8_t>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseEntity::m_iTeamNum);
+		uint8_t	uTeam = driver::read<uint8_t>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseEntity::m_iTeamNum);
 		if (uTeam == uLocalTeam)
 			continue;
 
 		uintptr_t pGameSceneNode = driver::read<uintptr_t>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseEntity::m_pGameSceneNode);
+		if (!pGameSceneNode)
+			continue;
+
 		uintptr_t pBonearray = driver::read<uintptr_t>(hDriver, pGameSceneNode + schemas::client_dll::CSkeletonInstance::m_modelState + 0x80);
 
 		if (!pBonearray)
@@ -333,8 +330,9 @@ void AimBot::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 		uint32_t isSpotted = 0;
 
 		if (!bIgnoreWalls)
+		{
 			isSpotted = driver::read<uint32_t>(hDriver, uPlayerPawn + schemas::client_dll::C_CSPlayerPawn::m_entitySpottedState + schemas::client_dll::EntitySpottedState_t::m_bSpottedByMask);
-
+		}
 		Vector3f screenHead = worldToScreenPoint(localViewMatrix, vHeadPosition);
 		screenHead.z = 0;
 		float fDistance = distance(vWindowCenter, screenHead);
@@ -345,7 +343,7 @@ void AimBot::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 		{
 			fClosestDistance = fDistance;
 			vClosestHeadPosition = vHeadPosition;
-			uClosestSpotted = (bIgnoreWalls) ? bIgnoreWalls : isSpotted;
+			uClosestSpotted = isSpotted;
 		}
 	}
 
@@ -445,8 +443,6 @@ void BoneESP::scanForBones()
 
 void BoneESP::fullSyncRebuild(HANDLE hDriver, uintptr_t uClient)
 {
-	if (!this->bState.load())
-		return;
 	std::vector<CSEntity> entities = mEntities.load();
 	entities.clear();
 
@@ -663,14 +659,4 @@ void BoneESP::Render()
 		bNeedFullSync = true;
 		passedTime = 0;
 	}
-}
-
-void Autostrafe::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
-{
-
-}
-
-void Autostrafe::Render()
-{
-
 }

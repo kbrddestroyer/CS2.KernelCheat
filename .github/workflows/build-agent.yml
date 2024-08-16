@@ -17,8 +17,8 @@ jobs:
     runs-on: windows-2022
 
     steps:
-    - uses: actions/checkout@v4
-
+    - name: Checkout
+      uses: actions/checkout@v4
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
 
@@ -38,5 +38,7 @@ jobs:
     - name: Store artifact
       uses: actions/upload-artifact@v2
       with:
-        name: Artifact
+        name: build-artifact
         path: "x64/build/"
+    outputs:
+      artifact-path: $(pwd)/x64/build/

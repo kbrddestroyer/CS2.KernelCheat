@@ -15,6 +15,9 @@ int kmControllerEntry()
 	if (hDriverHandle == INVALID_HANDLE_VALUE)
 	{
 		MessageBox(NULL, L"Invalid handle", L"Error", MB_ICONERROR | MB_OK);
+
+
+
 		return EXIT_FAILURE;
 	}
 

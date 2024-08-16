@@ -11,23 +11,24 @@ public:
 	virtual void Render(ImDrawList*, ImVec2, float) = 0;
 };
 
+// Too heavy, optimize
 class CSPlayerEntity : public GUIEntity
 {
 public:
-	std::string		sName;
-	std::uint8_t	uTeam;
-	std::uint32_t	uHealth;
-	std::uint32_t	uArmor;
-	std::uint32_t	uIndex;
-	bool			hasHelmet;
-	std::uint32_t	isSpotted;
-	bool			isBombCarrier;
-	bool			isLocal;
+	std::string		sName = "";
+	std::uint8_t	uTeam = 0;
+	std::uint32_t	uHealth = 0;
+	std::uint32_t	uArmor = 0;
+	std::uint32_t	uIndex = 0;
+	bool			hasHelmet = false;
+	std::uint32_t	isSpotted = 0;
+	bool			isBombCarrier = false;
+	bool			isLocal = false;
 
-	Vector3f		vPosition;
-	Vector3f		vOldPosition;
-	Vector3f		vHeadPosition;
-	QAngle			qAngle;
+	Vector3f		vPosition = {};
+	Vector3f		vOldPosition = {};
+	Vector3f		vHeadPosition = {};
+	QAngle			qAngle = {};
 
 	Vector3f		vOffset = { 1, -20 };
 public:
