@@ -126,7 +126,6 @@
       <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);d3d9.lib</AdditionalDependencies>
       <EntryPointSymbol>
       </EntryPointSymbol>
-      <UACUIAccess>true</UACUIAccess>
     </Link>
     <PostBuildEvent>
       <Command>postbuild.bat</Command>
@@ -202,12 +201,12 @@
     <ClInclude Include="kdmapper\include\portable_executable.hpp" />
     <ClInclude Include="kdmapper\include\service.hpp" />
     <ClInclude Include="kdmapper\include\utils.hpp" />
+    <ClInclude Include="src\client_dll.hpp" />
     <ClInclude Include="src\core\cheat\GUIEntities.h" />
     <ClInclude Include="src\core\utility\CheatUtilities.h" />
     <ClInclude Include="src\core\cheat\Cheat.h" />
     <ClInclude Include="src\core\DriverHandler.h" />
     <ClInclude Include="src\buttons.hpp" />
-    <ClInclude Include="src\client.dll.hpp" />
     <ClInclude Include="src\core\km_mailbox.h" />
     <ClInclude Include="src\core\utility\custom_types.h" />
     <ClInclude Include="src\gui\GUIController.h" />
