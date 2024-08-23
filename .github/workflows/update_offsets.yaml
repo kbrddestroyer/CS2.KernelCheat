@@ -2,6 +2,9 @@ name: Offsets updater from a2x
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   job:
     name: Checkout
