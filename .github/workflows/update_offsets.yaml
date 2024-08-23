@@ -18,7 +18,7 @@ jobs:
           git push -u origin wip/offsets/auto-updater-${{ github.run_number }}
       - name: Download required libs and push changes
         run: |
-          LIBS = ( buttons.hpp client_dll.hpp offsets.hpp )
+          LIBS=(buttons.hpp client_dll.hpp offsets.hpp)
           for lib in ${LIBS[@]}
           do
             curl https://raw.githubusercontent.com/a2x/cs2-dumper/main/output/$lib > usermode/src/$lib
