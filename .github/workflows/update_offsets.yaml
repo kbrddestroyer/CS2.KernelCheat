@@ -1,6 +1,6 @@
 name: Offsets updater from a2x
 on:
-  workflow_dispatch
+  workflow_dispatch:
 
 jobs:
   job:
