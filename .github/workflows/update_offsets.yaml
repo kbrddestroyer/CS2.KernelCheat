@@ -12,6 +12,10 @@ jobs:
     steps:
       - name: Checkout repository 
         uses: actions/checkout@v4
+      - name: Configure git
+        run: |
+          git config --global user.email "noreply@example.com"
+          git config --global user.name "autotool-updateoffsets"
       - name: Create new wip branch
         run: |
           git checkout -b wip/offsets/auto-updater-${{ github.run_number }}
