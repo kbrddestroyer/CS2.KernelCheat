@@ -30,3 +30,9 @@ jobs:
           git add *
           git commit -m "OFFSET UPDATER -> updated offsets from remote repo"
           git push -u origin wip/offsets/auto-updater-${{ github.run_number }}
+      - name: Open a pullrq to main
+        run: |
+          gh pr create --base wip/offsets/auto-updater-${{ github.run_number }} --head main --title "Offsets updated by automation"
+      - name: Open a pullrq to release
+        run: | 
+          gh pr create --base wip/offsets/auto-updater-${{ github.run_number }} --head release -- title "Offsets updated by automation"
