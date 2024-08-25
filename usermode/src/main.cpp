@@ -1,3 +1,9 @@
+/**
+* 
+* TODO:
+* 1. Overlay refactor. Remove those horrible namespaces
+*/
+
 #include <windows.h>
 #include <dwmapi.h>
 #include <d3d9.h>
