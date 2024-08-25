@@ -81,15 +81,20 @@ std::wstring OpenFileDialog()
     return L"";
 }
 
+// That's fucking trash
+
 namespace OverlayWindow
 {
+#pragma message("warning - OverlayWindow - Replace those fucking namespaces asap")
     WNDCLASSEX WindowClass;
     HWND Hwnd;
     LPCWSTR Name = L"Overlay";
 }
 
+// That's either
 namespace DirectX9Interface
 {
+#pragma message("warning - DirectX9Interface - Replace those fucking namespaces asap")
     IDirect3D9Ex* Direct3D9 = NULL;
     IDirect3DDevice9Ex* pDevice = NULL;
     D3DPRESENT_PARAMETERS pParams = { 0 };

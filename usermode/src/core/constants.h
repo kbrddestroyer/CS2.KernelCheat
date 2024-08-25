@@ -10,4 +10,6 @@
 #define MEM_PRESSED		65537
 #define MEM_RELEASED	256
 
-#define GUI_DEBUG_MODE
+#ifdef __TIME__
+#define COMPILE_TIME __TIME__
+#endif

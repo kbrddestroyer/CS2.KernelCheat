@@ -87,6 +87,9 @@
     <ClCompile Include="kdmapper\utils.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="src\gui\OverlayController.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\utils.h">
@@ -180,6 +183,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="kdmapper\include\utils.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gui\OverlayController.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
