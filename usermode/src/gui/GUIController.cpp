@@ -30,8 +30,12 @@ void GUIController::Render()
 {
     io.MouseDrawCursor = menuShow;
     settings.Update();
+
     if (menuShow)
     {
+        ImGui::ShowDebugLogWindow();
+        ImGui::ShowMetricsWindow();
+        
         if (ImGui::Begin("kbrddestroyer kernel | cs2 | external", nullptr, ImGuiWindowFlags_NoCollapse))
         {
             if (ImGui::BeginTabBar("##tabs"))

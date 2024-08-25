@@ -193,6 +193,7 @@ void MainLoop(GUIController& controller) {
             ScreenHeight = TempRect.bottom;
             DirectX9Interface::pParams.BackBufferWidth = ScreenWidth;
             DirectX9Interface::pParams.BackBufferHeight = ScreenHeight;
+            DirectX9Interface::pParams.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
             SetWindowPos(OverlayWindow::Hwnd, (HWND)0, TempPoint.x, TempPoint.y, ScreenWidth, ScreenHeight, SWP_NOREDRAW);
             DirectX9Interface::pDevice->Reset(&DirectX9Interface::pParams);
         }
