@@ -5,8 +5,10 @@ using namespace cheatscore::core;
 
 void Cheat::Update(HANDLE hDriver, uintptr_t uClient)
 {
+#ifndef GUI_DEBUG_MODE
 	if (bState.load(std::memory_order_relaxed))
 		CheatUpdate(hDriver, uClient);
+#endif
 }
 
 const uintptr_t Cheat::getPlayerPawnByIndex(const HANDLE hDriver, const uintptr_t uClient, uintptr_t uEntityList, uint32_t uIndex) noexcept

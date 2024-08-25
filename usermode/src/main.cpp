@@ -272,9 +272,8 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam) 
         break;
     default:
         return DefWindowProc(hWnd, Message, wParam, lParam);
-        break;
     }
-    return 0;
+    return DefWindowProc(hWnd, Message, wParam, lParam);
 }
 
 void SetupWindow() {
@@ -307,6 +306,7 @@ int WINAPI WinMain(
     _In_ LPSTR lpCmdLine,
     _In_ int nCmdShow)
 {
+#ifndef GUI_DEBUG_MODE
     _HWND = FindWindow(NULL, L"Counter-Strike 2");
 
     if (_HWND == NULL)
@@ -314,7 +314,28 @@ int WINAPI WinMain(
         MessageBox(NULL, L"Counter-Strike 2 is not started. Please start the game before running the cheat.", L"Error", MB_ICONERROR | MB_OK);
         return 1;
     }
+#else
+    // Enable gui debug
+    _HWND = CreateWindowA(
+        "Static",
+        "GUI Debug mode",
+        WS_VISIBLE | WS_POPUPWINDOW,
+        100,
+        120,
+        1920,
+        1080,
+        NULL,
+        NULL,
+        hInstance,
+        NULL);
 
+    if (_HWND == NULL)
+    {
+        MessageBoxA(NULL, "Cannot create debug window!", "Error", MB_OK | MB_ICONERROR);
+
+        return 1;
+    }
+#endif
     bool WindowFocus = false;
     while (!WindowFocus)
     {
@@ -352,7 +373,7 @@ int WINAPI WinMain(
 
     ThreadMgr thManager;
     thManager.Start();
-
+#ifndef GUI_DEBUG_MODE
     if (kmControllerEntry() != EXIT_SUCCESS)
     {
         KDMapperAPI kdmapper;
@@ -365,7 +386,7 @@ int WINAPI WinMain(
         MessageBoxA(NULL, "Driver was not mapped, there may be an error in kdmapper or kernelmode.sys does not exist in cheat root path", "Critical error", MB_OK | MB_ICONERROR);
         return 1;
     }
-
+#endif
     MainLoop(controller);
 
     return 0;
