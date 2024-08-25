@@ -16,3 +16,7 @@
 
 #define MEM_PRESSED		65537
 #define MEM_RELEASED	256
+
+#ifndef NDEBUG
+#define IMGUI_DEBUG_INFO
+#endif

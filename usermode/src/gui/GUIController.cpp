@@ -33,8 +33,10 @@ void GUIController::Render()
 
     if (menuShow)
     {
+#ifdef IMGUI_DEBUG_INFO
         ImGui::ShowDebugLogWindow();
         ImGui::ShowMetricsWindow();
+#endif
         
         if (ImGui::Begin("kbrddestroyer kernel | cs2 | external", nullptr, ImGuiWindowFlags_NoCollapse))
         {
