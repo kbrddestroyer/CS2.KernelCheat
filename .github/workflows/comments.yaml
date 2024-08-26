@@ -1,5 +1,10 @@
 name: Comments checker
 
+permissions:
+  issues: write
+  discussions: write
+  pull-requests: write
+
 on:
   issue_comment:
     types: [created, edited]
