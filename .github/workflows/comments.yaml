@@ -1,0 +1,28 @@
+name: Check Comments for PR, Issues, and Discussions
+
+on:
+  issue_comment:
+    types: [created, edited]
+  pull_request_review_comment:
+    types: [created, edited]
+  discussion_comment:
+    types: [created, edited]
+
+jobs:
+  check-comments:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Check comment content
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          COMMENT_BODY="${{ github.event.comment.body }}"
+          if echo "$COMMENT_BODY" | grep -i "http"; then
+            echo "Found forbidden word or phrase!"
+            exit 1
+          else
+            echo "Comment is clean."
+          fi
+          
