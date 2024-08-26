@@ -55,7 +55,8 @@ Currently the installation section is in project wiki tab, all releases can be f
 - Run build from VS2022 GUI or by `msbuild` command
 
 ## Known issues
--`libucrtd.lib(checkcfg.obj) : error LNK2001: unresolved external symbol guard_check_icall$fo$` - remove security checks from compilation configuration 
+- `libucrtd.lib(checkcfg.obj) : error LNK2001: unresolved external symbol guard_check_icall$fo$` - remove security checks from compilation configuration 
+- Overlay lags. Decrease game video settings and lock framerate on 120 fps
 
 ## Mapping the driver
 
