@@ -47,7 +47,7 @@ jobs:
             elif [ "$EVENT" = "pull_request_review_comment" ]; then
               URL="https://api.github.com/repos/${REPOSITORY}/pulls/comments/${COMMENT_ID}"
             elif [ "$EVENT" = "discussion_comment" ]; then
-              URL="https://api.github.com/repos/${REPOSITORY}/discussions/comments/${COMMENT_ID}"
+              URL="https://api.github.com/repos/${REPOSITORY}/discussions/${{ github.event.discussion.node_id }}#discussioncomment-${COMMENT_ID}"
             fi
             
             curl -X DELETE -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3+json" "$URL"
