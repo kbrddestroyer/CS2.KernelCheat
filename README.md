@@ -21,16 +21,15 @@ I just want to show that VAC still doesn't work properly and anyone with coding 
 
 # Credits
 
-## Used software
+## Tools & Libraries
 
 - [dear ImGui](https://github.com/ocornut/imgui) and d3d9 for backend as GUI framework
 - [kdmapper](https://github.com/TheCruZ/kdmapper) added as usermode library
 - [a2x's](https://github.com/a2x/cs2-dumper) offsets dumper
+
+## Tutorials & other information 
+
 - [cazzwastaken](https://youtube.com/@cazz?si=juMpTGDWsf86qhqw) and his [YouTube tutorial for basic kernel driver](https://youtu.be/n463QJ4cjsU?si=QQDnUOpgAzZ1oLV3)
-
-## Active contributors
-
-- [Leksa667](https://github.com/Leksa667)
 
 ## Dependencies
 
