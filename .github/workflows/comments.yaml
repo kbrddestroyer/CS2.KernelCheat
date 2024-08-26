@@ -1,4 +1,4 @@
-name: Check Comments for PR, Issues, and Discussions
+name: Comments checker
 
 on:
   issue_comment:
@@ -9,20 +9,46 @@ on:
     types: [created, edited]
 
 jobs:
-  check-comments:
+  delete-comment:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Check comment content
+      - name: Check and delete comment
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          COMMENT_BODY: ${{ github.event.comment.body }}
+          COMMENT_ID: ${{ github.event.comment.id }}
+          REPOSITORY: ${{ github.repository }}
+          EVENT: ${{ github.event_name }}
         run: |
-          COMMENT_BODY="${{ github.event.comment.body }}"
-          if echo "$COMMENT_BODY" | grep -i "http"; then
-            echo "Found forbidden word or phrase!"
-            exit 1
+          # Запрещённые слова или фразы
+          FORBIDDEN_WORDS=("http://" "https://")
+
+          # Флаг для удаления комментария
+          DELETE_COMMENT=false
+
+          # Проверяем наличие запрещённых слов в комментарии
+          for WORD in "${FORBIDDEN_WORDS[@]}"; do
+            if echo "$COMMENT_BODY" | grep -i "$WORD"; then
+              DELETE_COMMENT=true
+              break
+            fi
+          done
+
+          # Если запрещённые слова найдены, удаляем комментарий
+          if [ "$DELETE_COMMENT" = true ]; then
+            if [ "$EVENT" = "issue_comment" ]; then
+              URL="https://api.github.com/repos/${REPOSITORY}/issues/comments/${COMMENT_ID}"
+            elif [ "$EVENT" = "pull_request_review_comment" ]; then
+              URL="https://api.github.com/repos/${REPOSITORY}/pulls/comments/${COMMENT_ID}"
+            elif [ "$EVENT" = "discussion_comment" ]; then
+              URL="https://api.github.com/repos/${REPOSITORY}/discussions/comments/${COMMENT_ID}"
+            fi
+            
+            curl -X DELETE -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3+json" "$URL"
+
+            echo "Comment deleted successfully."
           else
-            echo "Comment is clean."
+            echo "No forbidden words found in the comment."
           fi
           
