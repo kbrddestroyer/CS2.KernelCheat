@@ -6,7 +6,7 @@
 x64/
 kdmapper-master/
 .idea/
-*.ini
+imgui.ini
 usermode/*.sys
 
 
