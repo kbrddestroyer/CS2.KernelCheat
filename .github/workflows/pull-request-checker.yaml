@@ -17,12 +17,18 @@ jobs:
         run: |
           echo $BRANCH_NAME
           if [[ ! $BRANCH_NAME =~ ^wip/ ]]; then
+            if [[ $BRANCH_NAME == release ]]; then
+              exit 0
+            fi
+            if [[ $BRANCH_NAME =~ ^feature/ ]]; then
+              exit 0
+            fi
             echo "Error: Branch name must start with 'wip/'."
             exit 1
           fi
 
           CENTRAL_SECTION=$(echo $BRANCH_NAME | cut -d'/' -f2)
-          VALID_SECTIONS=("actions" "usermode" "kernelmode" "docs")
+          VALID_SECTIONS=("actions" "usermode" "kernelmode" "docs" "offsets")
 
           if [[ ! " ${VALID_SECTIONS[@]} " =~ " ${CENTRAL_SECTION} " ]]; then
             echo "Error: Central section '$CENTRAL_SECTION' is not valid."

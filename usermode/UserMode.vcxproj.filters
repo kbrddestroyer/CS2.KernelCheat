@@ -134,9 +134,6 @@
     <ClInclude Include="src\core\km_mailbox.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="src\client.dll.hpp">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="src\offsets.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
@@ -185,7 +182,11 @@
     <ClInclude Include="kdmapper\include\utils.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+
     <ClInclude Include="src\gui\OverlayController.h">
+
+    <ClInclude Include="src\client_dll.hpp">
+
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

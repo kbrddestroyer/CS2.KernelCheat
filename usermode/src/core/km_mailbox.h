@@ -7,7 +7,7 @@
 #include <thread>
 
 #include "../offsets.hpp"
-#include "../client.dll.hpp"
+#include "../client_dll.hpp"
 #include "../buttons.hpp"
 
 #include "cheat/ThreadController.h"
