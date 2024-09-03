@@ -108,18 +108,20 @@ namespace DirectX9Interface
     MSG Message = { 0 };
 }
 
-void InputHandler() {
-    for (int i = 0; i < 5; i++) ImGui::GetIO().MouseDown[i] = false;
-    int button = -1;
-    if (GetAsyncKeyState(VK_LBUTTON)) button = 0;
-    if (button != -1) ImGui::GetIO().MouseDown[button] = true;
-}
-
 void Render(GUIController& controller)
 {
     if (GetAsyncKeyState(VK_INSERT) & 1)
     {
         GUIController::Instance()->toggle(!GUIController::Instance()->getState());
+
+        LONG bFlag = WS_EX_LAYERED | WS_EX_TOOLWINDOW;
+        if (!GUIController::Instance()->getState())
+        {
+            bFlag |= WS_EX_TRANSPARENT;
+        }
+
+        SetWindowLong(OverlayWindow::Hwnd, GWL_EXSTYLE, bFlag);
+        UpdateWindow(OverlayWindow::Hwnd);
     }
     if (GetAsyncKeyState(VK_END) & 1)
         controller.safeExit(true);
@@ -180,10 +182,11 @@ void MainLoop(GUIController& controller) {
 
         POINT TempPoint2;
         GetCursorPos(&TempPoint2);
+
         io.MousePos.x = TempPoint2.x - TempPoint.x;
         io.MousePos.y = TempPoint2.y - TempPoint.y;
 
-        if (GetAsyncKeyState(0x1)) {
+        if (GetAsyncKeyState(VK_LBUTTON)) {
             io.MouseDown[0] = true;
             io.MouseClicked[0] = true;
             io.MouseClickedPos[0].x = io.MousePos.x;
@@ -255,11 +258,14 @@ bool DirectXInit() {
 }
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 LRESULT CALLBACK WinProc(HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam) {
     if (ImGui_ImplWin32_WndProcHandler(hWnd, Message, wParam, lParam))
         return true;
 
     switch (Message) {
+    case WM_MOUSEWHEEL:
+        break;
     case WM_DESTROY:
         if (DirectX9Interface::pDevice != NULL) {
             DirectX9Interface::pDevice->EndScene();
@@ -307,7 +313,7 @@ void SetupWindow() {
 
     OverlayWindow::Hwnd = CreateWindowEx(NULL, OverlayWindow::Name, OverlayWindow::Name, WS_POPUP | WS_VISIBLE, ScreenLeft, ScreenTop, ScreenWidth, ScreenHeight, NULL, NULL, 0, NULL);
     DwmExtendFrameIntoClientArea(OverlayWindow::Hwnd, &DirectX9Interface::Margin);
-    SetWindowLong(OverlayWindow::Hwnd, GWL_EXSTYLE, WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW);
+    SetWindowLong(OverlayWindow::Hwnd, GWL_EXSTYLE, WS_EX_LAYERED | WS_EX_TOOLWINDOW);
     ShowWindow(OverlayWindow::Hwnd, SW_SHOW);
     UpdateWindow(OverlayWindow::Hwnd);
 }
@@ -318,36 +324,37 @@ int WINAPI WinMain(
     _In_ LPSTR lpCmdLine,
     _In_ int nCmdShow)
 {
-#ifndef GUI_DEBUG_MODE
     _HWND = FindWindow(NULL, L"Counter-Strike 2");
 
     if (_HWND == NULL)
     {
         MessageBox(NULL, L"Counter-Strike 2 is not started. Please start the game before running the cheat.", L"Error", MB_ICONERROR | MB_OK);
-        return 1;
-    }
+#ifdef GUI_DEBUG_MODE
+        // Enable gui debug
+        _HWND = CreateWindowA(
+            "Static",
+            "GUI Debug mode",
+            WS_VISIBLE | WS_POPUPWINDOW,
+            100,
+            120,
+            1920,
+            1080,
+            NULL,
+            NULL,
+            hInstance,
+            NULL);
+
+        if (_HWND == NULL)
+        {
+            MessageBoxA(NULL, "Cannot create debug window!", "Error", MB_OK | MB_ICONERROR);
+
+            return 1;
+        }
 #else
-    // Enable gui debug
-    _HWND = CreateWindowA(
-        "Static",
-        "GUI Debug mode",
-        WS_VISIBLE | WS_POPUPWINDOW,
-        100,
-        120,
-        1920,
-        1080,
-        NULL,
-        NULL,
-        hInstance,
-        NULL);
-
-    if (_HWND == NULL)
-    {
-        MessageBoxA(NULL, "Cannot create debug window!", "Error", MB_OK | MB_ICONERROR);
-
         return 1;
-    }
 #endif
+    }
+
     bool WindowFocus = false;
     while (!WindowFocus)
     {
