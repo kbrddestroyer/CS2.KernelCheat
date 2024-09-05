@@ -36,8 +36,4 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh pr create --title "Offsets updated by automation" --body "Updated offsets from a2x repo" --head wip/offsets/auto-updater-${{ github.run_number }} --base main
-      - name: Open a pullrq to release
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: | 
-          gh pr create --title "Offsets updated by automation" --body "Updated offsets from a2x repo" --head wip/offsets/auto-updater-${{ github.run_number }} --base release
+          
