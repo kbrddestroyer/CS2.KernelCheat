@@ -19,6 +19,7 @@
 #include "gui/GUIController.h"
 #include "core/cheat/ThreadController.h"
 #include "../KDMapperAPI.h"
+#include "pythonapi/PythonAPI.h"
 
 #pragma comment(lib, "d3d9.lib")
 #pragma comment(lib, "dwmapi.lib")
@@ -156,6 +157,8 @@ void Render(GUIController& controller)
 void MainLoop(GUIController& controller) {
     static RECT OldRect;
     ZeroMemory(&DirectX9Interface::Message, sizeof(MSG));
+
+    PythonAPI::entrypoint();
 
     while (DirectX9Interface::Message.message != WM_QUIT && !controller.safeExit()) {
         if (PeekMessage(&DirectX9Interface::Message, OverlayWindow::Hwnd, 0, 0, PM_REMOVE)) {
@@ -328,8 +331,10 @@ int WINAPI WinMain(
 
     if (_HWND == NULL)
     {
+#ifndef GUI_DEBUG_MODE
         MessageBox(NULL, L"Counter-Strike 2 is not started. Please start the game before running the cheat.", L"Error", MB_ICONERROR | MB_OK);
-#ifdef GUI_DEBUG_MODE
+        return 1;
+#else
         // Enable gui debug
         _HWND = CreateWindowA(
             "Static",
@@ -350,8 +355,6 @@ int WINAPI WinMain(
 
             return 1;
         }
-#else
-        return 1;
 #endif
     }
 

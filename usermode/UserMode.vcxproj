@@ -176,7 +176,8 @@
       <Message>Cleeanup</Message>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>msbuild ..\..\cpython\PCBuild\pcbuild.sln /p:Configuration=$(ConfigurationName) /p:Platform=x64</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='GUI_DEBUG|x64'">
@@ -205,7 +206,8 @@
       <Message>Cleeanup</Message>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>msbuild ..\..\cpython\PCBuild\pcbuild.sln /p:Configuration=$(ConfigurationName) /p:Platform=x64</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -239,7 +241,8 @@
       <Message>Cleeanup</Message>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>msbuild ..\..\cpython\PCBuild\pcbuild.sln /p:Configuration=$(ConfigurationName) /p:Platform=x64</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
