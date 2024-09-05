@@ -27,9 +27,6 @@ jobs:
       run: nuget restore ${{env.SOLUTION_FILE_PATH}}
 
     - name: Get CPython sources
-      env:
-        ConfigurationName: $ {{ matrix.configuration }}
-      working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
         git clone ${{ vars.CPYTHON }}
         msbuild ..\cpython\PCBuild\pcbuild.sln /p:Configuration=${{env.ConfigurationName}} /p:Platform=x64
