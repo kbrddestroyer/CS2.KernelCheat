@@ -152,23 +152,22 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>src\imgui\GL;src\imgui;%(AdditionalIncludeDirectories);$(DXSDK_DIR)Include;kdmapper\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src\imgui\GL;src\imgui;$(DXSDK_DIR)Include;kdmapper\include;..\..\cpython\Include;..\..\cpython\PCbuild\amd64</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
-      <AdditionalLibraryDirectories>src\imgui\backends;src\imgui;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>src\imgui\backends;src\imgui;..\..\cpython\PCBuild\amd64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);d3d9.lib</AdditionalDependencies>
       <EntryPointSymbol>
       </EntryPointSymbol>
-
     </Link>
     <PostBuildEvent>
       <Command>postbuild.bat</Command>
@@ -176,6 +175,9 @@
     <PostBuildEvent>
       <Message>Cleeanup</Message>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>msbuild ..\..\cpython\PCBuild\pcbuild.sln /p:Configuration=$(ConfigurationName) /p:Platform=x64</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='GUI_DEBUG|x64'">
     <ClCompile>
@@ -185,19 +187,16 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>src\imgui\GL;src\imgui;%(AdditionalIncludeDirectories);$(DXSDK_DIR)Include;kdmapper\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src\imgui\GL;src\imgui;$(DXSDK_DIR)Include;kdmapper\include;..\..\cpython\Include;..\..\cpython\PCbuild\amd64</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
-      <AdditionalLibraryDirectories>src\imgui\backends;src\imgui;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>src\imgui\backends;src\imgui;..\..\cpython\PCBuild\amd64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);d3d9.lib</AdditionalDependencies>
       <EntryPointSymbol>
       </EntryPointSymbol>
-
-
-
     </Link>
     <PostBuildEvent>
       <Command>postbuild.bat</Command>
@@ -205,6 +204,9 @@
     <PostBuildEvent>
       <Message>Cleeanup</Message>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>msbuild ..\..\cpython\PCBuild\pcbuild.sln /p:Configuration=$(ConfigurationName) /p:Platform=x64</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -216,7 +218,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>src\imgui\GL;src\imgui;%(AdditionalIncludeDirectories);$(DXSDK_DIR)Include;kdmapper\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src\imgui\GL;src\imgui;$(DXSDK_DIR)Include;kdmapper\include;..\..\cpython\Include;..\..\cpython\PCbuild\amd64</AdditionalIncludeDirectories>
       <BufferSecurityCheck>false</BufferSecurityCheck>
     </ClCompile>
     <Link>
@@ -225,7 +227,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
-      <AdditionalLibraryDirectories>src\imgui\backends;src\imgui;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>src\imgui\backends;src\imgui;..\..\cpython\PCBuild\amd64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);d3d9.lib</AdditionalDependencies>
       <EntryPointSymbol>
       </EntryPointSymbol>
@@ -236,6 +238,9 @@
     <PostBuildEvent>
       <Message>Cleeanup</Message>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>msbuild ..\..\cpython\PCBuild\pcbuild.sln /p:Configuration=$(ConfigurationName) /p:Platform=x64</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="KDMapperAPI.cpp" />
@@ -244,6 +249,7 @@
     <ClCompile Include="kdmapper\portable_executable.cpp" />
     <ClCompile Include="kdmapper\service.cpp" />
     <ClCompile Include="kdmapper\utils.cpp" />
+    <ClCompile Include="src\pythonapi\PythonAPI.cpp" />
     <ClCompile Include="src\gui\OverlayController.cpp" />
     <ClCompile Include="src\core\cheat\GUIEntities.cpp" />
     <ClCompile Include="src\core\utility\CheatUtilities.cpp" />
@@ -274,11 +280,9 @@
     <ClInclude Include="kdmapper\include\portable_executable.hpp" />
     <ClInclude Include="kdmapper\include\service.hpp" />
     <ClInclude Include="kdmapper\include\utils.hpp" />
-
+    <ClInclude Include="src\pythonapi\PythonAPI.h" />
     <ClInclude Include="src\gui\OverlayController.h" />
-
     <ClInclude Include="src\client_dll.hpp" />
-
     <ClInclude Include="src\core\cheat\GUIEntities.h" />
     <ClInclude Include="src\core\utility\CheatUtilities.h" />
     <ClInclude Include="src\core\cheat\Cheat.h" />

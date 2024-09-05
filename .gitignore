@@ -8,6 +8,7 @@ kdmapper-master/
 .idea/
 imgui.ini
 usermode/*.sys
+cpython
 
 
 # User-specific files
