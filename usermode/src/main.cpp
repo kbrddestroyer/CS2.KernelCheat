@@ -12,6 +12,7 @@
 #include <string>
 #include <vector>
 #include <filesystem>
+#include <Python.h>
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_dx9.h"
@@ -158,7 +159,7 @@ void MainLoop(GUIController& controller) {
     static RECT OldRect;
     ZeroMemory(&DirectX9Interface::Message, sizeof(MSG));
 
-    PythonAPI::entrypoint();
+    PythonInterpreter::createInterpreter();
 
     while (DirectX9Interface::Message.message != WM_QUIT && !controller.safeExit()) {
         if (PeekMessage(&DirectX9Interface::Message, OverlayWindow::Hwnd, 0, 0, PM_REMOVE)) {

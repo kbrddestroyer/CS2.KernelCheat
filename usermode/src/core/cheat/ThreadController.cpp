@@ -68,12 +68,21 @@ void ThreadController::Update()
 {
 	if (hDriver && uClient && ThreadMgr::getInstance())
 	{
-		const std::vector<PThreadedObject>& callstack = vCallstack;
-
+		std::vector<PThreadedObject>& callstack = vCallstack;
 		for (PThreadedObject ob : callstack)
 		{
+			if (ob->isKilled())
 			ob->Update(hDriver, uClient);
 		}
+		
+		std::vector<PThreadedObject>::iterator it = callstack.begin();
+		while (it != callstack.end())
+		{
+			if (it->get()->isKilled())
+				callstack.erase(it);
+			else it++;
+		}
+
 	}
 	std::this_thread::yield();
 }

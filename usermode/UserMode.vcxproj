@@ -270,7 +270,6 @@
     <ClCompile Include="src\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="src\imgui\imgui_tables.cpp" />
     <ClCompile Include="src\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="src\logger\UMLogger.cpp" />
     <ClCompile Include="src\core\cheat\ThreadController.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -304,7 +303,6 @@
     <ClInclude Include="src\imgui\imstb_textedit.h" />
     <ClInclude Include="src\imgui\imstb_truetype.h" />
     <ClInclude Include="src\core\utils.h" />
-    <ClInclude Include="src\logger\UMLogger.h" />
     <ClInclude Include="src\offsets.hpp" />
     <ClInclude Include="src\core\cheat\ThreadController.h" />
   </ItemGroup>
