@@ -21,16 +21,15 @@ I just want to show that VAC still doesn't work properly and anyone with coding 
 
 # Credits
 
-## Used software
+## Tools & Libraries
 
 - [dear ImGui](https://github.com/ocornut/imgui) and d3d9 for backend as GUI framework
 - [kdmapper](https://github.com/TheCruZ/kdmapper) added as usermode library
 - [a2x's](https://github.com/a2x/cs2-dumper) offsets dumper
+
+## Tutorials & other information 
+
 - [cazzwastaken](https://youtube.com/@cazz?si=juMpTGDWsf86qhqw) and his [YouTube tutorial for basic kernel driver](https://youtu.be/n463QJ4cjsU?si=QQDnUOpgAzZ1oLV3)
-
-## Active contributors
-
-- [Leksa667](https://github.com/Leksa667)
 
 ## Dependencies
 
@@ -56,7 +55,8 @@ Currently the installation section is in project wiki tab, all releases can be f
 - Run build from VS2022 GUI or by `msbuild` command
 
 ## Known issues
--`libucrtd.lib(checkcfg.obj) : error LNK2001: unresolved external symbol guard_check_icall$fo$` - remove security checks from compilation configuration 
+- `libucrtd.lib(checkcfg.obj) : error LNK2001: unresolved external symbol guard_check_icall$fo$` - remove security checks from compilation configuration 
+- Overlay lags. Decrease game video settings and lock framerate on 120 fps
 
 ## Mapping the driver
 

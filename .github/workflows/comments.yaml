@@ -1,0 +1,59 @@
+name: Comments checker
+
+permissions:
+  issues: write
+  discussions: write
+  pull-requests: write
+
+on:
+  issue_comment:
+    types: [created, edited]
+  pull_request_review_comment:
+    types: [created, edited]
+  discussion_comment:
+    types: [created, edited]
+
+jobs:
+  delete-comment:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check and delete comment
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          COMMENT_BODY: ${{ github.event.comment.body }}
+          COMMENT_ID: ${{ github.event.comment.id }}
+          REPOSITORY: ${{ github.repository }}
+          EVENT: ${{ github.event_name }}
+        run: |
+          # Запрещённые слова или фразы
+          FORBIDDEN_WORDS=("http://" "https://")
+
+          # Флаг для удаления комментария
+          DELETE_COMMENT=false
+
+          # Проверяем наличие запрещённых слов в комментарии
+          for WORD in "${FORBIDDEN_WORDS[@]}"; do
+            if echo "$COMMENT_BODY" | grep -i "$WORD"; then
+              DELETE_COMMENT=true
+              break
+            fi
+          done
+
+          # Если запрещённые слова найдены, удаляем комментарий
+          if [ "$DELETE_COMMENT" = true ]; then
+            if [ "$EVENT" = "issue_comment" ]; then
+              URL="https://api.github.com/repos/${REPOSITORY}/issues/comments/${COMMENT_ID}"
+            elif [ "$EVENT" = "pull_request_review_comment" ]; then
+              URL="https://api.github.com/repos/${REPOSITORY}/pulls/comments/${COMMENT_ID}"
+            elif [ "$EVENT" = "discussion_comment" ]; then
+              URL="https://api.github.com/repos/${REPOSITORY}/discussions/${{ github.event.discussion.number }}#discussioncomment-${COMMENT_ID}"
+            fi
+            
+            curl -X DELETE -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3+json" "$URL"
+
+            echo "Comment deleted successfully."
+          else
+            echo "No forbidden words found in the comment."
+          fi
+          curl -H "Content-Type:application/json" -d '{"content":"","tts":false,"embeds":[{"id":652627558,"title":"Bad comment found","description":'Comment that violating commentary rules found:'"$COMMENT_BODY"'',"color":16711680,"fields":[],"author":{"name":"github-action"}}],"components":[],"actions":{},"username":"Content checker"}' ${{ secrets.REPORT_TOOL_WEBHOOK }}

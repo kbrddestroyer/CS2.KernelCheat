@@ -40,19 +40,15 @@ namespace cheatscore
 			BONE_ESP
 		};
 
-		//
-		// Cheat - base class for every cheat functionality
-		// TODO:
-		// - Make this SOLID
-		// - - Single Responsibility [?]
-		// - - 
-		// - Add base entity scan for all children
-		// - Make this shit readable
-		// 
-		// Interface:
-		// CheatUpdate(HANDLE hDriver, uintptr_t uClient) can be overriden, runs from separate thread and has access to driver
-		// Render() can be overriden, runs from main thread and should never use driver functions
-		// 
+		/**
+		* Cheat class should be base class for any functionality
+		* Is being invoked automatically if registered properly
+		* You should specify cheat name in CheatEntities enum and then
+		* pass it in constructor
+		* 
+		* @param CheatUpdate(HANDLE, uintptr_t) - called in loop. Override and place memory r/w operations here
+		* @param Render() - Render information on imGui. NEVER access r/w operaions from here. Just render anything you need on overlay
+		*/
 		class Cheat : public ThreadedObject
 		{
 		private:

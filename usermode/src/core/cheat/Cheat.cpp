@@ -5,8 +5,10 @@ using namespace cheatscore::core;
 
 void Cheat::Update(HANDLE hDriver, uintptr_t uClient)
 {
+#ifndef GUI_DEBUG_MODE
 	if (bState.load(std::memory_order_relaxed))
 		CheatUpdate(hDriver, uClient);
+#endif
 }
 
 const uintptr_t Cheat::getPlayerPawnByIndex(const HANDLE hDriver, const uintptr_t uClient, uintptr_t uEntityList, uint32_t uIndex) noexcept
@@ -458,9 +460,6 @@ void BoneESP::fullSyncRebuild(HANDLE hDriver, uintptr_t uClient)
 
 	uintptr_t uLocalGameSceneNode = driver::read<uintptr_t>(hDriver, pLocalPlayer + schemas::client_dll::C_BaseEntity::m_pGameSceneNode);
 
-	if (!uLocalGameSceneNode)
-		return;
-
 	uintptr_t uLocalPlayer = driver::read<uintptr_t>(hDriver, uClient + offsets::client_dll::dwLocalPlayerPawn);
 	vLocalPosition = driver::read<Vector3f>(hDriver, pLocalPlayer + schemas::client_dll::C_BasePlayerPawn::m_vOldOrigin);
 	viewAngle = driver::read<QAngle>(hDriver, uClient + offsets::client_dll::dwViewAngles);
@@ -471,11 +470,13 @@ void BoneESP::fullSyncRebuild(HANDLE hDriver, uintptr_t uClient)
 	for (uint32_t i = 0; i < 32; i++)
 	{
 		uintptr_t uPlayerPawn = getPlayerPawnByIndex(hDriver, uClient, uEntityList, i);
-
-		if (!uPlayerPawn || uPlayerPawn == pLocalPlayer)
-		{
+		if (!uPlayerPawn)
 			continue;
-		}
+
+		bool isLocal = driver::read<bool>(hDriver, uPlayerPawn + schemas::client_dll::CBasePlayerController::m_bIsLocalPlayerController);
+
+		if (uPlayerPawn == pLocalPlayer || isLocal)
+			continue;
 
 		entities.push_back({uPlayerPawn});
 	}
