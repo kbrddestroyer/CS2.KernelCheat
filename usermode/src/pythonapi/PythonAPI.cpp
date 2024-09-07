@@ -62,17 +62,50 @@ bool PythonInterpreter::initialize() noexcept
 		e.showErrorMessage();
 		return false;
 	}
-	Py_SetPythonHome(pythonpath.c_str());
+	
+	std::wstring wPath = fetchPath();
 
 	Py_InitializeEx(0);
+
 	this->gil = PyGILState_Ensure();
+
+	PyEval_InitThreads();
+
+	if (!Py_IsInitialized())
+	{
+		throw PythonAPIException("Python was not initialized");
+	}
+
+	PyObject* pModuleName = PyUnicode_FromString("testmodule");
+	entry = PyImport_Import(pModuleName);
+	Py_XDECREF(pModuleName);
+	
+	if (!entry)
+	{
+		MessageBoxA(NULL, "Error: No module", "Error", MB_OK);
+
+		finalize();
+		return false;
+	}
+
+	try
+	{
+		pCall(entry, "invoke");
+	}
+	catch (PythonAPIException e)
+	{
+		e.showErrorMessage();
+	}
 }
 
 void PythonInterpreter::finalize() noexcept
 {
 	PyGILState_Release(gil);
-	if (!Py_FinalizeEx())
+	Py_XDECREF(entry);
+
+	if (Py_FinalizeEx() < 0)
 	{
 		throw PythonAPIException("Critical! PythonAPI could not finalize");
 	}
+	bInitialied = false;
 }

@@ -8,4 +8,5 @@ echo -- CLEANUP COMPLETED --
 echo -- COPYING DEPENDENCIES --
 
 copy ..\..\cpython\PCBuild\amd64\*.dll ..\x64\build\
-xcopy ..\..\cpython\Lib\ ..\x64\build\ /E /Y
+xcopy ..\..\cpython\Lib\ ..\x64\build\LibPortable\ /E /Y
+xcopy ..\PythonExtentions\ ..\x64\build\LibPortable\kernelapi\ /E /Y

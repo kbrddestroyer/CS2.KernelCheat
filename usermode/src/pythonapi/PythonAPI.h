@@ -7,7 +7,7 @@
 #include "../core/cheat/ThreadController.h"
 
 #ifndef LIB_FOLDER
-#define LIB_FOLDER L"\\LibPortable"
+#define LIB_FOLDER L"\\LibPortable\\"
 #endif
 
 #ifndef PY_DELAY
@@ -44,7 +44,7 @@ private:
 private:
 	std::wstring fetchPath() const;
 	PyGILState_STATE gil;
-
+	PyObject* entry;
 	bool bInitialied = false;
 public:
 	static std::weak_ptr<PythonInterpreter> Instance() { return std::weak_ptr(pyGlobalPointer).lock(); }
@@ -63,6 +63,18 @@ public:
 			finalize();
 	}
 private:
+	PyObject* pCall(PyObject* pModule, const char* method, PyObject* args = nullptr)
+	{
+		PyObject* pFunctionCall = PyObject_GetAttrString(pModule, method);
+		if (!pFunctionCall || !PyCallable_Check(pFunctionCall))
+			throw PythonAPIException("Not callable invoke");
+
+		PyObject* pResult = PyObject_CallObject(pFunctionCall, args);
+
+		Py_DECREF(pFunctionCall);
+		return pResult;
+	}
+
 	bool initialize() noexcept;
 	bool pymain();
 	void finalize() noexcept;
