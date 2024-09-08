@@ -7,11 +7,19 @@
 #include "../core/cheat/ThreadController.h"
 
 #ifndef LIB_FOLDER
-#define LIB_FOLDER L"\\LibPortable\\"
+#define LIB_FOLDER L"\\Lib\\"
 #endif
 
 #ifndef PY_DELAY
 #define PY_DELAY 1
+#endif
+
+#ifndef PY_ENTRY_MODULE
+#define PY_ENTRY_MODULE "kernelapi.pyext_api"
+#endif
+
+#ifndef PY_ENTRY_FUNCTION
+#define PY_ENTRY_FUNCTION "invoke"
 #endif
 
 /**
@@ -63,19 +71,10 @@ public:
 			finalize();
 	}
 private:
-	PyObject* pCall(PyObject* pModule, const char* method, PyObject* args = nullptr)
-	{
-		PyObject* pFunctionCall = PyObject_GetAttrString(pModule, method);
-		if (!pFunctionCall || !PyCallable_Check(pFunctionCall))
-			throw PythonAPIException("Not callable invoke");
-
-		PyObject* pResult = PyObject_CallObject(pFunctionCall, args);
-
-		Py_DECREF(pFunctionCall);
-		return pResult;
-	}
-
+	PyObject* pCall(PyObject* pModule, const char* method, PyObject* args = nullptr);
 	bool initialize() noexcept;
 	bool pymain();
 	void finalize() noexcept;
+public:
+	PyObject* pCallSafe(PyObject* pModule, const char* method, PyObject* args = nullptr);
 };

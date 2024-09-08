@@ -26,14 +26,14 @@ std::wstring PythonInterpreter::fetchPath() const
 {
 	// 1st attempt to fetch python libs from working directory
 
-	std::wstring pythonpath = std::filesystem::current_path().wstring() + LIB_FOLDER;
+	std::wstring pythonpath = std::filesystem::current_path().wstring();
 	
-	if (std::filesystem::exists(pythonpath))
+	if (std::filesystem::exists(pythonpath + LIB_FOLDER))
 		return pythonpath;
 	// 2nd attempt: assume working from vs debugger, so find build directory and search for LibPortable folder
 	
-	pythonpath = std::filesystem::current_path().parent_path().wstring() + L"\\x64\\build" + LIB_FOLDER;
-	if (std::filesystem::exists(pythonpath))
+	pythonpath = std::filesystem::current_path().parent_path().wstring() + L"\\x64\\build";
+	if (std::filesystem::exists(pythonpath + LIB_FOLDER))
 		return pythonpath;
 
 	// Error
@@ -47,6 +47,7 @@ std::wstring PythonInterpreter::fetchPath() const
 */
 bool PythonInterpreter::pymain()
 {
+	pCallSafe(entry, "update");
 	return true;
 }
 
@@ -64,7 +65,6 @@ bool PythonInterpreter::initialize() noexcept
 	}
 	
 	std::wstring wPath = fetchPath();
-
 	Py_InitializeEx(0);
 
 	this->gil = PyGILState_Ensure();
@@ -76,13 +76,13 @@ bool PythonInterpreter::initialize() noexcept
 		throw PythonAPIException("Python was not initialized");
 	}
 
-	PyObject* pModuleName = PyUnicode_FromString("testmodule");
+	PyObject* pModuleName = PyUnicode_FromString(PY_ENTRY_MODULE);
 	entry = PyImport_Import(pModuleName);
 	Py_XDECREF(pModuleName);
 	
 	if (!entry)
 	{
-		MessageBoxA(NULL, "Error: No module", "Error", MB_OK);
+		MessageBoxA(NULL, "Error: No entry module found! Python could not be started", "Python internal error", MB_OK);
 
 		finalize();
 		return false;
@@ -90,7 +90,7 @@ bool PythonInterpreter::initialize() noexcept
 
 	try
 	{
-		pCall(entry, "invoke");
+		pCallSafe(entry, "invoke");
 	}
 	catch (PythonAPIException e)
 	{
@@ -100,6 +100,11 @@ bool PythonInterpreter::initialize() noexcept
 
 void PythonInterpreter::finalize() noexcept
 {
+	if (!Py_IsInitialized())
+		return;
+
+	pCallSafe(entry, "destroy");
+
 	PyGILState_Release(gil);
 	Py_XDECREF(entry);
 
@@ -108,4 +113,37 @@ void PythonInterpreter::finalize() noexcept
 		throw PythonAPIException("Critical! PythonAPI could not finalize");
 	}
 	bInitialied = false;
+}
+
+PyObject* PythonInterpreter::pCall(PyObject* pModule, const char* method, PyObject* args)
+{
+	if (!Py_IsInitialized())
+	{
+		throw PythonAPIException("An attempt of function call with no python initialized");
+	}
+	if (!pModule)
+	{
+		throw PythonAPIException("pModule is null");
+	}
+	PyObject* pFunctionCall = PyObject_GetAttrString(pModule, method);
+	if (!pFunctionCall || !PyCallable_Check(pFunctionCall))
+		throw PythonAPIException("Not callable invoke");
+
+	PyObject* pResult = PyObject_CallObject(pFunctionCall, args);
+
+	Py_DECREF(pFunctionCall);
+	return pResult;
+}
+
+PyObject* PythonInterpreter::pCallSafe(PyObject* pModule, const char* method, PyObject* args)
+{
+	try
+	{
+		return pCall(pModule, method, args);
+	}
+	catch (PythonAPIException e)
+	{
+		e.showErrorMessage();
+		return nullptr;
+	}
 }

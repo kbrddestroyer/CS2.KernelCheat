@@ -24,9 +24,19 @@
     <Compile Include="pykernel\entrypoint.py" />
     <Compile Include="pykernel\__init__.py" />
     <Compile Include="pyext_api.py" />
+    <Compile Include="Scripts\constants.py" />
+    <Compile Include="Scripts\pyext_api.py" />
+    <Compile Include="Scripts\pykernel\decorators.py" />
+    <Compile Include="Scripts\pykernel\entrypoint.py" />
+    <Compile Include="Scripts\pykernel\__init__.py" />
+    <Compile Include="Scripts\__init__.py" />
+    <Compile Include="Tests\test_Holder.py" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="pykernel\" />
+    <Folder Include="Scripts\" />
+    <Folder Include="Scripts\pykernel\" />
+    <Folder Include="Tests\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
