@@ -26,6 +26,7 @@ I just want to show that VAC still doesn't work properly and anyone with coding 
 - [dear ImGui](https://github.com/ocornut/imgui) and d3d9 for backend as GUI framework
 - [kdmapper](https://github.com/TheCruZ/kdmapper) added as usermode library
 - [a2x's](https://github.com/a2x/cs2-dumper) offsets dumper
+- [cpython](https://github.com/python/cpython)
 
 ## Tutorials & other information 
 
@@ -36,6 +37,13 @@ I just want to show that VAC still doesn't work properly and anyone with coding 
 - Windows Driver Kit [*Install Guide*](https://learn.microsoft.com/en-us/windows-hardware/drivers/download-the-wdk)
 - Windows SDK
 - [DirectX SDK](https://www.microsoft.com/ru-ru/download/details.aspx?id=6812)
+
+### Python libraries required for extentions development
+- pylint: code checker  `pip install pylint`
+- black: code formatter `pip install black`
+- pytest: unit tests framework `pip install pytest`
+
+All requirements can be installed with `pip install -r requirements.txt`
 
 ---
 
