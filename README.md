@@ -53,6 +53,25 @@ Currently the installation section is in project wiki tab, all releases can be f
 
 # Project build
 
+## Pre-build steps
+
+1. Get your CPython sources from [official repo](https://github.com/python/cpython) if you haven't yet, or perform `git pull`. Your working directory must look something like this:
+```
+.
+..
+wip
+| cpython
+| CS2.KernelCheat
+| | kernelmode
+| | usermode
+```
+2. Install Python on your PC or build the sources.
+3. Configure venv in PythonExtentions folder
+4. Perform `pip install -r requirements.txt`
+5. Run `pytest` in PythonExtentions folder
+
+Now python side is ready
+
 ## Building usermode and kernelmode binaries
 
 - Install Windows SDK and Windows Driver Kit by following the [official tutorial](https://learn.microsoft.com/en-us/windows-hardware/drivers/download-the-wdk)
@@ -62,9 +81,17 @@ Currently the installation section is in project wiki tab, all releases can be f
 - That should be enough, but you can tweak project settings altering project directories, etc.
 - Run build from VS2022 GUI or by `msbuild` command
 
+## Build modes
+
+- Debug. Basic debug mode, defines _DEBUG macro, more verbose and GUI contains some dev windows
+- Release. Configuration, that's used by automation, can be used to build stable versions
+- GUI_DEBUG. Defines _DEBUG, more verbose,. driver mapping is disables, memory reading disabled, overlay is enabled, creates blank window to overlay if cs2 window is not found. Pretty useful in development 
+
 ## Known issues
+
 - `libucrtd.lib(checkcfg.obj) : error LNK2001: unresolved external symbol guard_check_icall$fo$` - remove security checks from compilation configuration 
 - Overlay lags. Decrease game video settings and lock framerate on 120 fps
+- No overlay. Swith cs2 to windowed/borderless render mode
 
 ## Mapping the driver
 
@@ -82,7 +109,6 @@ If there're no errors - you're done installing
 Please, make sure that project directory is whitelisted.
 - Run usermode.exe as Administrator 
 - Run cs2.exe 
-- Press **Attach** button
 
 > GUI is in development, this section will be written soon
 
