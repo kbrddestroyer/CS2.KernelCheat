@@ -1,5 +1,6 @@
 import ctypes
 
+
 # Entrypoint for python kernelAPI
 # Here you can find lifecycle definition, methods, globals that fall directly on C level
 # Never try to modify .cpp files of PythonAPI if it's not needed

@@ -7,7 +7,7 @@
 #include "../core/cheat/ThreadController.h"
 
 #ifndef LIB_FOLDER
-#define LIB_FOLDER L"\\Lib\\"
+#define LIB_FOLDER "\\kernelapi"
 #endif
 
 #ifndef PY_DELAY
@@ -15,7 +15,7 @@
 #endif
 
 #ifndef PY_ENTRY_MODULE
-#define PY_ENTRY_MODULE "kernelapi.pyext_api"
+#define PY_ENTRY_MODULE "pyext_api"
 #endif
 
 #ifndef PY_ENTRY_FUNCTION
@@ -50,7 +50,7 @@ class PythonInterpreter
 private:
 	inline static std::shared_ptr<PythonInterpreter> pyGlobalPointer;
 private:
-	std::wstring fetchPath() const;
+	std::string fetchPath() const;
 	PyGILState_STATE gil;
 	PyObject* entry;
 	bool bInitialied = false;

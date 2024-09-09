@@ -11,6 +11,7 @@
     <OutputPath>.</OutputPath>
     <Name>PythonExtentions</Name>
     <RootNamespace>PythonExtentions</RootNamespace>
+    <SuppressConfigureTestFrameworkPrompt>true</SuppressConfigureTestFrameworkPrompt>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>

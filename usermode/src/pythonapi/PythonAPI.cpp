@@ -22,17 +22,17 @@ void PythonInterpreter::createInterpreter()
 	}
 }
 
-std::wstring PythonInterpreter::fetchPath() const
+std::string PythonInterpreter::fetchPath() const
 {
 	// 1st attempt to fetch python libs from working directory
 
-	std::wstring pythonpath = std::filesystem::current_path().wstring();
+	std::string pythonpath = std::filesystem::current_path().string();
 	
 	if (std::filesystem::exists(pythonpath + LIB_FOLDER))
 		return pythonpath;
 	// 2nd attempt: assume working from vs debugger, so find build directory and search for LibPortable folder
 	
-	pythonpath = std::filesystem::current_path().parent_path().wstring() + L"\\x64\\build";
+	pythonpath = std::filesystem::current_path().parent_path().string() + "\\x64\\build";
 	if (std::filesystem::exists(pythonpath + LIB_FOLDER))
 		return pythonpath;
 
@@ -53,7 +53,7 @@ bool PythonInterpreter::pymain()
 
 bool PythonInterpreter::initialize() noexcept
 {
-	std::wstring pythonpath;
+	std::string pythonpath;
 	try
 	{
 		pythonpath = fetchPath();
@@ -63,9 +63,15 @@ bool PythonInterpreter::initialize() noexcept
 		e.showErrorMessage();
 		return false;
 	}
-	
-	std::wstring wPath = fetchPath();
+
+	pythonpath += LIB_FOLDER;
+
 	Py_InitializeEx(0);
+
+	PyObject* sysPath = PySys_GetObject("path");
+	PyObject* currentPath = PyUnicode_FromString(pythonpath.c_str());
+	PyList_Append(sysPath, currentPath);
+	Py_XDECREF(currentPath);
 
 	this->gil = PyGILState_Ensure();
 
@@ -74,7 +80,13 @@ bool PythonInterpreter::initialize() noexcept
 	if (!Py_IsInitialized())
 	{
 		throw PythonAPIException("Python was not initialized");
+		return false;
 	}
+	
+	PyObject* sys_path = PySys_GetObject("path");
+	PyObject* folder_path = PyUnicode_FromString("F:\\Work\\CS2.KernelCheat\\x64\\build\\kernelapi");
+
+	PyList_Append(sys_path, folder_path);
 
 	PyObject* pModuleName = PyUnicode_FromString(PY_ENTRY_MODULE);
 	entry = PyImport_Import(pModuleName);
@@ -95,6 +107,7 @@ bool PythonInterpreter::initialize() noexcept
 	catch (PythonAPIException e)
 	{
 		e.showErrorMessage();
+		return false;
 	}
 }
 
@@ -102,11 +115,12 @@ void PythonInterpreter::finalize() noexcept
 {
 	if (!Py_IsInitialized())
 		return;
-
-	pCallSafe(entry, "destroy");
-
+	if (entry)
+	{
+		pCallSafe(entry, "destroy");
+		Py_XDECREF(entry);
+	}
 	PyGILState_Release(gil);
-	Py_XDECREF(entry);
 
 	if (Py_FinalizeEx() < 0)
 	{
