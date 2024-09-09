@@ -1,2 +1,1 @@
 DEBUG_MODE = True
-SUPRESS_MSG = False

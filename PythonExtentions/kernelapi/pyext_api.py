@@ -1,5 +1,7 @@
 import ctypes
+import constants
 
+from pykernel.entrypoint import Handler
 
 # Entrypoint for python kernelAPI
 # Here you can find lifecycle definition, methods, globals that fall directly on C level
@@ -10,11 +12,13 @@ import ctypes
 
 
 def message_box(msg, title):
-    ctypes.windll.user32.MessageBoxA(0, msg, title, 0)
+    if constants.DEBUG_MODE:
+        ctypes.windll.user32.MessageBoxW(0, msg, title, 0)
 
 
 def invoke():
-    pass
+    message_box('Hello from python!', 'OK!')
+    Handler()
 
 
 def update():
