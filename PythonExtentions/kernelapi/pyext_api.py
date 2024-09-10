@@ -1,7 +1,7 @@
+import kernelapi
 import ctypes
 import constants
 
-import kernelapi
 from pykernel.entrypoint import Handler
 
 # Entrypoint for python kernelAPI
@@ -19,6 +19,7 @@ def message_box(msg, title):
 
 def invoke():
     message_box('Hello from python!', 'OK!')
+    message_box('{}'.format(kernelapi.get_client()), 'OK!')
     kernelapi.init()
     Handler()
 

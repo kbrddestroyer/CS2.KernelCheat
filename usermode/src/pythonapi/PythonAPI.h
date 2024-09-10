@@ -49,22 +49,30 @@ public:
 class PythonInterpreter
 {
 private:
-	inline static std::shared_ptr<PythonInterpreter> pyGlobalPointer;
+	inline static PythonInterpreter* pyGlobalPointer;
 private:
 	std::string fetchPath() const;
+
 	PyGILState_STATE gil;
 	PyObject* entry;
 	bool bInitialied = false;
 	bool bMainRunning = false;
+
+	HANDLE		hDriver;
+	uintptr_t	uClient;
 public:
-	static std::weak_ptr<PythonInterpreter> Instance() { return std::weak_ptr(pyGlobalPointer).lock(); }
+	static PythonInterpreter* Instance() { return pyGlobalPointer; }
 	static void createInterpreter();
 public:
-	PythonInterpreter()
+	PythonInterpreter(HANDLE hDriver = nullptr, uintptr_t uClient = 0)
 	{
+		pyGlobalPointer = this;
 		bInitialied = initialize();
 		if (!pymain())
 			throw PythonAPIException("Cannot run main");
+	
+		this->hDriver = hDriver;
+		this->uClient = uClient;
 	}
 
 	~PythonInterpreter()
@@ -82,4 +90,7 @@ private:
 	bool initializeModules();
 public:
 	PyObject* pCallSafe(PyObject* pModule, const char* method, PyObject* args = nullptr);
+
+	HANDLE Driver() { return hDriver; }
+	uintptr_t Client() { return uClient; }
 };

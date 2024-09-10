@@ -10,9 +10,9 @@ void PythonInterpreter::createInterpreter()
 {
 	try
 	{
-		if (pyGlobalPointer)
+		if (PythonInterpreter::pyGlobalPointer)
 			throw PythonAPIException("Collision: Cannot create multiple instances of python interpreter.");
-		pyGlobalPointer = std::make_shared<PythonInterpreter>();
+		PythonInterpreter();
 	}
 	catch (PythonAPIException e)
 	{
