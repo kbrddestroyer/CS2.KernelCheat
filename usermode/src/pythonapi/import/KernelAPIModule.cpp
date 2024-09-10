@@ -12,8 +12,9 @@ PyObject* kernelapi_init(PyObject* self, PyObject* args)
 PyObject* kernelapi_read(PyObject* self, PyObject* args)
 {
 	uintptr_t uAddress;
+	size_t uSize;
 	
-	if (!PyArg_ParseTuple(args, "l", &uAddress))
+	if (!PyArg_ParseTuple(args, "ll", &uAddress, &uSize))
 	{
 		return Py_None;
 	}
@@ -26,8 +27,10 @@ PyObject* kernelapi_read(PyObject* self, PyObject* args)
 		return Py_None;
 	}
 
-	driver::read<void>(hDriver, uAddress);
-	return Py_None;
+	void* data = driver::readUnsafe(hDriver, uAddress, uSize);
+	PyObject* returnValue = Py_BuildValue("O", data);
+	free(data);
+	return returnValue;
 }
 
 PyObject* kernelapi_write(PyObject* self, PyObject* args)
