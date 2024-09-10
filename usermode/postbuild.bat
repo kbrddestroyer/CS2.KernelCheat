@@ -14,3 +14,4 @@ copy ..\..\cpython\PCBuild\amd64\*.dll ..\x64\build\
 copy ..\..\cpython\PCBuild\amd64\*.pyd ..\x64\build\
 xcopy ..\..\cpython\Lib\ ..\x64\build\Lib\ /E /Y
 xcopy ..\PythonExtentions\kernelapi\ ..\x64\build\kernelapi\ /E /Y
+del ..\x64\build\kernelapi\kernelapi.py

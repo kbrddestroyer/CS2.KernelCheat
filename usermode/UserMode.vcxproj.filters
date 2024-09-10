@@ -26,6 +26,7 @@
     <ClCompile Include="src\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\core\cheat\ThreadController.cpp" />
     <ClCompile Include="src\pythonapi\PythonAPI.cpp" />
+    <ClCompile Include="src\pythonapi\import\KernelAPIModule.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\kernelmode\src\kutils.h" />
@@ -60,6 +61,7 @@
     <ClInclude Include="src\offsets.hpp" />
     <ClInclude Include="src\core\cheat\ThreadController.h" />
     <ClInclude Include="src\pythonapi\PythonAPI.h" />
+    <ClInclude Include="src\pythonapi\import\KernelAPIModule.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="postbuild.bat" />

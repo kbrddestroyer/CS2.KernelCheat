@@ -8,8 +8,6 @@ void PythonAPIException::showErrorMessage()
 
 void PythonInterpreter::createInterpreter()
 {
-	// Try to initialize, handle error
-
 	try
 	{
 		if (pyGlobalPointer)
@@ -47,6 +45,8 @@ std::string PythonInterpreter::fetchPath() const
 */
 bool PythonInterpreter::pymain()
 {
+	if (!Py_IsInitialized() || !bInitialied)
+		return false;
 	pCallSafe(entry, "update");
 	return true;
 }
@@ -65,6 +65,8 @@ bool PythonInterpreter::initialize() noexcept
 	}
 
 	pythonpath += LIB_FOLDER;
+
+	this->initializeModules();
 
 	Py_InitializeEx(0);
 
@@ -147,6 +149,13 @@ PyObject* PythonInterpreter::pCall(PyObject* pModule, const char* method, PyObje
 
 	Py_DECREF(pFunctionCall);
 	return pResult;
+}
+
+bool PythonInterpreter::initializeModules()
+{
+	if (PyImport_AppendInittab("kernelapi", PyInit_kernelapi) == -1) {
+		throw PythonAPIException("Cannot import built-in module kernelapi");
+	}
 }
 
 PyObject* PythonInterpreter::pCallSafe(PyObject* pModule, const char* method, PyObject* args)

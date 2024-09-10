@@ -1,10 +1,11 @@
 #pragma once
 #include <Python.h>
-#include <Windows.h>
 
+#include <Windows.h>
 #include <filesystem>
 
 #include "../core/cheat/ThreadController.h"
+#include "import/KernelAPIModule.h"
 
 #ifndef LIB_FOLDER
 #define LIB_FOLDER "\\kernelapi"
@@ -54,6 +55,7 @@ private:
 	PyGILState_STATE gil;
 	PyObject* entry;
 	bool bInitialied = false;
+	bool bMainRunning = false;
 public:
 	static std::weak_ptr<PythonInterpreter> Instance() { return std::weak_ptr(pyGlobalPointer).lock(); }
 	static void createInterpreter();
@@ -61,7 +63,8 @@ public:
 	PythonInterpreter()
 	{
 		bInitialied = initialize();
-		pymain();
+		if (!pymain())
+			throw PythonAPIException("Cannot run main");
 	}
 
 	~PythonInterpreter()
@@ -75,6 +78,8 @@ private:
 	bool initialize() noexcept;
 	bool pymain();
 	void finalize() noexcept;
+	
+	bool initializeModules();
 public:
 	PyObject* pCallSafe(PyObject* pModule, const char* method, PyObject* args = nullptr);
 };
