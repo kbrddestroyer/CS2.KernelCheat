@@ -21,3 +21,21 @@ jobs:
     needs: checkout
     name: Build
     uses: ./.github/workflows/build-agent.yml
+  workflow-test:
+    needs: build
+    runs-on: windows-2022
+    name: Test
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: build-artifact
+          path: ./
+      - name: DIR
+        shell: cmd
+        run: dir ${{github.workspace}}
+      - name: Store artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-release-artifact
+          path: "./"
