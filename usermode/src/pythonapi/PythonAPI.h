@@ -62,17 +62,18 @@ private:
 	uintptr_t	uClient;
 public:
 	static PythonInterpreter* Instance() { return pyGlobalPointer; }
-	static void createInterpreter();
+	static void createInterpreter(HANDLE, uintptr_t);
 public:
 	PythonInterpreter(HANDLE hDriver = nullptr, uintptr_t uClient = 0)
 	{
 		pyGlobalPointer = this;
+
+		this->hDriver = hDriver;
+		this->uClient = uClient;
+
 		bInitialied = initialize();
 		if (!pymain())
 			throw PythonAPIException("Cannot run main");
-	
-		this->hDriver = hDriver;
-		this->uClient = uClient;
 	}
 
 	~PythonInterpreter()

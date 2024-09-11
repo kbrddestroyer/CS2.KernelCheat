@@ -12,15 +12,25 @@ from pykernel.entrypoint import Handler
 # KeyboardDestroyer: 08.09.24 23:00
 
 
+g_processes = {}
+
+
 def message_box(msg, title):
     if constants.DEBUG_MODE:
         ctypes.windll.user32.MessageBoxW(0, msg, title, 0)
 
 
 def invoke():
+    global g_processes
+    if hasattr(invoke, 'initialized'):
+        raise RuntimeError('Cannot re-initialize kernelapi')
+    setattr(invoke, 'initialized', True)
+
     message_box('Hello from python!', 'OK!')
     message_box('{}'.format(kernelapi.get_client()), 'OK!')
-    kernelapi.init()
+
+    g_processes['client.dll'] = kernelapi.get_client()
+
     Handler()
 
 

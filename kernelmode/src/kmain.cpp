@@ -67,7 +67,7 @@ namespace driver
 			}
 			break;
 		case codes::write:
-						if (pTargetProc)
+			if (pTargetProc)
 			{
 				status = MmCopyVirtualMemory(
 					PsGetCurrentProcess(), pRequest->pBuffer, pTargetProc, pRequest->pTarget, pRequest->uSize, KernelMode, &pRequest->uReturnSize

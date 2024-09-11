@@ -13,5 +13,11 @@ def get_client():
     pass
 
 
-def read(address):
+def read(address, size):
+    """Read data from process memory"""
+    pass
+
+
+def write(address, value, size):
+    """Write data to process memory"""
     pass

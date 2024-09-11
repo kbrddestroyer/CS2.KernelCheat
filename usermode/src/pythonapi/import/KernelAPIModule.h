@@ -14,7 +14,8 @@ PyObject* kernelapi_uClient(PyObject*, PyObject*);
 inline static PyMethodDef kernelapiMethods[] = {
 	{"init", kernelapi_init, METH_NOARGS, "Initialize kernelapi"},
 	{"get_client", kernelapi_uClient, METH_NOARGS, "Get driver address as number from C"},
-	{"read", kernelapi_read, METH_VARARGS | METH_KEYWORDS, "Read data via driver"},
+	{"read", kernelapi_read, METH_VARARGS | METH_KEYWORDS, "Read data from process memory"},
+	{"write", kernelapi_write, METH_VARARGS | METH_KEYWORDS, "Write data to process memory"},
 	{NULL, NULL, 0, NULL}
 };
 

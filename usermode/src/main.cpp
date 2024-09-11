@@ -159,8 +159,6 @@ void MainLoop(GUIController& controller) {
     static RECT OldRect;
     ZeroMemory(&DirectX9Interface::Message, sizeof(MSG));
 
-    PythonInterpreter::createInterpreter();
-
     while (DirectX9Interface::Message.message != WM_QUIT && !controller.safeExit()) {
         if (PeekMessage(&DirectX9Interface::Message, OverlayWindow::Hwnd, 0, 0, PM_REMOVE)) {
             TranslateMessage(&DirectX9Interface::Message);

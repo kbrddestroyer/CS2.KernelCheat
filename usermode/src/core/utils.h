@@ -17,14 +17,21 @@ namespace driver
 
 	inline void* readUnsafe(HANDLE hDriverHandle, const uintptr_t uAddress, const size_t size)
 	{
+#ifndef GUI_DEBUG_MODE
 		void* temp = malloc(size);
+		if (!temp)
+			return nullptr;
+
 		USERMODE_REQUEST request;
 		request.pTarget = reinterpret_cast<PVOID>(uAddress);
-		request.pBuffer = &temp;
+		request.pBuffer = temp;
 		request.uSize = size;
 
 		DeviceIoControl(hDriverHandle, codes::read, &request, sizeof(request), &request, sizeof(request), nullptr, nullptr);
 		return temp;
+#elif
+		return nullptr;
+#endif
 	}
 
 	template<class T>
@@ -41,6 +48,18 @@ namespace driver
 		return temp;
 #else
 		return T();
+#endif
+	}
+
+	inline void writeUnsafe(HANDLE hDriverHandle, const uintptr_t uAddress, void* value, const size_t uSize)
+	{
+#ifndef GUI_DEBUG_MODE
+		USERMODE_REQUEST request;
+		request.pTarget = reinterpret_cast<PVOID>(uAddress);
+		request.pBuffer = value;
+		request.uSize = uSize;
+
+		DeviceIoControl(hDriverHandle, codes::write, &request, sizeof(request), &request, sizeof(request), nullptr, nullptr);
 #endif
 	}
 

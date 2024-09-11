@@ -6,13 +6,13 @@ void PythonAPIException::showErrorMessage()
 	MessageBoxA(NULL, this->error.c_str(), "Python API error", MB_OK | MB_ICONERROR);
 }
 
-void PythonInterpreter::createInterpreter()
+void PythonInterpreter::createInterpreter(HANDLE hDriver, uintptr_t uClient)
 {
 	try
 	{
 		if (PythonInterpreter::pyGlobalPointer)
 			throw PythonAPIException("Collision: Cannot create multiple instances of python interpreter.");
-		PythonInterpreter();
+		PythonInterpreter(hDriver, uClient);
 	}
 	catch (PythonAPIException e)
 	{

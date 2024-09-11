@@ -71,7 +71,6 @@ void ThreadController::Update()
 		std::vector<PThreadedObject>& callstack = vCallstack;
 		for (PThreadedObject ob : callstack)
 		{
-			if (ob->isKilled())
 			ob->Update(hDriver, uClient);
 		}
 		
