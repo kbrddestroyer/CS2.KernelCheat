@@ -41,6 +41,5 @@ void initialize(HANDLE hDriver, DWORD uPid)
 	{
 		ThreadMgr* thread = ThreadMgr::getInstance();
 		thread->setKMParams(hDriver, uClient);
-		PythonInterpreter::createInterpreter(hDriver, uClient);
 	}
 }

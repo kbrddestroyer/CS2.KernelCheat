@@ -12,7 +12,7 @@ void PythonInterpreter::createInterpreter(HANDLE hDriver, uintptr_t uClient)
 	{
 		if (PythonInterpreter::pyGlobalPointer)
 			throw PythonAPIException("Collision: Cannot create multiple instances of python interpreter.");
-		PythonInterpreter(hDriver, uClient);
+		PythonInterpreter::pyGlobalPointer = std::make_unique<PythonInterpreter>(hDriver, uClient);
 	}
 	catch (PythonAPIException e)
 	{

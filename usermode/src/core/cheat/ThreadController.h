@@ -13,11 +13,16 @@ typedef std::shared_ptr<ThreadedObject> PThreadedObject;
 
 class ThreadedObject
 {
-private:
+protected:
+	HANDLE hDriver = nullptr;
+	uintptr_t uClient = 0;
 	bool bRunning = true;
 public:
 	static bool createObject(PThreadedObject);
-	virtual void Update(HANDLE hDriver, uintptr_t uClient) = 0;
+	void createContext(HANDLE, uintptr_t);
+	
+	virtual void Update() = 0;
+	
 	void kill() { bRunning = false; }
 	bool isKilled() { return !bRunning; }
 };

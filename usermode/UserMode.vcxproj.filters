@@ -27,6 +27,7 @@
     <ClCompile Include="src\core\cheat\ThreadController.cpp" />
     <ClCompile Include="src\pythonapi\PythonAPI.cpp" />
     <ClCompile Include="src\pythonapi\import\KernelAPIModule.cpp" />
+    <ClCompile Include="src\pythonapi\PyThreadRunner.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\kernelmode\src\kutils.h" />
@@ -62,6 +63,7 @@
     <ClInclude Include="src\core\cheat\ThreadController.h" />
     <ClInclude Include="src\pythonapi\PythonAPI.h" />
     <ClInclude Include="src\pythonapi\import\KernelAPIModule.h" />
+    <ClInclude Include="src\pythonapi\PyThreadRunner.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="postbuild.bat" />
