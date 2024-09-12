@@ -13,9 +13,13 @@ typedef std::shared_ptr<ThreadedObject> PThreadedObject;
 
 class ThreadedObject
 {
+private:
+	bool bRunning = true;
 public:
 	static bool createObject(PThreadedObject);
 	virtual void Update(HANDLE hDriver, uintptr_t uClient) = 0;
+	void kill() { bRunning = false; }
+	bool isKilled() { return !bRunning; }
 };
 
 class IThreadController

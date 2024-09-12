@@ -252,6 +252,7 @@
     <ClCompile Include="kdmapper\portable_executable.cpp" />
     <ClCompile Include="kdmapper\service.cpp" />
     <ClCompile Include="kdmapper\utils.cpp" />
+    <ClCompile Include="src\pythonapi\import\KernelAPIModule.cpp" />
     <ClCompile Include="src\pythonapi\PythonAPI.cpp" />
     <ClCompile Include="src\gui\OverlayController.cpp" />
     <ClCompile Include="src\core\cheat\GUIEntities.cpp" />
@@ -270,7 +271,6 @@
     <ClCompile Include="src\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="src\imgui\imgui_tables.cpp" />
     <ClCompile Include="src\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="src\logger\UMLogger.cpp" />
     <ClCompile Include="src\core\cheat\ThreadController.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -283,6 +283,7 @@
     <ClInclude Include="kdmapper\include\portable_executable.hpp" />
     <ClInclude Include="kdmapper\include\service.hpp" />
     <ClInclude Include="kdmapper\include\utils.hpp" />
+    <ClInclude Include="src\pythonapi\import\KernelAPIModule.h" />
     <ClInclude Include="src\pythonapi\PythonAPI.h" />
     <ClInclude Include="src\gui\OverlayController.h" />
     <ClInclude Include="src\client_dll.hpp" />
@@ -304,7 +305,6 @@
     <ClInclude Include="src\imgui\imstb_textedit.h" />
     <ClInclude Include="src\imgui\imstb_truetype.h" />
     <ClInclude Include="src\core\utils.h" />
-    <ClInclude Include="src\logger\UMLogger.h" />
     <ClInclude Include="src\offsets.hpp" />
     <ClInclude Include="src\core\cheat\ThreadController.h" />
   </ItemGroup>

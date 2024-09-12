@@ -116,7 +116,12 @@ Please, make sure that project directory is whitelisted.
 
 If you want to contribute, please read [contribution guideline](CONTRIBUTING.md)
 
-> I want to add custom GUI layouts, GUI elements customisation (e.g. Radarhack entity customisation). Also I want to add cheat configs w/ all the settings stored.
+Currently, the project supports python3.11+ scripts as modding tool. 
 
-> This section will be added soon
+## Modding core functionality
 
+> Here will be core modding flow
+
+## GUI Modding
+
+> Here will be gui mods tutor
