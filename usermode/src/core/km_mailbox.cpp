@@ -1,5 +1,5 @@
 #include "km_mailbox.h"
-#include "../pythonapi/PythonAPI.h"
+#include "../pythonapi/PyThreadRunner.h"
 
 int kmControllerEntry()
 {
@@ -41,5 +41,7 @@ void initialize(HANDLE hDriver, DWORD uPid)
 	{
 		ThreadMgr* thread = ThreadMgr::getInstance();
 		thread->setKMParams(hDriver, uClient);
+
+		ThreadedObject::createObject(std::make_shared<PyThreadRunner>());
 	}
 }

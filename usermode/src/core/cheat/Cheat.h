@@ -84,8 +84,6 @@ namespace cheatscore
 			/**
 			* Get uPlayerPawn pointer by index in entity list.
 			* 
-			* @param hDriver HANDLE -  handle of kernelmode.sys
-			* @param uClient uintptr_t -  Base address of client.dll
 			* @param uEntityList uintptr_t - Index of player in dwEntityList
 			* @param uIndex uint32_t Index of player in dwEntityList
 			* 
@@ -95,9 +93,6 @@ namespace cheatscore
 
 			/**
 			* Common logic of finding the local player is delegated to base class
-			* 
-			* @param hDriver: HANDLE handle of kernelmode.sys
-			* @param uClient: uintptr_t Base address of client.dll
 			* 
 			* @return uintptr_t address of LocalPlayerPawn
 			*/
@@ -125,8 +120,7 @@ namespace cheatscore
 	{
 		using namespace utility;
 
-		// TODO:
-		// Needs some updates, works terrible
+		// Just test functionality, usially I use it to check the offsets
 		class BhopCheat : public Cheat
 		{
 		public:
@@ -137,6 +131,7 @@ namespace cheatscore
 			void Render() override;
 		};
 
+		// Creates ImGui window on overlay and renders players
 		class RadarHack : public Cheat
 		{
 		private:
@@ -160,6 +155,7 @@ namespace cheatscore
 			void Render() override;
 		};
 
+		// Triggers fire button if enemy is in crosshair
 		class TriggerBot : public Cheat
 		{
 		public:
@@ -169,6 +165,7 @@ namespace cheatscore
 			void Render() override;
 		};
 
+		// Aims to heads, can be tweaked
 		class AimBot : public Cheat
 		{
 		private:
@@ -200,6 +197,7 @@ namespace cheatscore
 			void Render() override;
 		};
 
+		// Controls gun recoil starting from 2nd shot via viewAngles
 		class Antirecoil : public Cheat
 		{
 		private:
@@ -212,6 +210,7 @@ namespace cheatscore
 			void Render() override;
 		};
 
+		// Wallhack on overlay, renders bones
 		class BoneESP : public Cheat
 		{
 		private:

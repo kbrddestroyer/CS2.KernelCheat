@@ -19,7 +19,7 @@ protected:
 	bool bRunning = true;
 public:
 	static bool createObject(PThreadedObject);
-	void createContext(HANDLE, uintptr_t);
+	virtual void createContext(HANDLE, uintptr_t);
 	
 	virtual void Update() = 0;
 	

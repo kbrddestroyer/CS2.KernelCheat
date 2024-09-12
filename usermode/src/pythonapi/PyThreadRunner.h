@@ -5,8 +5,8 @@
 class PyThreadRunner : public ThreadedObject
 {
 public:
-	PyThreadRunner();
-
 	void Update() override;
+
+	void createContext(HANDLE, uintptr_t) override;
 };
 

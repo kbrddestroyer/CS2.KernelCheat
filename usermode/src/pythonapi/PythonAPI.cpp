@@ -13,6 +13,7 @@ void PythonInterpreter::createInterpreter(HANDLE hDriver, uintptr_t uClient)
 		if (PythonInterpreter::pyGlobalPointer)
 			throw PythonAPIException("Collision: Cannot create multiple instances of python interpreter.");
 		PythonInterpreter::pyGlobalPointer = std::make_unique<PythonInterpreter>(hDriver, uClient);
+		PythonInterpreter::Instance()->postinit();
 	}
 	catch (PythonAPIException e)
 	{
@@ -101,7 +102,10 @@ bool PythonInterpreter::initialize() noexcept
 		finalize();
 		return false;
 	}
+}
 
+void PythonInterpreter::postinit() noexcept
+{
 	try
 	{
 		pCallSafe(entry, "invoke");
@@ -109,7 +113,6 @@ bool PythonInterpreter::initialize() noexcept
 	catch (PythonAPIException e)
 	{
 		e.showErrorMessage();
-		return false;
 	}
 }
 

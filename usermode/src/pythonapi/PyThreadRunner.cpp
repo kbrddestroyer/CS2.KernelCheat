@@ -1,11 +1,12 @@
 #include "PyThreadRunner.h"
 
-PyThreadRunner::PyThreadRunner()
+void PyThreadRunner::Update()
 {
 
 }
 
-void PyThreadRunner::Update()
+void PyThreadRunner::createContext(HANDLE hDriver, uintptr_t uClient)
 {
-
+	ThreadedObject::createContext(hDriver, uClient);
+	PythonInterpreter::createInterpreter(hDriver, uClient);
 }

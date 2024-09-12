@@ -83,6 +83,7 @@ public:
 private:
 	PyObject* pCall(PyObject* pModule, const char* method, PyObject* args = nullptr);
 	bool initialize() noexcept;
+	void postinit() noexcept;
 	bool pymain();
 	void finalize() noexcept;
 	
