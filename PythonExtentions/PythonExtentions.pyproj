@@ -12,6 +12,10 @@
     <Name>PythonExtentions</Name>
     <RootNamespace>PythonExtentions</RootNamespace>
     <SuppressConfigureTestFrameworkPrompt>true</SuppressConfigureTestFrameworkPrompt>
+    <TestFramework>pytest</TestFramework>
+    <UnitTestPattern>test*.py</UnitTestPattern>
+    <UnitTestRootDirectory>.</UnitTestRootDirectory>
+    <InterpreterId>MSBuild|venv|$(MSBuildProjectFullPath)</InterpreterId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -23,6 +27,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="kernelapi\constants.py" />
+    <Compile Include="kernelapi\kernelapi.py" />
     <Compile Include="kernelapi\pyext_api.py" />
     <Compile Include="kernelapi\pykernel\decorators.py" />
     <Compile Include="kernelapi\pykernel\entrypoint.py" />
@@ -42,11 +47,23 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
+    <Content Include="build.bat" />
     <Content Include="kernelapi\pykernel\__pycache__\decorators.cpython-312.pyc" />
     <Content Include="kernelapi\pykernel\__pycache__\__init__.cpython-312.pyc" />
     <Content Include="kernelapi\__pycache__\constants.cpython-312.pyc" />
     <Content Include="kernelapi\__pycache__\pyext_api.cpython-312.pyc" />
     <Content Include="kernelapi\__pycache__\__init__.cpython-312.pyc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Interpreter Include="venv\">
+      <Id>venv</Id>
+      <Version>0.0</Version>
+      <Description>venv (Python 3.12)</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X64</Architecture>
+    </Interpreter>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
