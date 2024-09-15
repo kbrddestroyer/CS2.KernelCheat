@@ -5,7 +5,6 @@ echo Environment compiled, installing external dependencies
 mkdir ..\x64\build\Lib
 
 ..\..\cpython\PCBuild\amd64\python.exe -m ensurepip
-..\..\cpython\PCBuild\amd64\python.exe -m pip install --upgrade pip setuptools wheel cython
 ..\..\cpython\PCBuild\amd64\python.exe -m pip install -r requirements.txt
 
 pause
