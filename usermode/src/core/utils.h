@@ -29,7 +29,7 @@ namespace driver
 
 		DeviceIoControl(hDriverHandle, codes::read, &request, sizeof(request), &request, sizeof(request), nullptr, nullptr);
 		return temp;
-#elif
+#else
 		return nullptr;
 #endif
 	}

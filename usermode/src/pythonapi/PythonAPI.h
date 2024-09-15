@@ -49,7 +49,7 @@ public:
 class PythonInterpreter
 {
 private:
-	inline static PythonInterpreter* pyGlobalPointer;
+	inline static std::unique_ptr<PythonInterpreter> pyGlobalPointer;
 private:
 	std::string fetchPath() const;
 
@@ -61,13 +61,11 @@ private:
 	HANDLE		hDriver;
 	uintptr_t	uClient;
 public:
-	static PythonInterpreter* Instance() { return pyGlobalPointer; }
+	static PythonInterpreter* Instance() { return pyGlobalPointer.get(); }
 	static void createInterpreter(HANDLE, uintptr_t);
 public:
 	PythonInterpreter(HANDLE hDriver = nullptr, uintptr_t uClient = 0)
 	{
-		pyGlobalPointer = this;
-
 		this->hDriver = hDriver;
 		this->uClient = uClient;
 
@@ -85,6 +83,7 @@ public:
 private:
 	PyObject* pCall(PyObject* pModule, const char* method, PyObject* args = nullptr);
 	bool initialize() noexcept;
+	void postinit() noexcept;
 	bool pymain();
 	void finalize() noexcept;
 	
