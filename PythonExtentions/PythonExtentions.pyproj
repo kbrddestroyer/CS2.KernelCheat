@@ -4,7 +4,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>d38cc719-9442-4195-8168-7b00ffd98e09</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>pyext_api.py</StartupFile>
+    <StartupFile>
+    </StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -28,29 +29,34 @@
   <ItemGroup>
     <Compile Include="kernelapi\constants.py" />
     <Compile Include="kernelapi\kernelapi.py" />
+    <Compile Include="kernelapi\offsets_json.py" />
     <Compile Include="kernelapi\pyext_api.py" />
     <Compile Include="kernelapi\pykernel\decorators.py" />
     <Compile Include="kernelapi\pykernel\entrypoint.py" />
     <Compile Include="kernelapi\pykernel\__init__.py" />
     <Compile Include="kernelapi\__init__.py" />
-    <Compile Include="pykernel\entrypoint.py" />
-    <Compile Include="pykernel\__init__.py" />
+    <Compile Include="Tests\conftest.py" />
     <Compile Include="Tests\test_Holder.py" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="kernelapi\" />
+    <Folder Include="kernelapi\json\" />
     <Folder Include="kernelapi\pykernel\" />
     <Folder Include="kernelapi\pykernel\__pycache__\" />
     <Folder Include="kernelapi\__pycache__\" />
-    <Folder Include="pykernel\" />
     <Folder Include="Tests\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
     <Content Include="build.bat" />
+    <Content Include="kernelapi\json\buttons.json" />
+    <Content Include="kernelapi\json\client_dll.json" />
+    <Content Include="kernelapi\json\offsets.json" />
     <Content Include="kernelapi\pykernel\__pycache__\decorators.cpython-312.pyc" />
+    <Content Include="kernelapi\pykernel\__pycache__\entrypoint.cpython-312.pyc" />
     <Content Include="kernelapi\pykernel\__pycache__\__init__.cpython-312.pyc" />
     <Content Include="kernelapi\__pycache__\constants.cpython-312.pyc" />
+    <Content Include="kernelapi\__pycache__\offsets_json.cpython-312.pyc" />
     <Content Include="kernelapi\__pycache__\pyext_api.cpython-312.pyc" />
     <Content Include="kernelapi\__pycache__\__init__.cpython-312.pyc" />
   </ItemGroup>

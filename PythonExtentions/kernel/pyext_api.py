@@ -2,6 +2,7 @@ import kernelapi
 import ctypes
 import constants
 
+from offsets_json import JsonParser, get_json
 from pykernel.entrypoint import Handler
 
 # Entrypoint for python kernelAPI
@@ -23,14 +24,10 @@ def message_box(msg, title):
 def invoke():
     global g_processes
     if hasattr(invoke, 'initialized'):
-        raise RuntimeError('Cannot re-initialize kernelapi')
+        raise RuntimeError('Cannot re-initialize kernel')
     setattr(invoke, 'initialized', True)
-
-    message_box('Hello from python!', 'OK!')
-    message_box('{}'.format(kernelapi.get_client()), 'OK!')
-
     g_processes['client.dll'] = kernelapi.get_client()
-
+    
     Handler()
 
 
@@ -40,3 +37,7 @@ def update():
 
 def destroy():
     pass
+
+
+if __name__ == '__main__':
+    invoke()
