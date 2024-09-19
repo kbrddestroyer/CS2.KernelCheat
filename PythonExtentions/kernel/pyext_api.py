@@ -4,6 +4,7 @@ import constants
 
 from offsets_json import JsonParser, get_json
 from pykernel.entrypoint import Handler
+from extentions.TemplateCheat import UpdateLocalPlayer
 
 # Entrypoint for python kernelAPI
 # Here you can find lifecycle definition, methods, globals that fall directly on C level
@@ -29,6 +30,7 @@ def invoke():
     g_processes['client.dll'] = kernelapi.get_client()
     
     Handler()
+    UpdateLocalPlayer()
 
 
 def update():
