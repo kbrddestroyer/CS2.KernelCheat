@@ -2,7 +2,9 @@ import kernelapi
 import ctypes
 import constants
 
+from offsets_json import JsonParser, get_json
 from pykernel.entrypoint import Handler
+from extentions.TemplateCheat import UpdateLocalPlayer
 
 # Entrypoint for python kernelAPI
 # Here you can find lifecycle definition, methods, globals that fall directly on C level
@@ -23,20 +25,21 @@ def message_box(msg, title):
 def invoke():
     global g_processes
     if hasattr(invoke, 'initialized'):
-        raise RuntimeError('Cannot re-initialize kernelapi')
+        raise RuntimeError('Cannot re-initialize kernel')
     setattr(invoke, 'initialized', True)
-
-    message_box('Hello from python!', 'OK!')
-    message_box('{}'.format(kernelapi.get_client()), 'OK!')
-
     g_processes['client.dll'] = kernelapi.get_client()
-
+    
     Handler()
+    UpdateLocalPlayer()
 
 
 def update():
-    pass
+    Handler.g_handler.update()
 
 
 def destroy():
-    pass
+    Handler.g_handler.destroy()
+
+
+if __name__ == '__main__':
+    invoke()

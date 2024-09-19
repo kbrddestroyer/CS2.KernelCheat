@@ -407,6 +407,8 @@ int WINAPI WinMain(
         MessageBoxA(NULL, "Driver was not mapped, there may be an error in kdmapper or kernelmode.sys does not exist in cheat root path", "Critical error", MB_OK | MB_ICONERROR);
         return 1;
     }
+#else
+    kmControllerEntry();
 #endif
     MainLoop(controller);
 

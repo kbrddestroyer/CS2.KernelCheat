@@ -4,7 +4,7 @@ import ctypes
 
 
 def init():
-    """Initialize kernelapi"""
+    """Initialize kernel"""
     pass
 
 

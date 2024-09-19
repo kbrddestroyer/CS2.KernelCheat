@@ -4,6 +4,8 @@
 
 class PyThreadRunner : public ThreadedObject
 {
+private:
+	bool isReady = false;
 public:
 	void Update() override;
 

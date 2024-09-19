@@ -79,6 +79,7 @@ private:
 
 	HANDLE		hDriver;
 	uintptr_t	uClient;
+	bool		bDebug;
 
 	std::mutex mtx;
 public:
@@ -86,9 +87,10 @@ public:
 	~ThreadMgr();
 	HANDLE				DRIVER()	{ return hDriver; }
 	uintptr_t			CLIENT()	{ return uClient; }
+	bool				DEBUG()		{ return bDebug; }
 	ThreadController*	getThread();
 	void				setKMParams(HANDLE, uintptr_t);
-
+	void				setDebug(bool bDebug) { this->bDebug = bDebug; }
 #pragma region ThreadMgr loop controller
 	void Start();
 	void AddThreadController(PThreadController);

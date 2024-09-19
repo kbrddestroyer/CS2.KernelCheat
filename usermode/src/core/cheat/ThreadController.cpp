@@ -72,7 +72,7 @@ void ThreadController::Start()
 
 void ThreadController::Update()
 {
-	if (hDriver && uClient && ThreadMgr::getInstance())
+	if (ThreadMgr::getInstance() && ((hDriver && uClient) || ThreadMgr::getInstance()->DEBUG()))
 	{
 		std::vector<PThreadedObject>& callstack = vCallstack;
 		for (PThreadedObject ob : callstack)

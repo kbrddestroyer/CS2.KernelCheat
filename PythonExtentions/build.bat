@@ -19,6 +19,6 @@ copy ..\..\cpython\PCBuild\amd64\*.pyd ..\x64\build\
 
 echo Creating python environment
 xcopy ..\..\cpython\Lib\ ..\x64\build\Lib\ /E /Y
-xcopy kernelapi\ ..\x64\build\kernelapi\ /E /Y
-del ..\x64\build\kernelapi\kernelapi.py
+xcopy kernel\ ..\x64\build\kernel\ /E /Y
+del ..\x64\build\kernel\kernelapi.py
 pause
