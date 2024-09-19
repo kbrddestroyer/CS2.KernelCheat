@@ -1,6 +1,7 @@
 import json
 
 from collections import UserDict
+from constants import JSON_CONSTANTS
 
 
 class JsonParser(UserDict):
@@ -8,7 +9,7 @@ class JsonParser(UserDict):
 
   def __init__(self, name: str, **kwargs) -> None:
     super(JsonParser, self).__init__(kwargs)
-    with open(name) as f:
+    with open(JSON_CONSTANTS.JSON_PATH + name) as f:
       self.data = json.load(f)
     JsonParser.g_json[name] = self
   

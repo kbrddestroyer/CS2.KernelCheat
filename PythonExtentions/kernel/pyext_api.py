@@ -32,11 +32,11 @@ def invoke():
 
 
 def update():
-    pass
+    Handler.g_handler.update()
 
 
 def destroy():
-    pass
+    Handler.g_handler.destroy()
 
 
 if __name__ == '__main__':
