@@ -31,6 +31,10 @@ int kmControllerEntry()
 	return EXIT_SUCCESS;
 #else
 	MessageBoxA(NULL, "Warning!", "The cheat will run in GUI debug mode", MB_OK);
+	ThreadMgr* thread = ThreadMgr::getInstance();
+	thread->setDebug(true);
+
+	ThreadedObject::createObject(std::make_shared<PyThreadRunner>());
 	return EXIT_SUCCESS;
 #endif
 }

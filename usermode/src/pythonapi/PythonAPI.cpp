@@ -48,6 +48,8 @@ bool PythonInterpreter::pymain()
 {
 	if (!Py_IsInitialized() || !bInitialied)
 		return false;
+	if (!entry)
+		return false;
 	pCallSafe(entry, "update");
 	return true;
 }
@@ -87,7 +89,7 @@ bool PythonInterpreter::initialize() noexcept
 	}
 	
 	PyObject* sys_path = PySys_GetObject("path");
-	PyObject* folder_path = PyUnicode_FromString("F:\\Work\\CS2.KernelCheat\\x64\\build\\kernelapi");
+	PyObject* folder_path = PyUnicode_FromString("F:\\Work\\CS2.KernelCheat\\x64\\build\\kernel");
 
 	PyList_Append(sys_path, folder_path);
 

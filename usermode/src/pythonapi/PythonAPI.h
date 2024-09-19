@@ -8,7 +8,7 @@
 #include "import/KernelAPIModule.h"
 
 #ifndef LIB_FOLDER
-#define LIB_FOLDER "\\kernelapi"
+#define LIB_FOLDER "\\kernel"
 #endif
 
 #ifndef PY_DELAY
@@ -70,8 +70,6 @@ public:
 		this->uClient = uClient;
 
 		bInitialied = initialize();
-		if (!pymain())
-			throw PythonAPIException("Cannot run main");
 	}
 
 	~PythonInterpreter()
@@ -84,13 +82,12 @@ private:
 	PyObject* pCall(PyObject* pModule, const char* method, PyObject* args = nullptr);
 	bool initialize() noexcept;
 	void postinit() noexcept;
-	bool pymain();
 	void finalize() noexcept;
 	
 	bool initializeModules();
 public:
 	PyObject* pCallSafe(PyObject* pModule, const char* method, PyObject* args = nullptr);
-
+	bool pymain();
 	HANDLE Driver() { return hDriver; }
 	uintptr_t Client() { return uClient; }
 };
