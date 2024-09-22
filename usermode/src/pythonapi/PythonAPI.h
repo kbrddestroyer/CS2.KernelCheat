@@ -57,7 +57,7 @@ private:
 	PyObject* entry;
 	bool bInitialied = false;
 	bool bMainRunning = false;
-
+	std::string pythonpath;
 	HANDLE		hDriver;
 	uintptr_t	uClient;
 public:

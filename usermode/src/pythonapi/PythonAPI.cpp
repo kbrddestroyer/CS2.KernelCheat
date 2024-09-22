@@ -56,7 +56,6 @@ bool PythonInterpreter::pymain()
 
 bool PythonInterpreter::initialize() noexcept
 {
-	std::string pythonpath;
 	try
 	{
 		pythonpath = fetchPath();
