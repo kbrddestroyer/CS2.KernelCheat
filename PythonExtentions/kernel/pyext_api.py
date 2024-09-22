@@ -1,8 +1,10 @@
+from Cython.Compiler.Errors import message
+
 import kernelapi
 import ctypes
 import constants
 
-from offsets_json import JsonParser, get_json
+from offsets_json import JsonParser, get_json, set_json
 from pykernel.entrypoint import Handler
 from extentions.TemplateCheat import UpdateLocalPlayer
 
@@ -22,13 +24,15 @@ def message_box(msg, title):
         ctypes.windll.user32.MessageBoxW(0, msg, title, 0)
 
 
-def invoke():
+def invoke(path: str = None):
     global g_processes
     if hasattr(invoke, 'initialized'):
         raise RuntimeError('Cannot re-initialize kernel')
     setattr(invoke, 'initialized', True)
     g_processes['client.dll'] = kernelapi.get_client()
-    
+    if path:
+        set_json(path)
+        message_box(f"Set JSON {path}", "OK")
     Handler()
     UpdateLocalPlayer()
 
