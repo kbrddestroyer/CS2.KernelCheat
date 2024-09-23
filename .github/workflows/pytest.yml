@@ -17,7 +17,7 @@ jobs:
     steps:
     - name: Run pytest
       run: |
-        python3 -m pip install -r requirements_development.txt
+        python3 -m pip install -r PythonExtentions/requirements_development.txt
         pytest
     
     
