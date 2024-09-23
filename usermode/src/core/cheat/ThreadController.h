@@ -13,9 +13,18 @@ typedef std::shared_ptr<ThreadedObject> PThreadedObject;
 
 class ThreadedObject
 {
+protected:
+	HANDLE hDriver = nullptr;
+	uintptr_t uClient = 0;
+	bool bRunning = true;
 public:
 	static bool createObject(PThreadedObject);
-	virtual void Update(HANDLE hDriver, uintptr_t uClient) = 0;
+	virtual void createContext(HANDLE, uintptr_t);
+	
+	virtual void Update() = 0;
+	
+	void kill() { bRunning = false; }
+	bool isKilled() { return !bRunning; }
 };
 
 class IThreadController
@@ -70,6 +79,7 @@ private:
 
 	HANDLE		hDriver;
 	uintptr_t	uClient;
+	bool		bDebug;
 
 	std::mutex mtx;
 public:
@@ -77,9 +87,10 @@ public:
 	~ThreadMgr();
 	HANDLE				DRIVER()	{ return hDriver; }
 	uintptr_t			CLIENT()	{ return uClient; }
+	bool				DEBUG()		{ return bDebug; }
 	ThreadController*	getThread();
 	void				setKMParams(HANDLE, uintptr_t);
-
+	void				setDebug(bool bDebug) { this->bDebug = bDebug; }
 #pragma region ThreadMgr loop controller
 	void Start();
 	void AddThreadController(PThreadController);

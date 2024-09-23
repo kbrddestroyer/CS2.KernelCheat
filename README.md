@@ -26,6 +26,7 @@ I just want to show that VAC still doesn't work properly and anyone with coding 
 - [dear ImGui](https://github.com/ocornut/imgui) and d3d9 for backend as GUI framework
 - [kdmapper](https://github.com/TheCruZ/kdmapper) added as usermode library
 - [a2x's](https://github.com/a2x/cs2-dumper) offsets dumper
+- [cpython](https://github.com/python/cpython)
 
 ## Tutorials & other information 
 
@@ -37,6 +38,13 @@ I just want to show that VAC still doesn't work properly and anyone with coding 
 - Windows SDK
 - [DirectX SDK](https://www.microsoft.com/ru-ru/download/details.aspx?id=6812)
 
+### Python libraries required for extentions development
+- pylint: code checker  `pip install pylint`
+- black: code formatter `pip install black`
+- pytest: unit tests framework `pip install pytest`
+
+All requirements can be installed with `pip install -r requirements.txt`
+
 ---
 
 # Installation guide
@@ -44,6 +52,25 @@ I just want to show that VAC still doesn't work properly and anyone with coding 
 Currently the installation section is in project wiki tab, all releases can be found [here](https://github.com/kbrddestroyer/CS2.KernelCheat/releases)
 
 # Project build
+
+## Pre-build steps
+
+1. Get your CPython sources from [official repo](https://github.com/python/cpython) if you haven't yet, or perform `git pull`. Your working directory must look something like this:
+```
+.
+..
+wip
+| cpython
+| CS2.KernelCheat
+| | kernelmode
+| | usermode
+```
+2. Install Python on your PC or build the sources.
+3. Configure venv in PythonExtentions folder
+4. Perform `pip install -r requirements.txt`
+5. Run `pytest` in PythonExtentions folder
+
+Now python side is ready
 
 ## Building usermode and kernelmode binaries
 
@@ -54,9 +81,17 @@ Currently the installation section is in project wiki tab, all releases can be f
 - That should be enough, but you can tweak project settings altering project directories, etc.
 - Run build from VS2022 GUI or by `msbuild` command
 
+## Build modes
+
+- Debug. Basic debug mode, defines _DEBUG macro, more verbose and GUI contains some dev windows
+- Release. Configuration, that's used by automation, can be used to build stable versions
+- GUI_DEBUG. Defines _DEBUG, more verbose,. driver mapping is disables, memory reading disabled, overlay is enabled, creates blank window to overlay if cs2 window is not found. Pretty useful in development 
+
 ## Known issues
+
 - `libucrtd.lib(checkcfg.obj) : error LNK2001: unresolved external symbol guard_check_icall$fo$` - remove security checks from compilation configuration 
 - Overlay lags. Decrease game video settings and lock framerate on 120 fps
+- No overlay. Swith cs2 to windowed/borderless render mode
 
 ## Mapping the driver
 
@@ -74,7 +109,6 @@ If there're no errors - you're done installing
 Please, make sure that project directory is whitelisted.
 - Run usermode.exe as Administrator 
 - Run cs2.exe 
-- Press **Attach** button
 
 > GUI is in development, this section will be written soon
 
@@ -82,7 +116,12 @@ Please, make sure that project directory is whitelisted.
 
 If you want to contribute, please read [contribution guideline](CONTRIBUTING.md)
 
-> I want to add custom GUI layouts, GUI elements customisation (e.g. Radarhack entity customisation). Also I want to add cheat configs w/ all the settings stored.
+Currently, the project supports python3.11+ scripts as modding tool. 
 
-> This section will be added soon
+## Modding core functionality
 
+> Here will be core modding flow
+
+## GUI Modding
+
+> Here will be gui mods tutor

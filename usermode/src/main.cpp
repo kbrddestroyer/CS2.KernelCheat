@@ -12,6 +12,7 @@
 #include <string>
 #include <vector>
 #include <filesystem>
+#include <Python.h>
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_dx9.h"
@@ -19,6 +20,7 @@
 #include "gui/GUIController.h"
 #include "core/cheat/ThreadController.h"
 #include "../KDMapperAPI.h"
+#include "pythonapi/PythonAPI.h"
 
 #pragma comment(lib, "d3d9.lib")
 #pragma comment(lib, "dwmapi.lib")
@@ -328,8 +330,10 @@ int WINAPI WinMain(
 
     if (_HWND == NULL)
     {
+#ifndef GUI_DEBUG_MODE
         MessageBox(NULL, L"Counter-Strike 2 is not started. Please start the game before running the cheat.", L"Error", MB_ICONERROR | MB_OK);
-#ifdef GUI_DEBUG_MODE
+        return 1;
+#else
         // Enable gui debug
         _HWND = CreateWindowA(
             "Static",
@@ -350,8 +354,6 @@ int WINAPI WinMain(
 
             return 1;
         }
-#else
-        return 1;
 #endif
     }
 
@@ -405,6 +407,8 @@ int WINAPI WinMain(
         MessageBoxA(NULL, "Driver was not mapped, there may be an error in kdmapper or kernelmode.sys does not exist in cheat root path", "Critical error", MB_OK | MB_ICONERROR);
         return 1;
     }
+#else
+    kmControllerEntry();
 #endif
     MainLoop(controller);
 

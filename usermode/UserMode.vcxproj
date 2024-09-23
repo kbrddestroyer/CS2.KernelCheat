@@ -152,23 +152,22 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>src\imgui\GL;src\imgui;%(AdditionalIncludeDirectories);$(DXSDK_DIR)Include;kdmapper\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src\imgui\GL;src\imgui;$(DXSDK_DIR)Include;kdmapper\include;..\..\cpython\Include;..\..\cpython\PCbuild\amd64</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
-      <AdditionalLibraryDirectories>src\imgui\backends;src\imgui;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>src\imgui\backends;src\imgui;..\..\cpython\PCBuild\amd64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);d3d9.lib</AdditionalDependencies>
       <EntryPointSymbol>
       </EntryPointSymbol>
-
     </Link>
     <PostBuildEvent>
       <Command>postbuild.bat</Command>
@@ -176,6 +175,10 @@
     <PostBuildEvent>
       <Message>Cleeanup</Message>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='GUI_DEBUG|x64'">
     <ClCompile>
@@ -185,19 +188,16 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>src\imgui\GL;src\imgui;%(AdditionalIncludeDirectories);$(DXSDK_DIR)Include;kdmapper\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src\imgui\GL;src\imgui;$(DXSDK_DIR)Include;kdmapper\include;..\..\cpython\Include;..\..\cpython\PCbuild\amd64</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
-      <AdditionalLibraryDirectories>src\imgui\backends;src\imgui;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>src\imgui\backends;src\imgui;..\..\cpython\PCBuild\amd64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);d3d9.lib</AdditionalDependencies>
       <EntryPointSymbol>
       </EntryPointSymbol>
-
-
-
     </Link>
     <PostBuildEvent>
       <Command>postbuild.bat</Command>
@@ -205,6 +205,10 @@
     <PostBuildEvent>
       <Message>Cleeanup</Message>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -215,8 +219,8 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>src\imgui\GL;src\imgui;%(AdditionalIncludeDirectories);$(DXSDK_DIR)Include;kdmapper\include</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src\imgui\GL;src\imgui;$(DXSDK_DIR)Include;kdmapper\include;..\..\cpython\Include;..\..\cpython\PCbuild\amd64</AdditionalIncludeDirectories>
       <BufferSecurityCheck>false</BufferSecurityCheck>
     </ClCompile>
     <Link>
@@ -225,8 +229,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
-      <AdditionalLibraryDirectories>src\imgui\backends;src\imgui;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);d3d9.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>src\imgui\backends;src\imgui;..\..\cpython\PCBuild\amd64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);d3d9.lib;python314.lib</AdditionalDependencies>
       <EntryPointSymbol>
       </EntryPointSymbol>
     </Link>
@@ -236,6 +240,10 @@
     <PostBuildEvent>
       <Message>Cleeanup</Message>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="KDMapperAPI.cpp" />
@@ -244,6 +252,9 @@
     <ClCompile Include="kdmapper\portable_executable.cpp" />
     <ClCompile Include="kdmapper\service.cpp" />
     <ClCompile Include="kdmapper\utils.cpp" />
+    <ClCompile Include="src\pythonapi\PyThreadRunner.cpp" />
+    <ClCompile Include="src\pythonapi\import\KernelAPIModule.cpp" />
+    <ClCompile Include="src\pythonapi\PythonAPI.cpp" />
     <ClCompile Include="src\gui\OverlayController.cpp" />
     <ClCompile Include="src\core\cheat\GUIEntities.cpp" />
     <ClCompile Include="src\core\utility\CheatUtilities.cpp" />
@@ -261,7 +272,6 @@
     <ClCompile Include="src\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="src\imgui\imgui_tables.cpp" />
     <ClCompile Include="src\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="src\logger\UMLogger.cpp" />
     <ClCompile Include="src\core\cheat\ThreadController.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -274,11 +284,11 @@
     <ClInclude Include="kdmapper\include\portable_executable.hpp" />
     <ClInclude Include="kdmapper\include\service.hpp" />
     <ClInclude Include="kdmapper\include\utils.hpp" />
-
+    <ClInclude Include="src\pythonapi\PyThreadRunner.h" />
+    <ClInclude Include="src\pythonapi\import\KernelAPIModule.h" />
+    <ClInclude Include="src\pythonapi\PythonAPI.h" />
     <ClInclude Include="src\gui\OverlayController.h" />
-
     <ClInclude Include="src\client_dll.hpp" />
-
     <ClInclude Include="src\core\cheat\GUIEntities.h" />
     <ClInclude Include="src\core\utility\CheatUtilities.h" />
     <ClInclude Include="src\core\cheat\Cheat.h" />
@@ -297,7 +307,6 @@
     <ClInclude Include="src\imgui\imstb_textedit.h" />
     <ClInclude Include="src\imgui\imstb_truetype.h" />
     <ClInclude Include="src\core\utils.h" />
-    <ClInclude Include="src\logger\UMLogger.h" />
     <ClInclude Include="src\offsets.hpp" />
     <ClInclude Include="src\core\cheat\ThreadController.h" />
   </ItemGroup>
