@@ -56,7 +56,6 @@ bool PythonInterpreter::pymain()
 
 bool PythonInterpreter::initialize() noexcept
 {
-	std::string pythonpath;
 	try
 	{
 		pythonpath = fetchPath();
@@ -110,7 +109,12 @@ void PythonInterpreter::postinit() noexcept
 {
 	try
 	{
-		pCallSafe(entry, "invoke");
+		PyObject* args = Py_BuildValue("(s)", pythonpath.c_str());
+		if (!args)
+		{
+			throw PythonAPIException("Internal error");
+		}
+		pCallSafe(entry, "invoke", args);
 	}
 	catch (PythonAPIException e)
 	{
@@ -148,8 +152,10 @@ PyObject* PythonInterpreter::pCall(PyObject* pModule, const char* method, PyObje
 	}
 	PyObject* pFunctionCall = PyObject_GetAttrString(pModule, method);
 	if (!pFunctionCall || !PyCallable_Check(pFunctionCall))
+	{
+		Py_XDECREF(pFunctionCall);
 		throw PythonAPIException("Not callable invoke");
-
+	}
 	PyObject* pResult = PyObject_CallObject(pFunctionCall, args);
 
 	Py_DECREF(pFunctionCall);

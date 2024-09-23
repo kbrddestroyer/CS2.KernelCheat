@@ -18,3 +18,7 @@ def get_json(name: str) -> JsonParser:
   if name not in JsonParser.g_json:
     JsonParser(name)
   return JsonParser.g_json[name]
+
+
+def set_json(path: str) -> None:
+  JSON_CONSTANTS.JSON_PATH = path
