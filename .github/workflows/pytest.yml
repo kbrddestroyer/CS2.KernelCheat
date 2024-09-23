@@ -17,7 +17,7 @@ jobs:
     steps:
     - name: Run pytest
       run: |
-        cd CS2.KenelCheat/PythonExtentions/
+        cd CS2.KernelCheat/PythonExtentions/
         python3 -m pip install -r requirements_development.txt
         pytest
     
