@@ -13,12 +13,13 @@ jobs:
       uses: actions/checkout@v4
   run-pytest:
     needs: checkout
-    runs-on: ubuntu-latest 
+    runs-on: ubuntu-latest
     steps:
     - name: Run pytest
+      working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
         ls
-        python3 -m pip install -r PythonExtentions/requirements_development.txt
+        python3 -m pip install -r ./PythonExtentions/requirements_development.txt
         pytest
     
     
