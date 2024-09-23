@@ -5,3 +5,4 @@ pyproject
 cython
 imgui
 pytest
+typing
