@@ -1,5 +1,3 @@
-from typing import override
-
 from pykernel.entrypoint import Cheat
 
 
