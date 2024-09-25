@@ -44,6 +44,7 @@ I just want to show that VAC still doesn't work properly and anyone with coding 
 - pytest: unit tests framework `pip install pytest`
 
 All requirements can be installed with `pip install -r requirements.txt`
+All requirements for development can be installed with `pip install -r requirements_development.txt`
 
 ---
 
@@ -61,6 +62,8 @@ Currently the installation section is in project wiki tab, all releases can be f
 ..
 wip
 | cpython
+| | PCBuild
+| | | amd64
 | CS2.KernelCheat
 | | kernelmode
 | | usermode
@@ -70,7 +73,7 @@ wip
 4. Perform `pip install -r requirements.txt`
 5. Run `pytest` in PythonExtentions folder
 
-Now python side is ready
+Make sure that you have the same folder structure as above.
 
 ## Building usermode and kernelmode binaries
 
