@@ -20,3 +20,5 @@
 #ifndef NDEBUG
 #define IMGUI_DEBUG_INFO
 #endif
+
+#define USE_NATIVE_KDMAPPER

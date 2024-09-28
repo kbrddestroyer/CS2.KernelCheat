@@ -3,4 +3,3 @@ setuptools
 wheel
 pyproject
 cython
-imgui

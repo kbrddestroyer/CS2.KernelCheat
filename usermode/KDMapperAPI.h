@@ -1,10 +1,14 @@
 #pragma once
+#include "src/core/constants.h"
+
 #include <string>
 #include <filesystem>
+#include <Windows.h>
 
+#ifdef USE_NATIVE_KDMAPPER
 #include <kdmapper.hpp>
 #include <service.hpp>
-
+#endif
 
 class KDMapperAPI
 {
@@ -31,6 +35,7 @@ public:
 
 	bool load()
 	{
+#ifdef USE_NATIVE_KDMAPPER
 		const std::wstring driver_path = std::filesystem::current_path().native() + L"\\kernelmode.sys";
 
 		if (!std::filesystem::exists(driver_path)) {
@@ -66,11 +71,16 @@ public:
 		}
 		MessageBoxA(NULL, "OK!", "Success", NULL);
 		return true;
+#else
+		return false;
+#endif
 	}
 
 	bool unload()
 	{
+#ifdef USE_NATIVE_KDMAPPER
 		return service::StopAndRemove(wPath);
+#endif
 	}
 };
 
