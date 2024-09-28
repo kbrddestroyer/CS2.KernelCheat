@@ -5,3 +5,4 @@ del /q ..\x64\build\*.inf
 echo -- CLEANUP COMPLETED --
 
 cd ..\PythonExtentions\
+./build.bat
