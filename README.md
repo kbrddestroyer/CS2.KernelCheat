@@ -67,6 +67,9 @@ wip
 | CS2.KernelCheat
 | | kernelmode
 | | usermode
+| imgui
+| | backends
+| kdmapper
 ```
 2. Install Python on your PC or build the sources.
 3. Configure venv in PythonExtentions folder
