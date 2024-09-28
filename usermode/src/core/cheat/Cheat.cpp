@@ -1,5 +1,5 @@
 #include "Cheat.h"
-#include "../gui/GUIController.h"
+#include "../../gui/GUIController.h"
 
 using namespace cheatscore::core;
 

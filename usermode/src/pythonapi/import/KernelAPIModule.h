@@ -3,7 +3,7 @@
 #include <Python.h>
 #include <Windows.h>
 
-#include "..\core\utils.h"
+#include "..\..\core\utils.h"
 
 PyObject* kernelapi_init(PyObject*, PyObject*);
 PyObject* kernelapi_read(PyObject*, PyObject*);

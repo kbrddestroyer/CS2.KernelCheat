@@ -14,9 +14,9 @@
 #include <filesystem>
 #include <Python.h>
 
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_dx9.h"
-#include "imgui/imgui_impl_win32.h"
+#include <imgui.h>
+#include <imgui_impl_dx9.h>
+#include <imgui_impl_win32.h>
 #include "gui/GUIController.h"
 #include "core/cheat/ThreadController.h"
 #include "../KDMapperAPI.h"

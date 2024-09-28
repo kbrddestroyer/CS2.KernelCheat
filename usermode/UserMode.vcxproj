@@ -158,13 +158,13 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src\imgui\GL;src\imgui;$(DXSDK_DIR)Include;kdmapper\include;..\..\cpython\Include;..\..\cpython\PCbuild\amd64</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\imgui\GL;..\..\imgui;$(DXSDK_DIR)Include;kdmapper\include;..\..\cpython\Include;..\..\cpython\PCbuild\amd64</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
-      <AdditionalLibraryDirectories>src\imgui\backends;src\imgui;..\..\cpython\PCBuild\amd64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\imgui\backends;..\..\imgui;..\..\cpython\PCBuild\amd64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);d3d9.lib</AdditionalDependencies>
       <EntryPointSymbol>
       </EntryPointSymbol>
@@ -188,13 +188,13 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src\imgui\GL;src\imgui;$(DXSDK_DIR)Include;kdmapper\include;..\..\cpython\Include;..\..\cpython\PCbuild\amd64</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\imgui\GL;..\..\imgui;$(DXSDK_DIR)Include;kdmapper\include;..\..\cpython\Include;..\..\cpython\PCbuild\amd64</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
-      <AdditionalLibraryDirectories>src\imgui\backends;src\imgui;..\..\cpython\PCBuild\amd64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\imgui\backends;..\..\imgui;..\..\cpython\PCBuild\amd64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);d3d9.lib</AdditionalDependencies>
       <EntryPointSymbol>
       </EntryPointSymbol>
@@ -220,7 +220,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src\imgui\GL;src\imgui;$(DXSDK_DIR)Include;kdmapper\include;..\..\cpython\Include;..\..\cpython\PCbuild\amd64</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\imgui\GL;..\..\imgui;$(DXSDK_DIR)Include;kdmapper\include;..\..\cpython\Include;..\..\cpython\PCbuild\amd64</AdditionalIncludeDirectories>
       <BufferSecurityCheck>false</BufferSecurityCheck>
     </ClCompile>
     <Link>
@@ -229,7 +229,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
-      <AdditionalLibraryDirectories>src\imgui\backends;src\imgui;..\..\cpython\PCBuild\amd64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\imgui\backends;..\..\imgui;..\..\cpython\PCBuild\amd64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);d3d9.lib;python314.lib</AdditionalDependencies>
       <EntryPointSymbol>
       </EntryPointSymbol>
@@ -265,13 +265,13 @@
     <ClCompile Include="src\gui\GUIController.cpp" />
     <ClCompile Include="src\autoupdate_tool.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\imgui\imgui.cpp" />
-    <ClCompile Include="src\imgui\imgui_demo.cpp" />
-    <ClCompile Include="src\imgui\imgui_draw.cpp" />
-    <ClCompile Include="src\imgui\imgui_impl_dx9.cpp" />
-    <ClCompile Include="src\imgui\imgui_impl_win32.cpp" />
-    <ClCompile Include="src\imgui\imgui_tables.cpp" />
-    <ClCompile Include="src\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="..\..\imgui\imgui.cpp" />
+    <ClCompile Include="..\..\imgui\imgui_demo.cpp" />
+    <ClCompile Include="..\..\imgui\imgui_draw.cpp" />
+    <ClCompile Include="..\..\imgui\imgui_impl_dx9.cpp" />
+    <ClCompile Include="..\..\imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="..\..\imgui\imgui_tables.cpp" />
+    <ClCompile Include="..\..\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\core\cheat\ThreadController.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -298,14 +298,14 @@
     <ClInclude Include="src\core\utility\custom_types.h" />
     <ClInclude Include="src\gui\GUIController.h" />
     <ClInclude Include="src\core\constants.h" />
-    <ClInclude Include="src\imgui\imconfig.h" />
-    <ClInclude Include="src\imgui\imgui.h" />
-    <ClInclude Include="src\imgui\imgui_impl_dx9.h" />
-    <ClInclude Include="src\imgui\imgui_impl_win32.h" />
-    <ClInclude Include="src\imgui\imgui_internal.h" />
-    <ClInclude Include="src\imgui\imstb_rectpack.h" />
-    <ClInclude Include="src\imgui\imstb_textedit.h" />
-    <ClInclude Include="src\imgui\imstb_truetype.h" />
+    <ClInclude Include="..\..\imgui\imconfig.h" />
+    <ClInclude Include="..\..\imgui\imgui.h" />
+    <ClInclude Include="..\..\imgui\imgui_impl_dx9.h" />
+    <ClInclude Include="..\..\imgui\imgui_impl_win32.h" />
+    <ClInclude Include="..\..\imgui\imgui_internal.h" />
+    <ClInclude Include="..\..\imgui\imstb_rectpack.h" />
+    <ClInclude Include="..\..\imgui\imstb_textedit.h" />
+    <ClInclude Include="..\..\imgui\imstb_truetype.h" />
     <ClInclude Include="src\core\utils.h" />
     <ClInclude Include="src\offsets.hpp" />
     <ClInclude Include="src\core\cheat\ThreadController.h" />
