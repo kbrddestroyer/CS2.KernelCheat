@@ -158,7 +158,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\imgui\GL;..\..\imgui;$(DXSDK_DIR)Include;..\..\kdmapper\kdmapper\include;..\..\cpython\Include;..\..\cpython\PCbuild\amd64</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\imgui\GL;..\..\imgui\backends;..\..\imgui;$(DXSDK_DIR)Include;..\..\kdmapper\kdmapper\include;..\..\cpython\Include;..\..\cpython\PCbuild\amd64</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -188,7 +188,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\imgui\GL;..\..\imgui;$(DXSDK_DIR)Include;..\..\kdmapper\kdmapper\include;..\..\cpython\Include;..\..\cpython\PCbuild\amd64</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\imgui\GL;..\..\imgui\backends;..\..\imgui;$(DXSDK_DIR)Include;..\..\kdmapper\kdmapper\include;..\..\cpython\Include;..\..\cpython\PCbuild\amd64</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -220,7 +220,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\imgui\GL;..\..\imgui;$(DXSDK_DIR)Include;..\..\kdmapper\kdmapper\include;..\..\cpython\Include;..\..\cpython\PCbuild\amd64</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\imgui\GL;..\..\imgui\backends;..\..\imgui;$(DXSDK_DIR)Include;..\..\kdmapper\kdmapper\include;..\..\cpython\Include;..\..\cpython\PCbuild\amd64</AdditionalIncludeDirectories>
       <BufferSecurityCheck>false</BufferSecurityCheck>
     </ClCompile>
     <Link>
@@ -268,8 +268,8 @@
     <ClCompile Include="..\..\imgui\imgui.cpp" />
     <ClCompile Include="..\..\imgui\imgui_demo.cpp" />
     <ClCompile Include="..\..\imgui\imgui_draw.cpp" />
-    <ClCompile Include="..\..\imgui\imgui_impl_dx9.cpp" />
-    <ClCompile Include="..\..\imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="..\..\imgui\backends\imgui_impl_dx9.cpp" />
+    <ClCompile Include="..\..\imgui\backends\imgui_impl_win32.cpp" />
     <ClCompile Include="..\..\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\..\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\core\cheat\ThreadController.cpp" />
@@ -300,8 +300,8 @@
     <ClInclude Include="src\core\constants.h" />
     <ClInclude Include="..\..\imgui\imconfig.h" />
     <ClInclude Include="..\..\imgui\imgui.h" />
-    <ClInclude Include="..\..\imgui\imgui_impl_dx9.h" />
-    <ClInclude Include="..\..\imgui\imgui_impl_win32.h" />
+    <ClInclude Include="..\..\imgui\backends\imgui_impl_dx9.h" />
+    <ClInclude Include="..\..\imgui\backends\imgui_impl_win32.h" />
     <ClInclude Include="..\..\imgui\imgui_internal.h" />
     <ClInclude Include="..\..\imgui\imstb_rectpack.h" />
     <ClInclude Include="..\..\imgui\imstb_textedit.h" />
