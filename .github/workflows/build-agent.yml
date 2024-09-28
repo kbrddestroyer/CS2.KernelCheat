@@ -26,9 +26,12 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: nuget restore ${{env.SOLUTION_FILE_PATH}}
 
-    - name: Get CPython sources
+    - name: Get dependencies
       run: |
-        git clone ${{ vars.CPYTHON }} ../cpython
+        cd ..
+        git clone https://github.com/python/cpython
+        git clone https://github.com/ocornut/imgui
+        git clone https://github.com/TheCruZ/kdmapper
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
       # Add additional options to the MSBuild command line here (like platform or verbosity level).
