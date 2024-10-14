@@ -28,7 +28,7 @@ jobs:
           fi
 
           CENTRAL_SECTION=$(echo $BRANCH_NAME | cut -d'/' -f2)
-          VALID_SECTIONS=("actions" "usermode" "kernelmode" "docs", "offsets")
+          VALID_SECTIONS=("actions" "usermode" "kernelmode" "docs" "offsets")
 
           if [[ ! " ${VALID_SECTIONS[@]} " =~ " ${CENTRAL_SECTION} " ]]; then
             echo "Error: Central section '$CENTRAL_SECTION' is not valid."

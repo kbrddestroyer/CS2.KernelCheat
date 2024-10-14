@@ -1,0 +1,12 @@
+[project]
+version = "1.0.0"
+name = "Python KernelAPI"
+authors = [
+    { name = "Keyboard Destroyer" }
+]
+
+[tool.pytest.ini_options]
+pythonpath = [
+  ".", "kernel"
+]
+testpaths = [ "Tests" ]

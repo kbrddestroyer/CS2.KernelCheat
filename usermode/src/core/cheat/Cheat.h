@@ -40,19 +40,15 @@ namespace cheatscore
 			BONE_ESP
 		};
 
-		//
-		// Cheat - base class for every cheat functionality
-		// TODO:
-		// - Make this SOLID
-		// - - Single Responsibility [?]
-		// - - 
-		// - Add base entity scan for all children
-		// - Make this shit readable
-		// 
-		// Interface:
-		// CheatUpdate(HANDLE hDriver, uintptr_t uClient) can be overriden, runs from separate thread and has access to driver
-		// Render() can be overriden, runs from main thread and should never use driver functions
-		// 
+		/**
+		* Cheat class should be base class for any functionality
+		* Is being invoked automatically if registered properly
+		* You should specify cheat name in CheatEntities enum and then
+		* pass it in constructor
+		* 
+		* @param CheatUpdate(HANDLE, uintptr_t) - called in loop. Override and place memory r/w operations here
+		* @param Render() - Render information on imGui. NEVER access r/w operaions from here. Just render anything you need on overlay
+		*/
 		class Cheat : public ThreadedObject
 		{
 		private:
@@ -64,7 +60,7 @@ namespace cheatscore
 				throw "Should not be accessed!";
 			}
 		protected:
-			virtual void CheatUpdate(HANDLE, uintptr_t) = 0;
+			virtual void CheatUpdate() = 0;
 		public:
 			static Cheat* Instances(CheatEntities entity) {
 				return instances[entity];
@@ -88,24 +84,19 @@ namespace cheatscore
 			/**
 			* Get uPlayerPawn pointer by index in entity list.
 			* 
-			* @param hDriver HANDLE -  handle of kernelmode.sys
-			* @param uClient uintptr_t -  Base address of client.dll
 			* @param uEntityList uintptr_t - Index of player in dwEntityList
 			* @param uIndex uint32_t Index of player in dwEntityList
 			* 
 			* @return uintptr_t address of uPlayerPawn or nullptr if invalid
 			*/
-			const uintptr_t getPlayerPawnByIndex(const HANDLE, const uintptr_t, uintptr_t, uint32_t) noexcept;
+			const uintptr_t getPlayerPawnByIndex(uintptr_t, uint32_t) noexcept;
 
 			/**
 			* Common logic of finding the local player is delegated to base class
 			* 
-			* @param hDriver: HANDLE handle of kernelmode.sys
-			* @param uClient: uintptr_t Base address of client.dll
-			* 
 			* @return uintptr_t address of LocalPlayerPawn
 			*/
-			const uintptr_t getLocalPlayerPawn(const HANDLE, const uintptr_t) noexcept;
+			const uintptr_t getLocalPlayerPawn() noexcept;
 
 			/**
 			* Toggle cheat state on/off
@@ -117,7 +108,7 @@ namespace cheatscore
 			/*
 			* This function cannot be overriden
 			*/
-			void Update(HANDLE, uintptr_t) override final;
+			void Update() override final;
 
 			virtual void Render() = 0;
 		};
@@ -129,18 +120,18 @@ namespace cheatscore
 	{
 		using namespace utility;
 
-		// TODO:
-		// Needs some updates, works terrible
+		// Just test functionality, usially I use it to check the offsets
 		class BhopCheat : public Cheat
 		{
 		public:
 			BhopCheat() : Cheat(BHOP) {}
 
-			void CheatUpdate(HANDLE, uintptr_t) override;
+			void CheatUpdate() override;
 
 			void Render() override;
 		};
 
+		// Creates ImGui window on overlay and renders players
 		class RadarHack : public Cheat
 		{
 		private:
@@ -154,25 +145,27 @@ namespace cheatscore
 		public:
 			RadarHack() : Cheat(RADAR) {}
 
-			void fullSyncUpdate(HANDLE, uintptr_t);
+			void fullSyncUpdate();
 
-			bool updateEntity(CSPlayerEntity&, HANDLE, uintptr_t, uintptr_t);
+			bool updateEntity(CSPlayerEntity&, uintptr_t);
 
 			bool Initialized() { return bInitialised; }
-			void CheatUpdate(HANDLE, uintptr_t) override;
+			void CheatUpdate() override;
 
 			void Render() override;
 		};
 
+		// Triggers fire button if enemy is in crosshair
 		class TriggerBot : public Cheat
 		{
 		public:
 			TriggerBot() : Cheat(TRIGGER) {}
 
-			void CheatUpdate(HANDLE, uintptr_t) override;
+			void CheatUpdate() override;
 			void Render() override;
 		};
 
+		// Aims to heads, can be tweaked
 		class AimBot : public Cheat
 		{
 		private:
@@ -200,10 +193,11 @@ namespace cheatscore
 
 			void setSmoothness(float fVal) { this->fSmoothness = fVal; }
 
-			void CheatUpdate(HANDLE, uintptr_t) override;
+			void CheatUpdate() override;
 			void Render() override;
 		};
 
+		// Controls gun recoil starting from 2nd shot via viewAngles
 		class Antirecoil : public Cheat
 		{
 		private:
@@ -212,10 +206,11 @@ namespace cheatscore
 		public:
 			Antirecoil() : Cheat(ANTIRECOIL) {}
 
-			void CheatUpdate(HANDLE, uintptr_t) override;
+			void CheatUpdate() override;
 			void Render() override;
 		};
 
+		// Wallhack on overlay, renders bones
 		class BoneESP : public Cheat
 		{
 		private:
@@ -248,9 +243,9 @@ namespace cheatscore
 		public:
 			BoneESP() : Cheat(BONE_ESP) {}
 
-			void fullSyncRebuild(HANDLE, uintptr_t);
+			void fullSyncRebuild();
 			void scanForBones();
-			void CheatUpdate(HANDLE, uintptr_t) override;
+			void CheatUpdate() override;
 			void Render() override;
 		};
 	}

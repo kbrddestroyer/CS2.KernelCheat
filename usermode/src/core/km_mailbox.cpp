@@ -1,7 +1,9 @@
 #include "km_mailbox.h"
+#include "../pythonapi/PyThreadRunner.h"
 
 int kmControllerEntry()
 {
+#ifndef GUI_DEBUG_MODE
 	const DWORD dPid = uapp::getPID(TARGET_PNAME);
 
 	if (dPid == 0)
@@ -15,9 +17,6 @@ int kmControllerEntry()
 	if (hDriverHandle == INVALID_HANDLE_VALUE)
 	{
 		MessageBox(NULL, L"Invalid handle", L"Error", MB_ICONERROR | MB_OK);
-
-
-
 		return EXIT_FAILURE;
 	}
 
@@ -30,6 +29,14 @@ int kmControllerEntry()
 		CloseHandle(hDriverHandle);
 
 	return EXIT_SUCCESS;
+#else
+	MessageBoxA(NULL, "Warning!", "The cheat will run in GUI debug mode", MB_OK);
+	ThreadMgr* thread = ThreadMgr::getInstance();
+	thread->setDebug(true);
+
+	ThreadedObject::createObject(std::make_shared<PyThreadRunner>());
+	return EXIT_SUCCESS;
+#endif
 }
 
 void initialize(HANDLE hDriver, DWORD uPid)
@@ -38,5 +45,7 @@ void initialize(HANDLE hDriver, DWORD uPid)
 	{
 		ThreadMgr* thread = ThreadMgr::getInstance();
 		thread->setKMParams(hDriver, uClient);
+
+		ThreadedObject::createObject(std::make_shared<PyThreadRunner>());
 	}
 }

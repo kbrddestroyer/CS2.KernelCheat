@@ -12,6 +12,12 @@ bool ThreadedObject::createObject(PThreadedObject pInstance)
 	return true;
 }
 
+void ThreadedObject::createContext(HANDLE hDriver, uintptr_t uClient)
+{
+	this->hDriver = hDriver;
+	this->uClient = uClient;
+}
+
 #pragma endregion
 
 #pragma region IThreadController
@@ -66,14 +72,22 @@ void ThreadController::Start()
 
 void ThreadController::Update()
 {
-	if (hDriver && uClient && ThreadMgr::getInstance())
+	if (ThreadMgr::getInstance() && ((hDriver && uClient) || ThreadMgr::getInstance()->DEBUG()))
 	{
-		const std::vector<PThreadedObject>& callstack = vCallstack;
-
+		std::vector<PThreadedObject>& callstack = vCallstack;
 		for (PThreadedObject ob : callstack)
 		{
-			ob->Update(hDriver, uClient);
+			ob->Update();
 		}
+		
+		std::vector<PThreadedObject>::iterator it = callstack.begin();
+		while (it != callstack.end())
+		{
+			if (it->get()->isKilled())
+				callstack.erase(it);
+			else it++;
+		}
+
 	}
 	std::this_thread::yield();
 }
@@ -98,6 +112,7 @@ void ThreadController::resize()
 void ThreadController::addElement(PThreadedObject ob)
 {
 	vCallstack.push_back(ob);
+	ob->createContext(hDriver, uClient);
 }
 
 #pragma endregion

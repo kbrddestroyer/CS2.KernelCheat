@@ -1,15 +1,17 @@
 #include "Cheat.h"
-#include "../gui/GUIController.h"
+#include "../../gui/GUIController.h"
 
 using namespace cheatscore::core;
 
-void Cheat::Update(HANDLE hDriver, uintptr_t uClient)
+void Cheat::Update()
 {
+#ifndef GUI_DEBUG_MODE
 	if (bState.load(std::memory_order_relaxed))
-		CheatUpdate(hDriver, uClient);
+		CheatUpdate();
+#endif
 }
 
-const uintptr_t Cheat::getPlayerPawnByIndex(const HANDLE hDriver, const uintptr_t uClient, uintptr_t uEntityList, uint32_t uIndex) noexcept
+const uintptr_t Cheat::getPlayerPawnByIndex(uintptr_t uEntityList, uint32_t uIndex) noexcept
 {
 	uintptr_t pEntityListEntry = driver::read<uintptr_t>(hDriver, uEntityList + (8 * (uIndex & 0x7FF) >> 9) + 16);
 	if (!pEntityListEntry)
@@ -27,12 +29,12 @@ const uintptr_t Cheat::getPlayerPawnByIndex(const HANDLE hDriver, const uintptr_
 	return driver::read<uintptr_t>(hDriver, pEntityListEntry + (120 * (uPlayerPawnIndex & 0x1FF)));
 }
 
-const uintptr_t Cheat::getLocalPlayerPawn(const HANDLE hDriver, const uintptr_t uClient) noexcept
+const uintptr_t Cheat::getLocalPlayerPawn() noexcept
 {
 	return driver::read<uintptr_t>(hDriver, uClient + offsets::client_dll::dwLocalPlayerPawn);
 }
 
-void BhopCheat::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
+void BhopCheat::CheatUpdate()
 {
 	const uintptr_t playerPawn = driver::read<uintptr_t>(hDriver, uClient + offsets::client_dll::dwLocalPlayerPawn);
 
@@ -67,7 +69,7 @@ void BhopCheat::Render()
 
 }
 
-bool RadarHack::updateEntity(CSPlayerEntity& target, HANDLE hDriver, uintptr_t uClient, uintptr_t uPlayerPawn)
+bool RadarHack::updateEntity(CSPlayerEntity& target, uintptr_t uPlayerPawn)
 {
 	uintptr_t uGameSceneNode = driver::read<uintptr_t>(hDriver, uPlayerPawn + schemas::client_dll::C_BaseEntity::m_pGameSceneNode);
 
@@ -92,7 +94,7 @@ bool RadarHack::updateEntity(CSPlayerEntity& target, HANDLE hDriver, uintptr_t u
 }
 
 
-void RadarHack::fullSyncUpdate(HANDLE hDriver, uintptr_t uClient)
+void RadarHack::fullSyncUpdate()
 {
 	vEntities.clear();
 
@@ -101,7 +103,7 @@ void RadarHack::fullSyncUpdate(HANDLE hDriver, uintptr_t uClient)
 	if (!uEntityList)
 		return;
 
-	uintptr_t pLocalPlayer = getLocalPlayerPawn(hDriver, uClient);
+	uintptr_t pLocalPlayer = getLocalPlayerPawn();
 	uintptr_t pLocalPlayerController = driver::read<uintptr_t>(hDriver, uClient + offsets::client_dll::dwLocalPlayerController);
 
 	if (!pLocalPlayer)
@@ -112,7 +114,7 @@ void RadarHack::fullSyncUpdate(HANDLE hDriver, uintptr_t uClient)
 	if (!uLocalGameSceneNode)
 		return;
 
-	if (updateEntity(localEntity.second, hDriver, uClient, pLocalPlayer))
+	if (updateEntity(localEntity.second, pLocalPlayer))
 	{
 		localEntity.first = pLocalPlayer;
 	}
@@ -120,7 +122,7 @@ void RadarHack::fullSyncUpdate(HANDLE hDriver, uintptr_t uClient)
 
 	for (uint32_t i = 0; i < 32; i++)
 	{
-		uintptr_t uPlayerPawn = getPlayerPawnByIndex(hDriver, uClient, uEntityList, i);
+		uintptr_t uPlayerPawn = getPlayerPawnByIndex(uEntityList, i);
 		
 		if (!uPlayerPawn || uPlayerPawn == pLocalPlayer)
 		{
@@ -128,7 +130,7 @@ void RadarHack::fullSyncUpdate(HANDLE hDriver, uintptr_t uClient)
 			continue;
 		}
 
-		if (updateEntity(vEntities[uPlayerPawn], hDriver, uClient, uPlayerPawn))
+		if (updateEntity(vEntities[uPlayerPawn], uPlayerPawn))
 		{
 			vEntities[uPlayerPawn].uIndex = i;
 		}
@@ -137,11 +139,11 @@ void RadarHack::fullSyncUpdate(HANDLE hDriver, uintptr_t uClient)
 	bNeedFullSync = false;
 }
 
-void RadarHack::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
+void RadarHack::CheatUpdate()
 {
 	if (bNeedFullSync)
 	{
-		fullSyncUpdate(hDriver, uClient);
+		fullSyncUpdate();
 		return;
 	}
 
@@ -150,20 +152,20 @@ void RadarHack::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 	if (!uLocalGameSceneNode)
 		return;
 
-	if (!updateEntity(localEntity.second, hDriver, uClient, localEntity.first))
+	if (!updateEntity(localEntity.second, localEntity.first))
 	{
 		return;
 	}
 
 	for (std::pair<uintptr_t, CSPlayerEntity> entityDesc : vEntities)
 	{
-		updateEntity(vEntities[entityDesc.first], hDriver, uClient, entityDesc.first);
+		updateEntity(vEntities[entityDesc.first], entityDesc.first);
 	}
 }
 
 void RadarHack::Render()
 {
-	ImGui::SetNextWindowSize(ImVec2(200, 200), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(400, 400), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowBgAlpha(0.0f);
 	ImGui::Begin("Radar", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse);
 
@@ -211,7 +213,7 @@ void RadarHack::Render()
 	}
 }
 
-void TriggerBot::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
+void TriggerBot::CheatUpdate()
 {
 	uintptr_t uLocalPlayer = driver::read<uintptr_t>(hDriver, uClient + offsets::client_dll::dwLocalPlayerPawn);
 	uint8_t uLocalTeam = driver::read<uint8_t>(hDriver, uLocalPlayer + schemas::client_dll::C_BaseEntity::m_iTeamNum);
@@ -253,14 +255,14 @@ void TriggerBot::Render()
 
 }
 
-void AimBot::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
+void AimBot::CheatUpdate()
 {
 	uintptr_t uEntityList = driver::read<uintptr_t>(hDriver, uClient + offsets::client_dll::dwEntityList);
 
 	if (!uEntityList)
 		return;
 
-	uintptr_t pLocalPlayer = getLocalPlayerPawn(hDriver, uClient);
+	uintptr_t pLocalPlayer = getLocalPlayerPawn();
 
 	if (!pLocalPlayer)
 		return;
@@ -291,7 +293,7 @@ void AimBot::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
 	{
 		bool bIgnoreWalls = SettingsTab::getInstance()->ignoreWalls;
 
-		uintptr_t uPlayerPawn = getPlayerPawnByIndex(hDriver, uClient, uEntityList, i);
+		uintptr_t uPlayerPawn = getPlayerPawnByIndex(uEntityList, i);
 
 		if (!uPlayerPawn)
 			continue;
@@ -398,7 +400,7 @@ void AimBot::Render() {
 	}
 }
 
-void Antirecoil::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
+void Antirecoil::CheatUpdate()
 {
 	uintptr_t uLocalPlayer = driver::read<uintptr_t>(hDriver, uClient + offsets::client_dll::dwLocalPlayerPawn);
 	iShotsFired = driver::read<int32_t>(hDriver, uLocalPlayer + schemas::client_dll::C_CSPlayerPawn::m_iShotsFired);
@@ -441,7 +443,7 @@ void BoneESP::scanForBones()
 
 }
 
-void BoneESP::fullSyncRebuild(HANDLE hDriver, uintptr_t uClient)
+void BoneESP::fullSyncRebuild()
 {
 	std::vector<CSEntity> entities = mEntities.load();
 	entities.clear();
@@ -451,7 +453,7 @@ void BoneESP::fullSyncRebuild(HANDLE hDriver, uintptr_t uClient)
 	if (!uEntityList)
 		return;
 
-	uintptr_t pLocalPlayer = getLocalPlayerPawn(hDriver, uClient);
+	uintptr_t pLocalPlayer = getLocalPlayerPawn();
 
 	if (!pLocalPlayer)
 		return;
@@ -467,7 +469,7 @@ void BoneESP::fullSyncRebuild(HANDLE hDriver, uintptr_t uClient)
 
 	for (uint32_t i = 0; i < 32; i++)
 	{
-		uintptr_t uPlayerPawn = getPlayerPawnByIndex(hDriver, uClient, uEntityList, i);
+		uintptr_t uPlayerPawn = getPlayerPawnByIndex(uEntityList, i);
 		if (!uPlayerPawn)
 			continue;
 
@@ -482,11 +484,11 @@ void BoneESP::fullSyncRebuild(HANDLE hDriver, uintptr_t uClient)
 	bNeedFullSync = false;
 }
 
-void BoneESP::CheatUpdate(HANDLE hDriver, uintptr_t uClient)
+void BoneESP::CheatUpdate()
 {
 	if (bNeedFullSync)
 	{
-		fullSyncRebuild(hDriver, uClient);
+		fullSyncRebuild();
 		return;
 	}
 	uintptr_t pLocalPlayer = driver::read<uintptr_t>(hDriver, uClient + offsets::client_dll::dwLocalPlayerPawn);

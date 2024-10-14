@@ -1,3 +1,9 @@
+/**
+* 
+* TODO:
+* 1. Overlay refactor. Remove those horrible namespaces
+*/
+
 #include <windows.h>
 #include <dwmapi.h>
 #include <d3d9.h>
@@ -6,13 +12,15 @@
 #include <string>
 #include <vector>
 #include <filesystem>
+#include <Python.h>
 
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_dx9.h"
-#include "imgui/imgui_impl_win32.h"
+#include <imgui.h>
+#include <imgui_impl_dx9.h>
+#include <imgui_impl_win32.h>
 #include "gui/GUIController.h"
 #include "core/cheat/ThreadController.h"
 #include "../KDMapperAPI.h"
+#include "pythonapi/PythonAPI.h"
 
 #pragma comment(lib, "d3d9.lib")
 #pragma comment(lib, "dwmapi.lib")
@@ -81,15 +89,20 @@ std::wstring OpenFileDialog()
     return L"";
 }
 
+// That's fucking trash
+
 namespace OverlayWindow
 {
+#pragma message("warning - OverlayWindow - Replace those fucking namespaces asap")
     WNDCLASSEX WindowClass;
     HWND Hwnd;
     LPCWSTR Name = L"Overlay";
 }
 
+// That's either
 namespace DirectX9Interface
 {
+#pragma message("warning - DirectX9Interface - Replace those fucking namespaces asap")
     IDirect3D9Ex* Direct3D9 = NULL;
     IDirect3DDevice9Ex* pDevice = NULL;
     D3DPRESENT_PARAMETERS pParams = { 0 };
@@ -97,18 +110,20 @@ namespace DirectX9Interface
     MSG Message = { 0 };
 }
 
-void InputHandler() {
-    for (int i = 0; i < 5; i++) ImGui::GetIO().MouseDown[i] = false;
-    int button = -1;
-    if (GetAsyncKeyState(VK_LBUTTON)) button = 0;
-    if (button != -1) ImGui::GetIO().MouseDown[button] = true;
-}
-
 void Render(GUIController& controller)
 {
     if (GetAsyncKeyState(VK_INSERT) & 1)
     {
         GUIController::Instance()->toggle(!GUIController::Instance()->getState());
+
+        LONG bFlag = WS_EX_LAYERED | WS_EX_TOOLWINDOW;
+        if (!GUIController::Instance()->getState())
+        {
+            bFlag |= WS_EX_TRANSPARENT;
+        }
+
+        SetWindowLong(OverlayWindow::Hwnd, GWL_EXSTYLE, bFlag);
+        UpdateWindow(OverlayWindow::Hwnd);
     }
     if (GetAsyncKeyState(VK_END) & 1)
         controller.safeExit(true);
@@ -169,10 +184,11 @@ void MainLoop(GUIController& controller) {
 
         POINT TempPoint2;
         GetCursorPos(&TempPoint2);
+
         io.MousePos.x = TempPoint2.x - TempPoint.x;
         io.MousePos.y = TempPoint2.y - TempPoint.y;
 
-        if (GetAsyncKeyState(0x1)) {
+        if (GetAsyncKeyState(VK_LBUTTON)) {
             io.MouseDown[0] = true;
             io.MouseClicked[0] = true;
             io.MouseClickedPos[0].x = io.MousePos.x;
@@ -188,6 +204,7 @@ void MainLoop(GUIController& controller) {
             ScreenHeight = TempRect.bottom;
             DirectX9Interface::pParams.BackBufferWidth = ScreenWidth;
             DirectX9Interface::pParams.BackBufferHeight = ScreenHeight;
+            DirectX9Interface::pParams.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
             SetWindowPos(OverlayWindow::Hwnd, (HWND)0, TempPoint.x, TempPoint.y, ScreenWidth, ScreenHeight, SWP_NOREDRAW);
             DirectX9Interface::pDevice->Reset(&DirectX9Interface::pParams);
         }
@@ -243,11 +260,14 @@ bool DirectXInit() {
 }
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 LRESULT CALLBACK WinProc(HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam) {
     if (ImGui_ImplWin32_WndProcHandler(hWnd, Message, wParam, lParam))
         return true;
 
     switch (Message) {
+    case WM_MOUSEWHEEL:
+        break;
     case WM_DESTROY:
         if (DirectX9Interface::pDevice != NULL) {
             DirectX9Interface::pDevice->EndScene();
@@ -272,9 +292,8 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam) 
         break;
     default:
         return DefWindowProc(hWnd, Message, wParam, lParam);
-        break;
     }
-    return 0;
+    return DefWindowProc(hWnd, Message, wParam, lParam);
 }
 
 void SetupWindow() {
@@ -296,7 +315,7 @@ void SetupWindow() {
 
     OverlayWindow::Hwnd = CreateWindowEx(NULL, OverlayWindow::Name, OverlayWindow::Name, WS_POPUP | WS_VISIBLE, ScreenLeft, ScreenTop, ScreenWidth, ScreenHeight, NULL, NULL, 0, NULL);
     DwmExtendFrameIntoClientArea(OverlayWindow::Hwnd, &DirectX9Interface::Margin);
-    SetWindowLong(OverlayWindow::Hwnd, GWL_EXSTYLE, WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW);
+    SetWindowLong(OverlayWindow::Hwnd, GWL_EXSTYLE, WS_EX_LAYERED | WS_EX_TOOLWINDOW);
     ShowWindow(OverlayWindow::Hwnd, SW_SHOW);
     UpdateWindow(OverlayWindow::Hwnd);
 }
@@ -311,8 +330,31 @@ int WINAPI WinMain(
 
     if (_HWND == NULL)
     {
+#ifndef GUI_DEBUG_MODE
         MessageBox(NULL, L"Counter-Strike 2 is not started. Please start the game before running the cheat.", L"Error", MB_ICONERROR | MB_OK);
         return 1;
+#else
+        // Enable gui debug
+        _HWND = CreateWindowA(
+            "Static",
+            "GUI Debug mode",
+            WS_VISIBLE | WS_POPUPWINDOW,
+            100,
+            120,
+            1920,
+            1080,
+            NULL,
+            NULL,
+            hInstance,
+            NULL);
+
+        if (_HWND == NULL)
+        {
+            MessageBoxA(NULL, "Cannot create debug window!", "Error", MB_OK | MB_ICONERROR);
+
+            return 1;
+        }
+#endif
     }
 
     bool WindowFocus = false;
@@ -352,7 +394,7 @@ int WINAPI WinMain(
 
     ThreadMgr thManager;
     thManager.Start();
-
+#ifndef GUI_DEBUG_MODE
     if (kmControllerEntry() != EXIT_SUCCESS)
     {
         KDMapperAPI kdmapper;
@@ -365,7 +407,9 @@ int WINAPI WinMain(
         MessageBoxA(NULL, "Driver was not mapped, there may be an error in kdmapper or kernelmode.sys does not exist in cheat root path", "Critical error", MB_OK | MB_ICONERROR);
         return 1;
     }
-
+#else
+    kmControllerEntry();
+#endif
     MainLoop(controller);
 
     return 0;
